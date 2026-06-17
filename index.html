@@ -2,6 +2,15 @@
 <html lang="en">
 
 <head>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0F1E3A" />
@@ -53,6 +62,154 @@
       --font-body: 'Inter', sans-serif;
       --font-mono: 'IBM Plex Mono', monospace;
       --shadow-card: 0 24px 64px -28px rgba(22, 52, 138, 0.18), 0 2px 10px rgba(20, 24, 35, 0.04);
+    }
+
+    [data-theme="dark"] {
+      --canvas: #0B0F19;
+      --surface: #121826;
+      --surface-alt: #171E30;
+      --ink: #F3F4F6;
+      --ink-soft: #D1D5DB;
+      --muted: #9CA3AF;
+      --border: #242F41;
+      --border-soft: #1E293B;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --accent-soft: rgba(59, 130, 246, 0.15);
+      --accent-deep: #60A5FA;
+      --amber: #F59E0B;
+      --success: #10B981;
+      --success-soft: rgba(16, 185, 129, 0.15);
+      --danger: #EF4444;
+      --shadow-card: 0 24px 64px -28px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.15rem;
+      transition: background .15s, border-color .15s, transform .15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--border-soft);
+      transform: scale(1.05);
+    }
+
+    .theme-toggle:active {
+      transform: scale(0.95);
+    }
+
+    /* ── ENHANCED STYLES & MICRO-ANIMATIONS ── */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .layout-shell {
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    /* Inputs Focus & Glow Animations */
+    .form-control,
+    .form-select,
+    .select2-container--default .select2-selection--single {
+      transition: border-color .25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 4px var(--accent-soft) !important;
+    }
+
+    /* Select2 Dark Mode Override */
+    [data-theme="dark"] .select2-container--default .select2-selection--single {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+    }
+    [data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: var(--ink) !important;
+    }
+    [data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__placeholder {
+      color: #6B7280 !important;
+    }
+    [data-theme="dark"] .select2-dropdown {
+      background: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
+    }
+    [data-theme="dark"] .select2-search--dropdown .select2-search__field {
+      background: var(--surface-alt) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--ink) !important;
+    }
+    [data-theme="dark"] .select2-results__option {
+      color: var(--ink) !important;
+    }
+    [data-theme="dark"] .select2-results__option--highlighted {
+      background: var(--accent) !important;
+      color: #fff !important;
+    }
+    [data-theme="dark"] .select2-container--default .select2-results__option--selected {
+      background: var(--accent-soft) !important;
+    }
+    [data-theme="dark"] .select2-results__option[aria-disabled=true] {
+      color: var(--muted) !important;
+    }
+    [data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: var(--muted) transparent transparent !important;
+    }
+    [data-theme="dark"] .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+      border-color: transparent transparent var(--muted) !important;
+    }
+
+    /* Dark Mode Custom Component Tweaks */
+    [data-theme="dark"] .cat-tab {
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    [data-theme="dark"] .cat-tab:hover {
+      color: var(--ink);
+      border-color: var(--muted);
+    }
+    [data-theme="dark"] .spec-sheet {
+      border-color: var(--border);
+    }
+    [data-theme="dark"] .spec-cell {
+      background: var(--surface);
+    }
+    [data-theme="dark"] .quick-contact {
+      background: var(--surface);
+      border-color: var(--border);
+    }
+    [data-theme="dark"] .trust-list li {
+      background: var(--surface-alt);
+      border-color: var(--border);
+    }
+    [data-theme="dark"] .header-cta {
+      background: var(--surface-alt);
+      border-color: var(--border);
+    }
+    [data-theme="dark"] .header-cta:hover {
+      background: var(--border-soft);
+    }
+    [data-theme="dark"] .logo-mark img {
+      filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.25));
     }
 
     * {
@@ -198,16 +355,23 @@
       min-width: 0;
     }
 
-    @media (min-width: 992px) {
+    @media (min-width: 768px) {
       .layout-grid {
-        grid-template-columns: minmax(280px, 380px) 1fr;
-        gap: 56px;
+        grid-template-columns: 1fr minmax(280px, 340px);
+        gap: 32px;
         align-items: start;
       }
 
       .intro-panel {
         position: sticky;
         top: 104px;
+      }
+    }
+
+    @media (min-width: 992px) {
+      .layout-grid {
+        grid-template-columns: 1fr minmax(320px, 380px);
+        gap: 56px;
       }
     }
 
@@ -900,57 +1064,19 @@
           <span class="brand-sub">Training &amp; Solution Pvt. Ltd.</span>
         </div>
       </a>
-      <a href="https://wa.me/918645628278" target="_blank" rel="noopener" class="header-cta" aria-label="WhatsApp us">
-        <i class="bi bi-whatsapp"></i><span class="cta-label">WhatsApp us</span>
-      </a>
+      <div class="d-flex align-items-center gap-2">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+          <i class="bi bi-moon-stars-fill"></i>
+        </button>
+        <a href="https://wa.me/918645628278" target="_blank" rel="noopener" class="header-cta" aria-label="WhatsApp us">
+          <i class="bi bi-whatsapp"></i><span class="cta-label">WhatsApp us</span>
+        </a>
+      </div>
     </div>
   </header>
 
   <div class="layout-shell">
     <div class="layout-grid">
-
-      <!-- ── INTRO PANEL ── -->
-      <aside class="intro-panel">
-        <div class="panel-glyph">{ }</div>
-        <div class="intro-content">
-          <div class="eyebrow">tts.net.in / enquiry</div>
-          <h1 class="intro-title">Tell us what you want to learn.</h1>
-          <p class="intro-text">Share a few details once — a course advisor will reply on WhatsApp within 24 hours with
-            fees, batch timing, and next steps.</p>
-
-          <div class="quick-contact">
-            <i class="bi bi-whatsapp"></i>
-            <span>Prefer to talk now? <a href="https://wa.me/918645628278" target="_blank" rel="noopener">Message us
-                directly</a></span>
-          </div>
-
-          <ul class="trust-list">
-            <li><i class="bi bi-check-circle-fill"></i> Private details</li>
-            <li><i class="bi bi-check-circle-fill"></i> No spam calls</li>
-            <li><i class="bi bi-check-circle-fill"></i> Reply in 24 hrs</li>
-          </ul>
-
-          <div class="spec-label">At a glance</div>
-          <dl class="spec-sheet">
-            <div class="spec-cell">
-              <dt>Students trained</dt>
-              <dd>5,000+</dd>
-            </div>
-            <div class="spec-cell">
-              <dt>Courses offered</dt>
-              <dd>108</dd>
-            </div>
-            <div class="spec-cell">
-              <dt>Location</dt>
-              <dd>Nashik, MH</dd>
-            </div>
-            <div class="spec-cell">
-              <dt>Status</dt>
-              <dd>Certified</dd>
-            </div>
-          </dl>
-        </div>
-      </aside>
 
       <!-- ── FORM ── -->
       <section class="form-panel">
@@ -1108,6 +1234,49 @@
           </div><!-- /form-body -->
         </div><!-- /form-card -->
       </section>
+
+      <!-- ── INTRO PANEL ── -->
+      <aside class="intro-panel">
+        <div class="panel-glyph">{ }</div>
+        <div class="intro-content">
+          <div class="eyebrow">tts.net.in / enquiry</div>
+          <h1 class="intro-title">Tell us what you want to learn.</h1>
+          <p class="intro-text">Share a few details once — a course advisor will reply on WhatsApp within 24 hours with
+            fees, batch timing, and next steps.</p>
+
+          <div class="quick-contact">
+            <i class="bi bi-whatsapp"></i>
+            <span>Prefer to talk now? <a href="https://wa.me/918645628278" target="_blank" rel="noopener">Message us
+                directly</a></span>
+          </div>
+
+          <ul class="trust-list">
+            <li><i class="bi bi-check-circle-fill"></i> Private details</li>
+            <li><i class="bi bi-check-circle-fill"></i> No spam calls</li>
+            <li><i class="bi bi-check-circle-fill"></i> Reply in 24 hrs</li>
+          </ul>
+
+          <div class="spec-label">At a glance</div>
+          <dl class="spec-sheet">
+            <div class="spec-cell">
+              <dt>Students trained</dt>
+              <dd>5,000+</dd>
+            </div>
+            <div class="spec-cell">
+              <dt>Courses offered</dt>
+              <dd>108</dd>
+            </div>
+            <div class="spec-cell">
+              <dt>Location</dt>
+              <dd>Nashik, MH</dd>
+            </div>
+            <div class="spec-cell">
+              <dt>Status</dt>
+              <dd>Certified</dd>
+            </div>
+          </dl>
+        </div>
+      </aside>
 
     </div><!-- /layout-grid -->
   </div><!-- /layout-shell -->
@@ -1317,6 +1486,31 @@
           link.href = logoSrc;
           document.getElementsByTagName('head')[0].appendChild(link);
         }
+
+        // ── THEME TOGGLING ─────────────────────────────────────────
+        const $themeBtn = $('#themeToggle');
+        const $themeIcon = $themeBtn.find('i');
+
+        function updateToggleIcon(theme) {
+          if (theme === 'dark') {
+            $themeIcon.removeClass('bi-moon-stars-fill').addClass('bi-sun-fill');
+          } else {
+            $themeIcon.removeClass('bi-sun-fill').addClass('bi-moon-stars-fill');
+          }
+        }
+
+        // Initialize icon state based on current active theme
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        updateToggleIcon(currentTheme);
+
+        $themeBtn.on('click', function () {
+          const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+          const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+          
+          document.documentElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+          updateToggleIcon(newTheme);
+        });
 
         buildOptions('all');
 
