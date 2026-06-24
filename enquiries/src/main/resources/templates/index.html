@@ -1,0 +1,2275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script>
+        (function () {
+            try {
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {
+                console.warn('localStorage is blocked:', e);
+            }
+        })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0F1E3A" />
+    <title>Enquiry Form | TechnoKraft Training & Solution</title>
+    <meta name="description"
+        content="Enroll in top IT, Engineering & Professional courses at TechnoKraft Training & Solution. Fill the enquiry form and our experts will guide you." />
+    <meta name="keywords"
+        content="TechnoKraft, IT training, courses Nashik, Python, Java, Full Stack, SAP, CCNA, Data Science, AI, enquiry form" />
+    <meta property="og:title" content="TechnoKraft Training & Solution – Course Enquiry" />
+    <meta property="og:description"
+        content="Get expert guidance on 100+ IT & Professional courses. Fill your enquiry now!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://tts.net.in/" />
+
+    <!-- Bootstrap 5 (grid utilities only) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Select2 -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" />
+    <!-- Type system: Space Grotesk (display) / Inter (body) / IBM Plex Mono (data & labels) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Michroma&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        @font-face {
+            font-family: 'Neuropol';
+            src: url('/fonts/Neuropol.otf') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        :root {
+            --canvas: #F5F7FB;
+            --surface: #FFFFFF;
+            --surface-alt: #FAFBFD;
+            --ink: #161A23;
+            --ink-soft: #3D4456;
+            --muted: #6B7280;
+            --border: #E3E6EC;
+            --border-soft: #ECEEF2;
+            --accent: #2451E3;
+            --accent-hover: #1B3FBE;
+            --accent-soft: #EAF0FE;
+            --accent-deep: #16348C;
+            --amber: #E8920B;
+            --success: #168A4F;
+            --success-soft: #E7F6EE;
+            --danger: #D6483D;
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 22px;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'IBM Plex Mono', monospace;
+            --shadow-card: 0 24px 64px -28px rgba(22, 52, 138, 0.18), 0 2px 10px rgba(20, 24, 35, 0.04);
+        }
+
+        [data-theme="dark"] {
+            --canvas: #0B0F19;
+            --surface: #121826;
+            --surface-alt: #171E30;
+            --ink: #F3F4F6;
+            --ink-soft: #D1D5DB;
+            --muted: #9CA3AF;
+            --border: #242F41;
+            --border-soft: #1E293B;
+            --accent: #3B82F6;
+            --accent-hover: #2563EB;
+            --accent-soft: rgba(59, 130, 246, 0.15);
+            --accent-deep: #60A5FA;
+            --amber: #F59E0B;
+            --success: #10B981;
+            --success-soft: rgba(16, 185, 129, 0.15);
+            --danger: #EF4444;
+            --shadow-card: 0 24px 64px -28px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        /* ── THEME TOGGLE ── */
+        .theme-toggle {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            color: var(--ink);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.15rem;
+            transition: background .15s, border-color .15s, transform .15s;
+        }
+
+        .theme-toggle:hover {
+            background: var(--border-soft);
+            transform: scale(1.05);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        /* ── ENHANCED STYLES & MICRO-ANIMATIONS ── */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .layout-shell {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        /* Inputs Focus & Glow Animations */
+        .form-control,
+        .form-select,
+        .select2-container--default .select2-selection--single {
+            transition: border-color .25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow .25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 4px var(--accent-soft) !important;
+        }
+
+        /* Select2 Dark Mode Override */
+        [data-theme="dark"] .select2-container--default .select2-selection--single {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+        }
+
+        [data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--ink) !important;
+        }
+
+        [data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #6B7280 !important;
+        }
+
+        [data-theme="dark"] .select2-dropdown {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
+        }
+
+        [data-theme="dark"] .select2-search--dropdown .select2-search__field {
+            background: var(--surface-alt) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--ink) !important;
+        }
+
+        [data-theme="dark"] .select2-results__option {
+            color: var(--ink) !important;
+        }
+
+        [data-theme="dark"] .select2-results__option--highlighted {
+            background: var(--accent) !important;
+            color: #fff !important;
+        }
+
+        [data-theme="dark"] .select2-container--default .select2-results__option--selected {
+            background: var(--accent-soft) !important;
+        }
+
+        [data-theme="dark"] .select2-results__option[aria-disabled=true] {
+            color: var(--muted) !important;
+        }
+
+        [data-theme="dark"] .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: var(--muted) transparent transparent !important;
+        }
+
+        [data-theme="dark"] .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+            border-color: transparent transparent var(--muted) !important;
+        }
+
+        /* Dark Mode Custom Component Tweaks */
+        [data-theme="dark"] .cat-tab {
+            background: var(--surface);
+            border: 1px solid var(--border);
+        }
+
+        [data-theme="dark"] .cat-tab:hover {
+            color: var(--ink);
+            border-color: var(--muted);
+        }
+
+        [data-theme="dark"] .spec-sheet {
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .spec-cell {
+            background: var(--surface);
+        }
+
+        [data-theme="dark"] .quick-contact {
+            background: var(--surface);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .trust-list li {
+            background: var(--surface-alt);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .header-cta {
+            background: var(--surface-alt);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .header-cta:hover {
+            background: var(--border-soft);
+        }
+
+        [data-theme="dark"] .logo-mark img {
+            filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.25));
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--canvas);
+            color: var(--ink);
+            min-height: 100vh;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        /* ── HEADER ── */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: var(--surface);
+            padding: 14px 24px;
+            box-shadow: 0 1px 0 var(--border-soft), 0 4px 12px rgba(0, 0, 0, .03);
+        }
+
+        .header-inner {
+            max-width: 1140px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none !important;
+        }
+
+        .logo-container:hover {
+            text-decoration: none !important;
+        }
+
+        .logo-mark {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        .logo-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .08));
+        }
+
+        .logo-fallback {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #fff;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: .9rem;
+            letter-spacing: .02em;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+        }
+
+        .brand-text {
+            font-family: 'Neuropol', sans-serif;
+            font-weight: 400;
+            font-size: 1.15rem;
+            color: var(--ink);
+            letter-spacing: 1px;
+        }
+
+        .brand-sub {
+            font-family: 'Neuropol', sans-serif;
+            font-size: .5rem;
+            color: var(--muted);
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            margin-top: 2px;
+            margin-left: 5px;
+        }
+
+        .header-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--ink);
+            font-size: .85rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 100px;
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            transition: background .15s, border-color .15s;
+        }
+
+        .header-cta i {
+            color: #25d366;
+        }
+
+        .header-cta:hover {
+            background: var(--border-soft);
+            color: var(--ink);
+        }
+
+        /* ── LAYOUT ── */
+        .layout-shell {
+            max-width: 1140px;
+            margin: 0 auto;
+            padding: 48px 24px 64px;
+        }
+
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+
+        .layout-grid>* {
+            min-width: 0;
+        }
+
+        @media (min-width: 768px) {
+            .layout-grid {
+                grid-template-columns: 1fr minmax(280px, 340px);
+                gap: 32px;
+                align-items: start;
+            }
+
+            .intro-panel {
+                position: sticky;
+                top: 80px;
+                padding-top: 0;
+            }
+
+            .intro-panel .eyebrow {
+                margin-bottom: 12px;
+            }
+
+            .intro-panel .intro-title {
+                margin-bottom: 8px;
+            }
+
+            .intro-panel .intro-text {
+                margin-bottom: 16px;
+            }
+
+            .intro-panel .quick-contact {
+                margin-bottom: 12px;
+            }
+
+            .intro-panel .trust-list {
+                margin-bottom: 12px;
+            }
+
+            .intro-panel .spec-label {
+                margin-bottom: 6px;
+            }
+        }
+
+        @media (min-width: 992px) {
+            .layout-grid {
+                grid-template-columns: 1fr minmax(320px, 380px);
+                gap: 56px;
+            }
+        }
+
+        /* ── INTRO PANEL ── */
+        .intro-panel {
+            position: relative;
+            padding-top: 4px;
+        }
+
+        .panel-glyph {
+            position: absolute;
+            top: -18px;
+            right: -6px;
+            z-index: 0;
+            font-family: var(--font-mono);
+            font-size: 6.4rem;
+            font-weight: 500;
+            color: var(--accent-soft);
+            line-height: 1;
+            pointer-events: none;
+            user-select: none;
+        }
+
+        .intro-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-family: var(--font-mono);
+            font-size: .74rem;
+            color: var(--accent-deep);
+            letter-spacing: .02em;
+            margin-bottom: 18px;
+        }
+
+        .eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--amber);
+        }
+
+        .intro-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+            line-height: 1.18;
+            color: var(--ink);
+            letter-spacing: -.01em;
+            margin-bottom: 14px;
+        }
+
+        .intro-text {
+            font-size: .96rem;
+            line-height: 1.7;
+            color: var(--ink-soft);
+            max-width: 420px;
+            margin-bottom: 28px;
+        }
+
+        .quick-contact {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            margin-bottom: 18px;
+        }
+
+        .quick-contact i {
+            color: #178a4f;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .quick-contact span {
+            font-size: .82rem;
+            color: var(--ink-soft);
+        }
+
+        .quick-contact a {
+            font-weight: 600;
+            color: var(--ink);
+            text-decoration: none;
+        }
+
+        /* Trust list — compact inline badges */
+        .trust-list {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .trust-list li {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: .78rem;
+            color: var(--ink-soft);
+            background: var(--surface-alt);
+            border: 1px solid var(--border-soft);
+            border-radius: 100px;
+            padding: 6px 12px;
+        }
+
+        .trust-list i {
+            color: var(--success);
+            font-size: .85rem;
+        }
+
+        /* Spec sheet — compact stat grid */
+        .spec-label {
+            font-family: var(--font-mono);
+            font-size: .68rem;
+            color: var(--muted);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .spec-sheet {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            border: 1px solid var(--border-soft);
+            border-radius: var(--radius);
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .spec-cell {
+            background: var(--surface);
+            padding: 12px 14px;
+        }
+
+        .spec-cell dt {
+            font-family: var(--font-mono);
+            font-size: .66rem;
+            color: var(--muted);
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .spec-cell dd {
+            font-family: var(--font-display);
+            font-size: .98rem;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        /* Contact & Map Card styling */
+        .contact-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-top: 10px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            color: var(--ink-soft);
+            margin-bottom: 12px;
+        }
+
+        .contact-item i {
+            font-size: 1rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .contact-item a {
+            color: var(--ink);
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .contact-item a:hover {
+            color: var(--accent);
+        }
+
+        .map-container {
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            line-height: 0;
+            width: 100%;
+        }
+
+        .map-container iframe {
+            width: 100% !important;
+            display: block;
+        }
+
+        [data-theme="dark"] .contact-card {
+            background: var(--surface);
+            border-color: var(--border);
+        }
+
+        [data-theme="dark"] .map-container {
+            border-color: var(--border);
+        }
+
+        /* ── FORM CARD ── */
+        .form-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        .form-card-header {
+            padding: 26px 30px 20px;
+            background: var(--surface-alt);
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .form-card-header .eyebrow {
+            margin-bottom: 10px;
+        }
+
+        .form-card-header h2 {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--ink);
+            margin-bottom: 6px;
+            letter-spacing: -.01em;
+        }
+
+        .form-card-header p {
+            font-size: .85rem;
+            color: var(--muted);
+        }
+
+        .form-body {
+            padding: 26px 30px 30px;
+        }
+
+        .form-label {
+            font-size: .76rem;
+            font-weight: 600;
+            color: var(--ink-soft);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 7px;
+            display: block;
+        }
+
+        .required-star {
+            color: var(--danger);
+            margin-left: 2px;
+        }
+
+        .form-control,
+        .form-select {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--ink) !important;
+            border-radius: var(--radius) !important;
+            font-size: .9rem !important;
+            padding: 11px 14px !important;
+            transition: border-color .15s, box-shadow .15s;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px var(--accent-soft) !important;
+            outline: none !important;
+        }
+
+        .form-control::placeholder {
+            color: #A3A9B5 !important;
+        }
+
+        .input-group-text {
+            background: var(--accent-soft) !important;
+            border: 1px solid var(--border) !important;
+            border-right: none !important;
+            color: var(--accent) !important;
+            border-radius: var(--radius) 0 0 var(--radius) !important;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 var(--radius) var(--radius) 0 !important;
+            border-left: none !important;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 96px;
+        }
+
+        /* Select2 — light theme */
+        .select2-container--default .select2-selection--single {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius) !important;
+            height: 44px !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            color: var(--ink) !important;
+            font-size: .9rem !important;
+            padding: 0 14px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #A3A9B5 !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            top: 10px !important;
+            right: 10px !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow b {
+            border-color: var(--muted) transparent transparent !important;
+        }
+
+        .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+            border-color: transparent transparent var(--muted) !important;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--open .select2-selection--single {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px var(--accent-soft) !important;
+        }
+
+        .select2-dropdown {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius) !important;
+            box-shadow: 0 16px 40px rgba(20, 24, 35, .12) !important;
+            z-index: 9999 !important;
+        }
+
+        .select2-search--dropdown .select2-search__field {
+            background: var(--surface) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--ink) !important;
+            border-radius: 8px !important;
+            padding: 8px 12px !important;
+        }
+
+        .select2-results__option {
+            color: var(--ink) !important;
+            font-size: .85rem !important;
+            padding: 9px 14px !important;
+        }
+
+        .select2-results__option--highlighted {
+            background: var(--accent) !important;
+            color: #fff !important;
+        }
+
+        .select2-container--default .select2-results__option--selected {
+            background: var(--accent-soft) !important;
+        }
+
+        .select2-results__option[aria-disabled=true] {
+            color: var(--muted) !important;
+            font-weight: 600;
+            font-size: .72rem;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            font-family: var(--font-mono);
+        }
+
+        /* Fee note */
+        .fee-note {
+            display: none;
+            align-items: center;
+            gap: 7px;
+            font-family: var(--font-mono);
+            font-size: .78rem;
+            color: var(--accent-deep);
+            background: var(--accent-soft);
+            border-radius: var(--radius-sm);
+            padding: 7px 12px;
+            margin-top: 8px;
+        }
+
+        .fee-note i {
+            color: var(--accent);
+        }
+
+        /* Section divider */
+        .field-divider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 22px 0 14px;
+        }
+
+        .field-divider hr {
+            flex: 1;
+            border-color: var(--border-soft);
+            opacity: 1;
+        }
+
+        .field-divider span {
+            font-family: var(--font-mono);
+            font-size: .68rem;
+            color: var(--muted);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        /* Category tabs — responsive wrapping pill chips */
+        .category-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 6px;
+            margin-bottom: 18px;
+            width: 100%;
+        }
+
+        .select2-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            min-width: 0 !important;
+        }
+
+        .cat-tab {
+            flex: 0 0 auto;
+            white-space: nowrap;
+            font-size: .8rem;
+            font-weight: 500;
+            color: var(--ink-soft);
+            padding: 8px 15px;
+            border-radius: 100px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            cursor: pointer;
+            transition: color .15s, border-color .15s, background .15s;
+            user-select: none;
+        }
+
+        .cat-tab:hover {
+            color: var(--ink);
+            border-color: #C9CEDA;
+        }
+
+        .cat-tab.active {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: var(--accent-soft);
+            font-weight: 600;
+        }
+
+        /* Submit */
+        .btn-submit {
+            width: 100%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            border-radius: var(--radius);
+            font-size: .92rem;
+            font-weight: 600;
+            font-family: var(--font-display);
+            letter-spacing: .01em;
+            cursor: pointer;
+            transition: background .15s, transform .15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-submit:active {
+            transform: scale(.99);
+        }
+
+        .reassurance {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: .78rem;
+            color: var(--muted);
+            margin-top: 14px;
+        }
+
+        .reassurance i {
+            color: var(--muted);
+            font-size: .85rem;
+        }
+
+        /* Success */
+        .success-box {
+            display: none;
+            text-align: center;
+            padding: 44px 30px;
+        }
+
+        .success-icon {
+            width: 66px;
+            height: 66px;
+            border-radius: 50%;
+            background: var(--success-soft);
+            border: 1.5px solid var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 18px;
+            font-size: 1.8rem;
+            color: var(--success);
+        }
+
+        .success-box .eyebrow {
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+
+        .success-box h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--ink);
+            margin-bottom: 8px;
+        }
+
+        .success-box p {
+            color: var(--muted);
+            font-size: .9rem;
+            line-height: 1.65;
+        }
+
+        .whatsapp-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #25d366;
+            color: #fff;
+            padding: 11px 24px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: .88rem;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background .15s;
+        }
+
+        .whatsapp-cta:hover {
+            background: #1ebe5b;
+            color: #fff;
+        }
+
+        /* Validation */
+        .form-control.is-invalid,
+        .select2-container.is-invalid .select2-selection--single {
+            border-color: var(--danger) !important;
+        }
+
+        .invalid-feedback {
+            font-size: .74rem;
+            color: var(--danger);
+            margin-top: 5px;
+            display: none;
+        }
+
+        .was-validated .invalid-feedback {
+            display: block;
+        }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 48px 0 24px;
+            margin-top: auto;
+            transition: background .3s;
+        }
+
+        .footer-brand {
+            font-family: 'Neuropol', sans-serif;
+            font-weight: 400;
+            font-size: 1.15rem;
+            color: var(--ink);
+            letter-spacing: 1px;
+        }
+
+        .footer-desc {
+            font-size: .84rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-top: 10px;
+        }
+
+        .footer-heading {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--muted);
+            margin-bottom: 14px;
+        }
+
+        .footer-contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: .84rem;
+            color: var(--ink-soft);
+            margin-bottom: 8px;
+        }
+
+        .footer-contact-item i {
+            color: var(--accent);
+            width: 15px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .footer-contact-item a {
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .footer-contact-item a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .footer-divider {
+            border-color: var(--border);
+            margin: 22px 0;
+        }
+
+        .footer-copy {
+            font-size: .8rem;
+            color: var(--muted);
+        }
+
+        .footer-social {
+            margin-right: 0;
+            transition: margin-right .3s;
+        }
+
+        @media (min-width: 768px) {
+            .footer-social {
+                margin-right: 80px;
+                /* Shift to left to avoid WhatsApp FAB overlap */
+            }
+        }
+
+        .footer-social a {
+            color: var(--muted);
+            font-size: 1.15rem;
+            transition: color .15s;
+        }
+
+        .footer-social a:hover {
+            color: var(--accent);
+        }
+
+
+
+
+
+        /* Floating WhatsApp button */
+        .float-whatsapp {
+            position: fixed;
+            z-index: 60;
+            right: 18px;
+            bottom: calc(18px + env(safe-area-inset-bottom, 0px));
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #25d366;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            box-shadow: 0 10px 28px -8px rgba(16, 30, 20, .45);
+            transition: transform .15s;
+        }
+
+        .float-whatsapp:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .float-whatsapp::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid #25d366;
+            animation: pulse-ring 2.4s ease-out infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(1);
+                opacity: .55;
+            }
+
+            100% {
+                transform: scale(1.55);
+                opacity: 0;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .float-whatsapp::before {
+                animation: none;
+                display: none;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .brand-sub {
+                display: none !important;
+            }
+
+            .brand-text {
+                font-size: 0.95rem !important;
+            }
+        }
+
+        @media (max-width: 430px) {
+            .site-header {
+                padding: 12px 16px;
+            }
+
+            .header-cta {
+                padding: 9px;
+                width: 38px;
+                height: 38px;
+                justify-content: center;
+            }
+
+            .header-cta .cta-label {
+                display: none;
+            }
+
+            .logo-mark {
+                width: 38px;
+                height: 38px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .layout-shell {
+                padding: 28px 16px 88px;
+            }
+
+            .form-card-header {
+                padding: 20px 18px 16px;
+            }
+
+            .form-body {
+                padding: 20px 18px 24px;
+            }
+
+            .panel-glyph {
+                font-size: 4.2rem;
+                top: -8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── HEADER ── -->
+    <header class="site-header">
+        <div class="header-inner">
+            <a th:href="@{/}" class="logo-container">
+                <div class="logo-mark">
+                    <img th:src="@{/assets/img/logo/tts-logo-ev.png}" alt="TechnoKraft Logo"
+                        style="height: 44px; width: auto; max-width: 100%; object-fit: contain;">
+                </div>
+                <div class="brand-info">
+                    <span class="brand-text">TechnoKraft</span>
+                    <span class="brand-sub">Training &amp; Solution Pvt. Ltd.</span>
+                </div>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+                    <i class="bi bi-moon-stars-fill"></i>
+                </button>
+                <a href="https://wa.me/918645628278" target="_blank" rel="noopener" class="header-cta"
+                    aria-label="WhatsApp us">
+                    <i class="bi bi-whatsapp"></i><span class="cta-label">WhatsApp us</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-shell">
+        <div class="layout-grid">
+
+            <!-- ── FORM ── -->
+            <section class="form-panel">
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="eyebrow">course enquiry form</div>
+                        <h2>A bit about you</h2>
+                        <p>Fields marked <span style="color:var(--danger)">*</span> are required.</p>
+                    </div>
+
+                    <div class="form-body" id="formWrapper">
+                        <form id="enquiryForm" novalidate autocomplete="off">
+
+                            <!-- Name + Email -->
+                            <div class="row g-3 mb-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="studentName">Full name <span
+                                            class="required-star">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                        <input type="text" class="form-control" id="studentName" name="studentName"
+                                            placeholder="Your full name" required autocomplete="name"
+                                            autocapitalize="words" />
+                                    </div>
+                                    <div class="invalid-feedback" id="nameErr">Please enter your name.</div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="studentEmail">Email address <span
+                                            class="required-star">*</span></label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+                                        <input type="email" class="form-control" id="studentEmail" name="studentEmail"
+                                            placeholder="you@email.com" required autocomplete="email"
+                                            autocapitalize="none" autocorrect="off" />
+                                    </div>
+                                    <div class="invalid-feedback" id="emailErr">Please enter a valid email.</div>
+                                </div>
+                            </div>
+
+                            <!-- WhatsApp -->
+                            <div class="mb-3">
+                                <label class="form-label" for="whatsappNo">WhatsApp number <span
+                                        class="required-star">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-whatsapp"></i></span>
+                                    <input type="tel" class="form-control" id="whatsappNo" name="whatsappNo"
+                                        placeholder="9XXXXXXXXX" maxlength="10" required autocomplete="tel"
+                                        inputmode="tel" />
+                                </div>
+                                <div class="invalid-feedback" id="waErr">Please enter a valid 10-digit mobile number.
+                                </div>
+                            </div>
+
+                            <!-- Course Select -->
+                            <div class="mb-1">
+                                <label class="form-label" for="courseSelect">Select course <span
+                                        class="required-star">*</span>
+                                </label>
+                                <select class="form-control" id="courseSelect" name="courseSelect" required
+                                    style="width:100%">
+                                </select>
+                                <div class="invalid-feedback" id="courseErr">Please select a course.</div>
+                                <div class="fee-note" id="courseFeeNote"><i class="bi bi-tag-fill"></i> <span
+                                        id="courseFeeText"></span>
+                                </div>
+                            </div>
+
+                            <!-- Qualification + Batch -->
+                            <div class="row g-3 mb-3 mt-2">
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="qualification">Qualification</label>
+                                    <select class="form-select" id="qualification" name="qualification">
+                                        <option value="">Select qualification</option>
+                                        <option>10th Pass</option>
+                                        <option>12th Pass</option>
+                                        <option>Diploma</option>
+                                        <option>B.E. / B.Tech</option>
+                                        <option>BCA / B.Sc (IT)</option>
+                                        <option>MCA / M.Tech</option>
+                                        <option>Graduate (Other)</option>
+                                        <option>Post Graduate</option>
+                                        <option>Working Professional</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label" for="preferredTime">Preferred batch</label>
+                                    <select class="form-select" id="preferredTime" name="preferredTime">
+                                        <option value="">Select timing</option>
+                                        <option>Morning (7 AM – 10 AM)</option>
+                                        <option>Forenoon (10 AM – 1 PM)</option>
+                                        <option>Afternoon (1 PM – 4 PM)</option>
+                                        <option>Evening (4 PM – 7 PM)</option>
+                                        <option>Weekend Only</option>
+                                        <option>Online / Flexible</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- How did you hear -->
+                            <div class="mb-3">
+                                <label class="form-label" for="referralSource">How did you hear about us?</label>
+                                <select class="form-select" id="referralSource" name="referralSource">
+                                    <option value="">Select source</option>
+                                    <option>WhatsApp</option>
+                                    <option>Facebook / Instagram</option>
+                                    <option>Google Search</option>
+                                    <option>Friend / Referral</option>
+                                    <option>Walk-in / Hoarding</option>
+                                    <option>YouTube</option>
+                                    <option>Other</option>
+                                </select>
+                            </div>
+
+                            <!-- Message -->
+                            <div class="mb-4">
+                                <label class="form-label" for="message">Your message / query</label>
+                                <div class="input-group align-items-start">
+                                    <span class="input-group-text"
+                                        style="height:96px;align-items:flex-start;padding-top:11px;"><i
+                                            class="bi bi-chat-dots-fill"></i></span>
+                                    <textarea class="form-control" id="message" name="message" rows="3"
+                                        placeholder="Any specific topic, doubt, or question about the course…"></textarea>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-submit">
+                                <i class="bi bi-send-fill"></i> Send enquiry
+                            </button>
+                            <p class="reassurance"><i class="bi bi-lock-fill"></i> Your details stay private — we'll
+                                only reach out on
+                                WhatsApp.</p>
+                        </form>
+
+                        <!-- Success -->
+                        <div class="success-box" id="successBox" role="alert" aria-live="polite">
+                            <div class="eyebrow">enquiry received</div>
+                            <div class="success-icon"><i class="bi bi-check-lg"></i></div>
+                            <h3>Thanks — you're on the list.</h3>
+                            <p>Our team will reach out on WhatsApp within 24 hours.<br>You can also message us directly
+                                right away:
+                            </p>
+                            <a class="whatsapp-cta"
+                                href="https://wa.me/918645628278?text=Hi%20TechnoKraft%2C%20I%20just%20submitted%20an%20enquiry%20and%20want%20to%20know%20more%20about%20your%20courses."
+                                target="_blank" rel="noopener">
+                                <i class="bi bi-whatsapp"></i> Chat on WhatsApp
+                            </a>
+                        </div>
+                    </div><!-- /form-body -->
+                </div><!-- /form-card -->
+            </section>
+
+            <!-- ── INTRO PANEL ── -->
+            <aside class="intro-panel">
+                <div class="panel-glyph">{ }</div>
+                <div class="intro-content">
+                    <div class="eyebrow">tts.net.in / enquiry</div>
+                    <h1 class="intro-title">Tell us what you want to learn.</h1>
+                    <p class="intro-text">Share a few details once — a course advisor will reply on WhatsApp within 24
+                        hours with
+                        fees, batch timing, and next steps.</p>
+
+                    <div class="quick-contact">
+                        <i class="bi bi-whatsapp"></i>
+                        <span>Prefer to talk now? <a href="https://wa.me/918645628278" target="_blank"
+                                rel="noopener">Message us
+                                directly</a></span>
+                    </div>
+
+                    <ul class="trust-list">
+                        <li><i class="bi bi-check-circle-fill"></i> Private details</li>
+                        <li><i class="bi bi-check-circle-fill"></i> No spam calls</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Reply in 24 hrs</li>
+                    </ul>
+
+                    <div class="spec-label">At a glance</div>
+                    <dl class="spec-sheet">
+                        <div class="spec-cell">
+                            <dt>Students trained</dt>
+                            <dd>10,000+</dd>
+                        </div>
+                        <div class="spec-cell">
+                            <dt>Courses offered</dt>
+                            <dd>108</dd>
+                        </div>
+                        <div class="spec-cell">
+                            <dt>Location</dt>
+                            <dd>Nashik, MH</dd>
+                        </div>
+                        <div class="spec-cell">
+                            <dt>Status</dt>
+                            <dd>Certified</dd>
+                        </div>
+                    </dl>
+
+                    <div class="spec-label mt-4">Contact &amp; Location</div>
+                    <div class="contact-card">
+                        <div class="map-container">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3749.052184522078!2d73.76364339999999!3d20.0063244!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bddeb9bbe9b8d51%3A0x198c21864b858779!2sTechnoKraft%20Training%20%26%20Solution%20PVT%20LTD!5e0!3m2!1sen!2sin!4v1781694089783!5m2!1sen!2sin"
+                                width="100%" height="220" style="border:0;" allowfullscreen="" loading="lazy"
+                                referrerpolicy="no-referrer-when-downgrade"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+        </div><!-- /layout-grid -->
+    </div><!-- /layout-shell -->
+
+    <!-- ── FOOTER ── -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row g-4 justify-content-between">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <img th:src="@{/assets/img/logo/tts-logo-ev.png}" alt="TechnoKraft Logo"
+                            style="height:34px; width:auto;" />
+                        <span class="footer-brand">TechnoKraft</span>
+                    </div>
+                    <p class="footer-desc">
+                        Premium IT Training &amp; Solution provider in Nashik region. Delivering career-focused
+                        instruction
+                        for 12+ years with 10,000+ successful placements across top Indian IT companies.
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="footer-heading">Contact &amp; Office</h6>
+                    <div class="footer-contact-item">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>1st Floor, Kanchwala Avenue, Above Viju's Dabeli, Thatte Nagar Marg, College Road, Nashik,
+                            Maharashtra 422005</span>
+                    </div>
+                    <div class="footer-contact-item">
+                        <i class="bi bi-telephone-fill"></i>
+                        <a href="tel:+918645628278" style="color:var(--ink-soft);">08645628278</a>
+                    </div>
+                    <div class="footer-contact-item">
+                        <i class="bi bi-envelope-fill"></i>
+                        <a href="mailto:info@tts.net.in" style="color:var(--ink-soft);">info@tts.net.in</a>
+                    </div>
+                    <div class="footer-contact-item">
+                        <i class="bi bi-clock-fill"></i>
+                        <span>Mon – Sat &nbsp;|&nbsp; 09:30 AM – 08:30 PM</span>
+                    </div>
+                </div>
+            </div>
+            <hr class="footer-divider">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                <div class="footer-copy">
+                    &copy; 2026 TechnoKraft Training &amp; Solution Pvt. Ltd. All rights reserved.
+                    &nbsp;&nbsp;·&nbsp;&nbsp;
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal"
+                        style="color:var(--muted); transition:color .25s;" onmouseover="this.style.color='var(--gold)'"
+                        onmouseout="this.style.color='var(--muted)'">Terms &amp; Conditions</a>
+                </div>
+                <div class="footer-social d-flex gap-3">
+                    <a href="https://facebook.com/tts.net.in" target="_blank" aria-label="Facebook"><i
+                            class="bi bi-facebook"></i></a>
+                    <a href="https://www.instagram.com/technokraft_tts" target="_blank" aria-label="Instagram"><i
+                            class="bi bi-instagram"></i></a>
+                    <a href="https://wa.me/918645628278" target="_blank" aria-label="WhatsApp"><i
+                            class="bi bi-whatsapp"></i></a>
+                    <a href="https://www.linkedin.com/company/ttsnashik" target="_blank" aria-label="LinkedIn"><i
+                            class="bi bi-linkedin"></i></a>
+                    <a href="https://youtube.com/@technokraftts?si=TIV2jsMPITbKo_16" target="_blank"
+                        aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+                    <a href="https://maps.google.com/maps?q=TechnoKraft+Nashik" target="_blank"
+                        aria-label="Google Maps"><i class="bi bi-geo-alt-fill"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ======================================================================
+         MODAL: TERMS & CONDITIONS
+         ====================================================================== -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content"
+                style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-card);">
+                <div class="modal-header border-0 px-4 pt-4 pb-0">
+                    <h5 class="modal-title fw-bold" id="termsModalLabel"
+                        style="font-family: var(--font-display); color: var(--ink); font-size: 1.4rem;">
+                        <i class="bi bi-file-earmark-text-fill text-warning me-2"></i>Terms &amp; Conditions
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        style="filter: var(--theme-close-filter);"></button>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <div class="terms-scroll-list" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                        <ol class="list-group list-group-numbered list-group-flush gap-2">
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Only one spin is allowed per participant.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">The organizer reserves the right to verify the eligibility of
+                                    participants before prize distribution.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">If a selected winner is found ineligible, the prize may be forfeited
+                                    and awarded to another eligible participant.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Admission for prize winners must be completed within 15 days from the
+                                    date of the offer.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Winners must be physically present at TechnoKraft Training &amp;
+                                    Solution for admission and prize redemption.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Admission and prize redemption are subject to seat
+                                    availability.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">The offer is applicable only for eligible courses specified by
+                                    TechnoKraft.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Prizes and offers are non-transferable and cannot be exchanged with
+                                    friends, relatives, or any other person.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Existing discounts or offers cannot be combined with this
+                                    offer.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Participants are responsible for providing accurate information.
+                                    Incorrect details may result in disqualification.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">The organizer reserves the right to modify, suspend, or terminate the
+                                    offer at any time in case of technical issues, misuse, or unforeseen
+                                    circumstances.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">TechnoKraft Training &amp; Solution's decision regarding winners and
+                                    prize distribution shall be final and binding.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Participation in the lucky draw is available only to registered and
+                                    eligible participants.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Prize redemption requires identity verification using the registered
+                                    details and valid identification proof.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Participation in this offer implies acceptance of all the above terms
+                                    and conditions.</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal"
+                        style="border-radius: var(--radius-sm);">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================================
+         MODAL: TERMS & CONDITIONS
+         ====================================================================== -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content"
+                style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-card);">
+                <div class="modal-header border-0 px-4 pt-4 pb-0">
+                    <h5 class="modal-title fw-bold" id="termsModalLabel"
+                        style="font-family: var(--font-display); color: var(--ink); font-size: 1.4rem;">
+                        <i class="bi bi-file-earmark-text-fill text-warning me-2"></i>Terms &amp; Conditions
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                        style="filter: var(--theme-close-filter);"></button>
+                </div>
+                <div class="modal-body px-4 py-3">
+                    <div class="terms-scroll-list" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                        <ol class="list-group list-group-numbered list-group-flush gap-2">
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Only one spin is allowed per participant.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">The organizer reserves the right to verify the eligibility of
+                                    participants before prize distribution.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">If a selected winner is found ineligible, the prize may be forfeited
+                                    and awarded to another eligible participant.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Admission for prize winners must be completed within 15 days from the
+                                    date of the offer.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Winners must be physically present at TechnoKraft Training &amp;
+                                    Solution for admission and prize redemption.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Admission and prize redemption are subject to seat
+                                    availability.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">The offer is applicable only for eligible courses specified by
+                                    TechnoKraft.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Prizes and offers are non-transferable and cannot be exchanged with
+                                    friends, relatives, or any other person.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Existing discounts or offers cannot be combined with this
+                                    offer.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Participants are responsible for providing accurate information.
+                                    Incorrect details may result in disqualification.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">The organizer reserves the right to modify, suspend, or terminate the
+                                    offer at any time in case of technical issues, misuse, or unforeseen
+                                    circumstances.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">TechnoKraft Training &amp; Solution's decision regarding winners and
+                                    prize distribution shall be final and binding.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Participation in the lucky draw is available only to registered and
+                                    eligible participants.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Prize redemption requires identity verification using the registered
+                                    details and valid identification proof.</span>
+                            </li>
+                            <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                                <span class="ms-2">Participation in this offer implies acceptance of all the above terms
+                                    and conditions.</span>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 px-4 pb-4 pt-0">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal"
+                        style="border-radius: var(--radius-sm);">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="https://wa.me/918645628278" target="_blank" rel="noopener" class="float-whatsapp"
+        aria-label="Chat on WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
+    <!-- jQuery + Select2 + Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        (function () {
+            // ── COURSE DATA ──────────────────────────────────────────────
+            const allCourses = [
+                // PROGRAMMING
+                { name: "PYTHON", fees: 10000, cat: "programming" },
+                { name: "C PROGRAMMING", fees: 3000, cat: "programming" },
+                { name: "C++ PROGRAMMING", fees: 3000, cat: "programming" },
+                { name: "C & C++ PROGRAMMING", fees: 6000, cat: "programming" },
+                { name: "JAVASCRIPT", fees: 5000, cat: "programming" },
+                { name: "PHP", fees: 7000, cat: "programming" },
+                { name: "JAVA CORE", fees: 6000, cat: "programming" },
+                { name: "JAVA ADVANCE", fees: 6000, cat: "programming" },
+                { name: "JAVA CORE AND ADVANCE", fees: 12000, cat: "programming" },
+                { name: "JAVA CORE & ADV + JAVA MVC", fees: 20000, cat: "programming" },
+                { name: "SPRING BOOT", fees: 6000, cat: "programming" },
+                { name: "EXPRESS JS", fees: 7000, cat: "programming" },
+                { name: "NODE JS", fees: 10000, cat: "programming" },
+                { name: "Angular JS", fees: 10000, cat: "programming" },
+                { name: "REACT JS", fees: 18000, cat: "programming" },
+                { name: "DJANGO", fees: 5000, cat: "programming" },
+                { name: "LARAVEL", fees: 12000, cat: "programming" },
+                { name: "ASP.NET", fees: 9000, cat: "programming" },
+                { name: ".NET", fees: 14000, cat: "programming" },
+                { name: ".NET MVC", fees: 20000, cat: "programming" },
+                { name: "JAVA FRAMEWORK", fees: 9000, cat: "programming" },
+                { name: "JAVA MVC", fees: 20000, cat: "programming" },
+                // FULL STACK
+                { name: "FULL STACK", fees: 40000, cat: "fullstack" },
+                { name: "FULL STACK JavaScript DEVELOPMENT", fees: 40000, cat: "fullstack" },
+                { name: "FULL STACK PYTHON DEVELOPMENT", fees: 40000, cat: "fullstack" },
+                { name: "FULL STACK JAVA DEVELOPMENT", fees: 40000, cat: "fullstack" },
+                { name: "FULL STACK PHP DEVELOPMENT", fees: 40000, cat: "fullstack" },
+                { name: "FULL STACK BACKEND", fees: 20000, cat: "fullstack" },
+                { name: "FULL STACK BACKEND JavaScript", fees: 20000, cat: "fullstack" },
+                { name: "FULL STACK BACKEND PYTHON", fees: 20000, cat: "fullstack" },
+                { name: "FULL STACK BACKEND PHP", fees: 20000, cat: "fullstack" },
+                { name: "FULL STACK BACKEND JAVA CORE & ADVANCE", fees: 20000, cat: "fullstack" },
+                { name: "FULL STACK FRONTEND", fees: 20000, cat: "fullstack" },
+                { name: "MEAN STACK", fees: 20000, cat: "fullstack" },
+                { name: "MERN STACK", fees: 25000, cat: "fullstack" },
+                { name: "WEB DEVELOPMENT", fees: 7000, cat: "fullstack" },
+                { name: "WEB DESIGNING AND DEVELOPMENT", fees: 18000, cat: "fullstack" },
+                { name: "WEBSITE DESIGNING", fees: 7000, cat: "fullstack" },
+                { name: "WEB DESIGN", fees: 8000, cat: "fullstack" },
+                { name: "HTML", fees: 3000, cat: "fullstack" },
+                { name: "CSS", fees: 2000, cat: "fullstack" },
+                // DATA & AI
+                { name: "DATA ANALYTICS", fees: 15000, cat: "data" },
+                { name: "DATA SCIENCE", fees: 18000, cat: "data" },
+                { name: "PYTHON - DATA ANALYTICS", fees: 7000, cat: "data" },
+                { name: "SQL - Data Analytics", fees: 3000, cat: "data" },
+                { name: "BUSINESS ANALYTICS", fees: 20000, cat: "data" },
+                { name: "MACHINE LEARNING", fees: 15000, cat: "data" },
+                { name: "PYTHON + MACHINE LEARNING", fees: 20000, cat: "data" },
+                { name: "ARTIFICIAL INTELLIGENCE", fees: 45000, cat: "data" },
+                { name: "AI CRASH COURSE", fees: 1500, cat: "data" },
+                { name: "AI/ML Internship", fees: 5000, cat: "data" },
+                { name: "DATA ENGINEERING", fees: 40000, cat: "data" },
+                { name: "BIG DATA HADOOP", fees: 15000, cat: "data" },
+                { name: "TABLEAU", fees: 7000, cat: "data" },
+                { name: "POWER BI", fees: 5000, cat: "data" },
+                { name: "ADVANCE EXCEL", fees: 4000, cat: "data" },
+                { name: "RDBMS", fees: 4000, cat: "data" },
+                { name: "DBMS", fees: 4000, cat: "data" },
+                { name: "MongoDB", fees: 4000, cat: "data" },
+                { name: "MYSQL", fees: 12000, cat: "data" },
+                { name: "ORACLE DBA", fees: 12000, cat: "data" },
+                { name: "Data Structures Using C++", fees: 5000, cat: "data" },
+                { name: "DATA STRUCTURE USING C", fees: 4000, cat: "data" },
+                // NETWORKING
+                { name: "CCNA Switching", fees: 5000, cat: "networking" },
+                { name: "CISCO CERTIFIED NETWORK ASSOCIATE", fees: 10000, cat: "networking" },
+                { name: "CISCO CERTIFIED NETWORK PROFESSIONAL", fees: 18000, cat: "networking" },
+                { name: "NETWORKING (N+)", fees: 4000, cat: "networking" },
+                { name: "HARDWARE", fees: 5000, cat: "networking" },
+                { name: "PALOALTO", fees: 10000, cat: "networking" },
+                { name: "CYBER SECURITY", fees: 20000, cat: "networking" },
+                { name: "HACKING", fees: 10000, cat: "networking" },
+                { name: "PENETRATION TESTING", fees: 15000, cat: "networking" },
+                { name: "MCSA", fees: 7500, cat: "networking" },
+                { name: "MCSE", fees: 7500, cat: "networking" },
+                { name: "MCSA & MCSE", fees: 15000, cat: "networking" },
+                // SAP / ERP
+                { name: "SAP - ABAP", fees: 25000, cat: "sap" },
+                { name: "SAP-MM", fees: 50000, cat: "sap" },
+                { name: "SAP PP", fees: 50000, cat: "sap" },
+                { name: "SAP SD", fees: 50000, cat: "sap" },
+                { name: "SAP FICO", fees: 40000, cat: "sap" },
+                { name: "MEDICAL CODING", fees: 20000, cat: "sap" },
+                // DESIGN & CAD
+                { name: "GRAPHICS DESIGN", fees: 12000, cat: "design" },
+                { name: "ANIMATION", fees: 100000, cat: "design" },
+                { name: "AUTO CAD", fees: 8000, cat: "design" },
+                { name: "UGNX", fees: 20000, cat: "design" },
+                { name: "CATIA", fees: 15000, cat: "design" },
+                { name: "SOLID-WORKS", fees: 10000, cat: "design" },
+                { name: "CREO", fees: 5000, cat: "design" },
+                // CLOUD / DEVOPS
+                { name: "AMAZON WEB SERVICES", fees: 15000, cat: "cloud" },
+                { name: "Azure", fees: 15000, cat: "cloud" },
+                { name: "DEVOPS", fees: 18000, cat: "cloud" },
+                { name: "KUBERNETES", fees: 6000, cat: "cloud" },
+                { name: "ANSIBLE", fees: 5000, cat: "cloud" },
+                { name: "DOCKER / SHELL SCRIPTING", fees: 7000, cat: "cloud" },
+                { name: "SHELL SCRIPTING", fees: 7000, cat: "cloud" },
+                { name: "VMWARE", fees: 15000, cat: "cloud" },
+                { name: "REDHAT (RHCSA)", fees: 7000, cat: "cloud" },
+                { name: "REDHAT (RHCE)", fees: 7000, cat: "cloud" },
+                { name: "REDHAT (RHCSA & RHCE)", fees: 12000, cat: "cloud" },
+                { name: "REDHAT (RHCVA)", fees: 15000, cat: "cloud" },
+                { name: "REDHAT (OpenStack)", fees: 15000, cat: "cloud" },
+                { name: "C PANEL AND WHM", fees: 10000, cat: "cloud" },
+                // TESTING
+                { name: "MANUAL TESTING", fees: 10000, cat: "testing" },
+                { name: "AUTOMATION TESTING", fees: 10000, cat: "testing" },
+                { name: "SOFTWARE TESTING", fees: 18000, cat: "testing" },
+                // OTHER
+                { name: "ENGLISH AND MARATHI TYPING", fees: 4000, cat: "other" },
+                { name: "Professional English Communication", fees: 3000, cat: "other" },
+                { name: "DIGITAL MARKETING", fees: 16000, cat: "other" },
+                { name: "ANDROID", fees: 15000, cat: "other" },
+            ];
+
+            // ── BUILD SELECT2 OPTIONS ──────────────────────────────────
+            const categoryLabels = {
+                programming: "Programming & Web",
+                fullstack: "Full Stack Development",
+                data: "Data, AI & Analytics",
+                networking: "Networking & Security",
+                sap: "SAP / ERP",
+                design: "Design & CAD",
+                cloud: "Cloud & DevOps",
+                testing: "Software Testing",
+                other: "Other Courses"
+            };
+
+            function buildOptions(filterCat) {
+                const $sel = $('#courseSelect');
+                $sel.empty();
+                const groups = {};
+                allCourses.forEach(c => {
+                    if (filterCat !== 'all' && c.cat !== filterCat) return;
+                    if (!groups[c.cat]) groups[c.cat] = [];
+                    groups[c.cat].push(c);
+                });
+                Object.keys(groups).forEach(cat => {
+                    const label = categoryLabels[cat] || cat;
+                    const optgroup = $('<optgroup>').attr('label', label);
+                    groups[cat].forEach(c => {
+                        const opt = new Option(`${c.name}  (₹${c.fees.toLocaleString('en-IN')})`, c.name, false, false);
+                        optgroup.append(opt);
+                    });
+                    $sel.append(optgroup);
+                });
+                $sel.trigger('change');
+            }
+
+            function updateFeeNote(courseNames) {
+                if (!courseNames || courseNames.length === 0) {
+                    $('#courseFeeNote').css('display', 'none');
+                    return;
+                }
+                const names = Array.isArray(courseNames) ? courseNames : [courseNames];
+                let totalFees = 0;
+                let selectedNames = [];
+                names.forEach(name => {
+                    const course = allCourses.find(c => c.name === name);
+                    if (course) {
+                        totalFees += course.fees;
+                        selectedNames.push(course.name);
+                    }
+                });
+
+                if (selectedNames.length > 0) {
+                    $('#courseFeeText').text(`Selected: ${selectedNames.join(', ')} — ₹${totalFees.toLocaleString('en-IN')}`);
+                    $('#courseFeeNote').css('display', 'flex');
+                } else {
+                    $('#courseFeeNote').css('display', 'none');
+                }
+            }
+
+            // ── SELECT2 INIT ──────────────────────────────────────────
+            $(document).ready(function () {
+                // Inject dynamic favicon from base64 logo mark
+                const logoSrc = $('.logo-mark img').attr('src');
+                if (logoSrc) {
+                    const link = document.createElement('link');
+                    link.rel = 'icon';
+                    link.type = 'image/png';
+                    link.href = logoSrc;
+                    document.getElementsByTagName('head')[0].appendChild(link);
+                }
+
+                // ── THEME TOGGLING ─────────────────────────────────────────
+                const $themeBtn = $('#themeToggle');
+                const $themeIcon = $themeBtn.find('i');
+
+                function updateToggleIcon(theme) {
+                    if (theme === 'dark') {
+                        $themeIcon.removeClass('bi-moon-stars-fill').addClass('bi-sun-fill');
+                    } else {
+                        $themeIcon.removeClass('bi-sun-fill').addClass('bi-moon-stars-fill');
+                    }
+                }
+
+                // Initialize icon state based on current active theme
+                const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                updateToggleIcon(currentTheme);
+
+                $themeBtn.on('click', function () {
+                    const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+                    const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    try {
+                        localStorage.setItem('theme', newTheme);
+                    } catch (e) {
+                        console.warn('Failed to save theme in localStorage:', e);
+                    }
+                    updateToggleIcon(newTheme);
+                });
+
+                buildOptions('all');
+
+                $('#courseSelect').select2({
+                    placeholder: 'Search or select a course…',
+                    allowClear: false,
+                    width: '100%',
+                    dropdownAutoWidth: false
+                });
+
+                $('#courseSelect').on('change', function () {
+                    const selected = $(this).val();
+                    updateFeeNote(selected);
+                    validateCourse();
+                });
+
+                // Category tab filtering removed
+
+                let isMobileDuplicate = false;
+                let isEmailDuplicate = false;
+
+                function checkDuplicateMobile() {
+                    const wa = $('#whatsappNo').val().trim().replace(/\D/g, '');
+                    if (wa.length !== 10 || !/^[6-9]\d{9}$/.test(wa)) {
+                        isMobileDuplicate = false;
+                        return Promise.resolve(true);
+                    }
+                    return fetch('/api/lucky-spin/check-duplicate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mobile: wa })
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.duplicate) {
+                                isMobileDuplicate = true;
+                                $('#whatsappNo').addClass('is-invalid');
+                                $('#waErr').text(data.message || 'This WhatsApp number is already registered for this active offer.').css('display', 'block');
+                                return false;
+                            } else {
+                                isMobileDuplicate = false;
+                                return true;
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error checking duplicate mobile:', err);
+                            return true;
+                        });
+                }
+
+                function checkDuplicateEmail() {
+                    const email = $('#studentEmail').val().trim();
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        isEmailDuplicate = false;
+                        return Promise.resolve(true);
+                    }
+                    return fetch('/api/lucky-spin/check-duplicate', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.duplicate) {
+                                isEmailDuplicate = true;
+                                $('#studentEmail').addClass('is-invalid');
+                                $('#emailErr').text(data.message || 'This Email is already registered for this active offer.').css('display', 'block');
+                                return false;
+                            } else {
+                                isEmailDuplicate = false;
+                                return true;
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Error checking duplicate email:', err);
+                            return true;
+                        });
+                }
+
+                // ── DYNAMIC REAL-TIME VALIDATION ────────────────────────────
+                function validateName() {
+                    const name = $('#studentName').val().trim();
+                    if (name.length >= 2 && /^[a-zA-Z\s]+$/.test(name)) {
+                        $('#studentName').removeClass('is-invalid');
+                        $('#nameErr').css('display', 'none');
+                        return true;
+                    } else {
+                        $('#studentName').addClass('is-invalid');
+                        // Check if name contains numbers/special characters or is just empty
+                        if (name.length > 0 && !/^[a-zA-Z\s]+$/.test(name)) {
+                            $('#nameErr').text('Name should contain only letters and spaces.').css('display', 'block');
+                        } else {
+                            $('#nameErr').text('Please enter your name (at least 2 characters).').css('display', 'block');
+                        }
+                        return false;
+                    }
+                }
+
+                function validateEmail() {
+                    const email = $('#studentEmail').val().trim();
+                    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        if (isEmailDuplicate) {
+                            $('#studentEmail').addClass('is-invalid');
+                            $('#emailErr').text('This Email is already registered for this active offer.').css('display', 'block');
+                            return false;
+                        }
+                        $('#studentEmail').removeClass('is-invalid');
+                        $('#emailErr').css('display', 'none');
+                        return true;
+                    } else {
+                        $('#studentEmail').addClass('is-invalid');
+                        $('#emailErr').text('Please enter a valid email address.').css('display', 'block');
+                        return false;
+                    }
+                }
+
+                function validateWhatsApp() {
+                    const wa = $('#whatsappNo').val().trim().replace(/\D/g, '');
+                    if (wa.length === 10 && /^[6-9]\d{9}$/.test(wa)) {
+                        if (isMobileDuplicate) {
+                            $('#whatsappNo').addClass('is-invalid');
+                            $('#waErr').text('This WhatsApp number is already registered for this active offer.').css('display', 'block');
+                            return false;
+                        }
+                        $('#whatsappNo').removeClass('is-invalid');
+                        $('#waErr').css('display', 'none');
+                        return true;
+                    } else {
+                        $('#whatsappNo').addClass('is-invalid');
+                        if (wa.length > 0 && !/^[6-9]/.test(wa)) {
+                            $('#waErr').text('Mobile number must start with 6, 7, 8, or 9.').css('display', 'block');
+                        } else {
+                            $('#waErr').text('Please enter a valid 10-digit mobile number.').css('display', 'block');
+                        }
+                        return false;
+                    }
+                }
+
+                function validateCourse() {
+                    const course = $('#courseSelect').val();
+                    if (!course || course.trim() === '') {
+                        $('#courseSelect').closest('.select2-container').addClass('is-invalid');
+                        $('#courseErr').text('Please select a course.').css('display', 'block');
+                        return false;
+                    } else {
+                        $('#courseSelect').closest('.select2-container').removeClass('is-invalid');
+                        $('#courseErr').css('display', 'none');
+                        return true;
+                    }
+                }
+
+                $('#studentName').on('input blur', validateName);
+
+                $('#studentEmail').on('input', function () {
+                    isEmailDuplicate = false;
+                    const email = $(this).val().trim();
+                    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        $(this).removeClass('is-invalid');
+                        $('#emailErr').css('display', 'none');
+                    }
+                });
+                $('#studentEmail').on('blur', function () {
+                    if (validateEmail()) {
+                        checkDuplicateEmail();
+                    }
+                });
+
+                $('#whatsappNo').on('input', function () {
+                    isMobileDuplicate = false;
+                    let val = $(this).val().replace(/\D/g, '');
+                    if (val.length > 10) {
+                        val = val.substring(0, 10);
+                    }
+                    $(this).val(val);
+                    if (val.length === 10 && /^[6-9]\d{9}$/.test(val)) {
+                        $(this).removeClass('is-invalid');
+                        $('#waErr').css('display', 'none');
+                    }
+                });
+                $('#whatsappNo').on('blur', function () {
+                    if (validateWhatsApp()) {
+                        checkDuplicateMobile();
+                    }
+                });
+
+                $('#courseSelect').on('change', validateCourse);
+
+                // ── FORM SUBMIT ──────────────────────────────────────────
+                $('#enquiryForm').on('submit', async function (e) {
+                    e.preventDefault();
+
+                    const isNameValid = validateName();
+                    const isEmailValid = validateEmail();
+                    const isWhatsAppValid = validateWhatsApp();
+                    const isCourseValid = validateCourse();
+
+                    if (!isNameValid || !isEmailValid || !isWhatsAppValid || !isCourseValid) {
+                        return;
+                    }
+
+                    // Await duplicate verification
+                    const mobileOk = await checkDuplicateMobile();
+                    const emailOk = await checkDuplicateEmail();
+                    if (!mobileOk || !emailOk) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Duplicate Entry',
+                            text: 'Email or WhatsApp number is already registered for this active offer.'
+                        });
+                        return;
+                    }
+
+                    const name = $('#studentName').val().trim();
+                    const email = $('#studentEmail').val().trim();
+                    const wa = $('#whatsappNo').val().trim().replace(/\D/g, '');
+                    const course = $('#courseSelect').val();
+                    const courseStr = Array.isArray(course) ? course.join(', ') : course;
+
+                    // Build WhatsApp message
+                    const qual = $('#qualification').val() || 'Not specified';
+                    const batch = $('#preferredTime').val() || 'Flexible';
+                    const src = $('#referralSource').val() || 'Not specified';
+                    const msg = $('#message').val().trim() || 'No message';
+
+                    const waText = encodeURIComponent(
+                        `*New Course Enquiry – TechnoKraft*\n\n` +
+                        `▪ *Name:* ${name}\n` +
+                        `▪ *Email:* ${email}\n` +
+                        `▪ *WhatsApp:* ${$('#whatsappNo').val().trim()}\n` +
+                        `▪ *Course:* ${courseStr}\n` +
+                        `▪ *Qualification:* ${qual}\n` +
+                        `▪ *Batch:* ${batch}\n` +
+                        `▪ *Source:* ${src}\n` +
+                        `▪ *Message:* ${msg}`
+                    );
+
+                    // Submit enquiry to backend API
+                    const payload = {
+                        name: name,
+                        email: email,
+                        mobile: $('#whatsappNo').val().trim(),
+                        service: courseStr,
+                        qualification: qual,
+                        batch: batch,
+                        source: src,
+                        message: msg
+                    };
+
+                    fetch('/api/leads', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                        .then(res => {
+                            return res.json().then(data => {
+                                if (!res.ok) {
+                                    throw new Error(data.message || 'Network response was not ok');
+                                }
+                                return data;
+                            });
+                        })
+                        .then(data => {
+                            console.log('Enquiry saved to server:', data);
+
+                            // Save details to sessionStorage
+                            sessionStorage.setItem('studentMobile', payload.mobile);
+                            sessionStorage.setItem('studentName', payload.name);
+                            sessionStorage.setItem('studentEmail', payload.email);
+
+                            // Show success and redirect
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Enquiry Received!',
+                                text: 'Redirecting you to the Lucky Spin wheel...',
+                                timer: 2500,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '/lucky-spin';
+                            });
+                        })
+                        .catch(err => {
+                            console.error('Error saving enquiry to server:', err);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Submission Failed',
+                                text: err.message || 'There was an error submitting your enquiry. Please try again.'
+                            });
+                        });
+                });
+            });
+        })();
+    </script>
+</body>
+
+</html>

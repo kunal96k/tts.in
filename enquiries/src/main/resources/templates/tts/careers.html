@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Careers - TechnoKraft Services</title>
+  <meta name="description" content="Join TechnoKraft Services. Explore career opportunities for developers, designers, and engineers in Nashik. Apply and grow with a modern IT team.">
+  <meta name="keywords" content="Careers, Jobs, Hiring, Software Developer Jobs, Internship, IT Company Nashik">
+
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="icon">
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="apple-touch-icon">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1YG90K895"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Q1YG90K895');
+  </script>
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+
+<body class="page">
+
+<header id="header" class="header sticky-top">
+
+  <div class="topbar d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+      <div class="contact-info d-flex align-items-center">
+        <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:info@tehnokaftservices.com">info@tehnokaftservices.com</a></i>
+        <i class="bi bi-phone d-flex align-items-center ms-4"><span>+91 84080 00048</span></i>
+      </div>
+      <div class="social-links d-none d-md-flex align-items-center">
+        <a href="https://www.facebook.com/tts.net.in/" class="facebook" target="_blank" rel="noopener"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/technokraft_tts" class="instagram" target="_blank" rel="noopener"><i class="bi bi-instagram"></i></a>
+        <a href="https://www.linkedin.com/company/ttsnashik/" class="linkedin" target="_blank" rel="noopener"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="branding d-flex align-items-cente">
+
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+      <a th:href="@{/}" class="logo">
+        <img th:src="@{/assets/img/logo/ev-logo.png}" alt="TechnoKraft" width="180px">
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a th:href="@{/}" class="active">Home</a></li>
+          <li><a th:href="@{/#about}">About</a></li>
+          <li><a th:href="@{/#services}">Services</a></li>
+          <li class="dropdown">
+            <a href="#"><span>More</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a th:href="@{/projects}">Projects</a></li>
+              <li><a th:href="@{/hire-developers}">Hire Developers</a></li>
+              <li><a th:href="@{/internships}">Internships</a></li>
+              <li><a th:href="@{/careers}" class="active">Careers</a></li>
+              <li><a th:href="@{/team}">Team</a></li>
+              <li><a th:href="@{/pricing}">Pricing</a></li>
+              <li><a th:href="@{/faq}">FAQ</a></li>
+            </ul>
+          </li>
+          <li><a th:href="@{/#contact}">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="page-title" data-aos="fade">
+    <div class="container d-lg-flex justify-content-between align-items-center">
+      <h1 class="mb-2 mb-lg-0">Careers</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a th:href="@{/}">Home</a></li>
+          <li class="current">Careers</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <section class="section light-background">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row justify-content-center">
+        <div class="col-lg-10 text-center">
+          <h2>Build Your Career With a Modern IT Team</h2>
+          <p>At TechnoKraft Services, we work on real products across web, mobile, cloud, and AI. We value ownership, continuous learning, and clear communication.</p>
+          <a th:href="@{/#contact}" class="btn-get-started">Apply / Send Resume</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+      <div class="row gy-4">
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h3 class="h5">Software Developer</h3>
+              <p><strong>Experience:</strong> 0-3 years</p>
+              <p><strong>Skills:</strong> JavaScript/TypeScript, React, Node.js, APIs</p>
+              <p><strong>Location:</strong> Nashik / Hybrid</p>
+              <p>Build scalable product features, integrate APIs, and collaborate with design and QA.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h3 class="h5">UI/UX Designer</h3>
+              <p><strong>Experience:</strong> 0-3 years</p>
+              <p><strong>Skills:</strong> Figma, UX flows, component systems</p>
+              <p><strong>Location:</strong> Nashik / Hybrid</p>
+              <p>Design user-friendly interfaces and collaborate closely with developers for implementation.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+          <div class="card h-100">
+            <div class="card-body">
+              <h3 class="h5">Cloud / DevOps Engineer</h3>
+              <p><strong>Experience:</strong> 1-4 years</p>
+              <p><strong>Skills:</strong> Linux, CI/CD, Docker, AWS/Azure</p>
+              <p><strong>Location:</strong> Nashik / Hybrid</p>
+              <p>Automate deployments, improve reliability, and support cloud infrastructure best practices.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row gy-4 mt-4">
+        <div class="col-lg-6">
+          <h3>How to Apply</h3>
+          <ul>
+            <li>Email your resume to <a href="mailto:info@tehnokaftservices.com">info@tehnokaftservices.com</a> with the role name in the subject.</li>
+            <li>Include portfolio links (GitHub/Behance/Dribbble) if available.</li>
+            <li>Our team will contact you for the next steps.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6">
+          <h3>Hiring Process</h3>
+          <ul>
+            <li>Profile screening</li>
+            <li>Short discussion / assignment (role-based)</li>
+            <li>Technical interview</li>
+            <li>Offer and onboarding</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer id="footer" class="footer">
+
+  <div class="container copyright text-center mt-4">
+    <p>© 2025 <strong class="px-1 sitename">TechnoKraft Services LLP.</strong> All Rights Reserved</p>
+  </div>
+
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<script>
+  AOS.init({
+    duration: 1000,
+    easing: 'ease-in-out',
+    once: true,
+    mirror: false
+  });
+
+  const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+  if (mobileNavToggle) {
+    mobileNavToggle.addEventListener('click', function() {
+      document.querySelector('body').classList.toggle('mobile-nav-active');
+      this.classList.toggle('bi-list');
+      this.classList.toggle('bi-x');
+    });
+  }
+
+  document.querySelectorAll('.navmenu .toggle-dropdown').forEach(toggle => {
+    toggle.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const parentLink = this.closest('a');
+      const parentLi = this.closest('li');
+      const dropdown = parentLi?.querySelector('ul');
+
+      parentLink?.classList.toggle('active');
+      parentLi?.classList.toggle('active');
+      dropdown?.classList.toggle('dropdown-active');
+    });
+  });
+
+  document.querySelectorAll('.navmenu .dropdown > a').forEach(link => {
+    link.addEventListener('click', function (e) {
+      if (document.querySelector('.mobile-nav-active')) {
+        e.preventDefault();
+        const parentLi = this.closest('li');
+        const dropdown = parentLi?.querySelector('ul');
+        this.classList.toggle('active');
+        parentLi?.classList.toggle('active');
+        dropdown?.classList.toggle('dropdown-active');
+      }
+    });
+  });
+</script>
+
+</body>
+
+</html>

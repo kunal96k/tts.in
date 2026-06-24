@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Portfolio Details - TechnoKraft Services</title>
+  <meta name="description"
+        content="View portfolio highlights from TechnoKraft Services, showcasing successful web, mobile, and software development projects.">
+  <meta name="keywords"
+        content="IT Portfolio, Software Development Projects, Web Development, Mobile Apps, TechnoKraft Services">
+
+  <!-- Favicons -->
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="icon">
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+  <!-- Vendor CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/css/glightbox.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1YG90K895"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Q1YG90K895');
+  </script>
+
+  <!-- Main CSS -->
+  <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+
+<body class="portfolio-details-page">
+
+<!-- ================= HEADER ================= -->
+<header id="header" class="header sticky-top">
+
+  <div class="topbar d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+      <div class="contact-info d-flex align-items-center">
+        <i class="bi bi-envelope"><a href="mailto:info@tehnokaftservices.com"> info@tehnokaftservices.com</a></i>
+        <i class="bi bi-phone ms-4"><span> +91 84080 00048</span></i>
+      </div>
+      <div class="social-links d-none d-md-flex align-items-center">
+        <a href="https://www.facebook.com/tts.net.in/" target="_blank"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/technokraft_tts" target="_blank"><i class="bi bi-instagram"></i></a>
+        <a href="https://www.linkedin.com/company/ttsnashik/" target="_blank"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="branding">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a th:href="@{/}" class="logo">
+        <img th:src="@{/assets/img/logo/ev-logo.png}" alt="TechnoKraft" width="180">
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a th:href="@{/}">Home</a></li>
+          <li><a th:href="@{/#about}">About</a></li>
+          <li><a th:href="@{/#services}">Services</a></li>
+
+          <li class="dropdown">
+            <a href="#"><span>More</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a th:href="@{/projects}">Projects</a></li>
+              <li><a th:href="@{/hire-developers}">Hire Developers</a></li>
+              <li><a th:href="@{/internships}">Internships</a></li>
+              <li><a th:href="@{/careers}">Careers</a></li>
+              <li><a th:href="@{/team}">Team</a></li>
+              <li><a th:href="@{/pricing}">Pricing</a></li>
+              <li><a th:href="@{/faq}">FAQ</a></li>
+            </ul>
+          </li>
+
+          <li><a th:href="@{/#contact}">Contact</a></li>
+        </ul>
+
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="main">
+
+  <!-- Page Title -->
+  <div class="page-title" data-aos="fade">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h1>Portfolio Details</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a th:href="@{/}">Home</a></li>
+          <li class="current">Portfolio Details</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Portfolio Details -->
+  <section id="portfolio-details" class="portfolio-details section">
+    <div class="container" data-aos="fade-up">
+
+      <div class="row gy-4">
+
+        <!-- Slider -->
+        <div class="col-lg-8">
+          <div class="swiper init-swiper portfolio-details-slider">
+            <script type="application/json" class="swiper-config">
+              {
+                "loop": true,
+                "speed": 600,
+                "autoplay": { "delay": 5000 },
+                "pagination": { "el": ".swiper-pagination", "clickable": true }
+              }
+            </script>
+
+            <div class="swiper-wrapper">
+              <div class="swiper-slide">
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=900" alt="">
+              </div>
+              <div class="swiper-slide">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=900" alt="">
+              </div>
+              <div class="swiper-slide">
+                <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=900" alt="">
+              </div>
+            </div>
+
+            <div class="swiper-pagination"></div>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="col-lg-4">
+          <div class="portfolio-info">
+            <h3>Project Information</h3>
+            <ul>
+              <li><strong>Category:</strong> Enterprise ERP Solution</li>
+              <li><strong>Client:</strong> Maharashtra Industries Ltd</li>
+              <li><strong>Project Date:</strong> March 2024</li>
+              <li><strong>Technologies:</strong> React, Node.js, PostgreSQL</li>
+            </ul>
+          </div>
+
+          <div class="portfolio-description mt-3">
+            <h2>Complete Business Management System</h2>
+            <p>
+              We developed a comprehensive ERP system integrating inventory, finance,
+              HR, and supply chain modules. The solution improved operational efficiency
+              by 35% and provided real-time insights across departments.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer id="footer" class="footer">
+  <div class="container text-center mt-4">
+    <p>© 2025 <strong>TechnoKraft Services LLP</strong>. All Rights Reserved | Made in India 🇮🇳</p>
+  </div>
+</footer>
+
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+  <i class="bi bi-arrow-up-short"></i>
+</a>
+
+<!-- Vendor JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/glightbox/3.2.0/js/glightbox.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+<script>
+  AOS.init({ duration: 1000, once: true });
+
+  document.querySelector('.mobile-nav-toggle')?.addEventListener('click', function () {
+    document.body.classList.toggle('mobile-nav-active');
+    this.classList.toggle('bi-list');
+    this.classList.toggle('bi-x');
+  });
+
+  document.querySelectorAll('.init-swiper').forEach(swiperEl => {
+    const config = JSON.parse(swiperEl.querySelector('.swiper-config').textContent);
+    new Swiper(swiperEl, config);
+  });
+</script>
+
+</body>
+</html>

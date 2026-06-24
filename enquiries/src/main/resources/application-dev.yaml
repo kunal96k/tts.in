@@ -1,0 +1,35 @@
+# ===============================
+# Server Configuration #Development
+# ===============================
+
+server:
+  port: 8085
+
+spring:
+  # Database Configuration
+  datasource:
+    url: jdbc:mysql://localhost:3306/enquiries_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true
+    username: root
+    password: kunal11
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA Configuration
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+# Admin Credentials (Development)
+app:
+  admin:
+    username: admin@technokraft.com
+    password: Admin@123
+    name: TechnoKraft Admin
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.tts.enquiries: DEBUG
+  file:
+    name: logs/enquiries-dev.log

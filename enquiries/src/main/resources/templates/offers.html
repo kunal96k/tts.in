@@ -1,0 +1,3013 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="icon">
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="apple-touch-icon">
+  <script>
+    (function () {
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {
+        console.warn('localStorage is blocked:', e);
+      }
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F1E3A" />
+  <title>Offers Management | TechnoKraft Admin</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Michroma&display=swap"
+    rel="stylesheet" />
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <style>
+    @font-face {
+      font-family: 'Neuropol';
+      src: url('/fonts/Neuropol.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --canvas: #F5F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #FAFBFD;
+      --ink: #161A23;
+      --ink-soft: #3D4456;
+      --muted: #6B7280;
+      --border: #E3E6EC;
+      --border-soft: #ECEEF2;
+      --accent: #2451E3;
+      --accent-hover: #1B3FBE;
+      --accent-soft: #EAF0FE;
+      --accent-deep: #16348C;
+      --amber: #E8920B;
+      --success: #168A4F;
+      --success-soft: #E7F6EE;
+      --danger: #D6483D;
+      --danger-soft: #FDF2F2;
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 22px;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --shadow-card: 0 24px 64px -28px rgba(22, 52, 138, 0.18), 0 2px 10px rgba(20, 24, 35, 0.04);
+    }
+
+    [data-theme="dark"] {
+      --canvas: #0B0F19;
+      --surface: #121826;
+      --surface-alt: #171E30;
+      --ink: #F3F4F6;
+      --ink-soft: #D1D5DB;
+      --muted: #9CA3AF;
+      --border: #242F41;
+      --border-soft: #1E293B;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --accent-soft: rgba(59, 130, 246, 0.15);
+      --accent-deep: #60A5FA;
+      --amber: #F59E0B;
+      --success: #10B981;
+      --success-soft: rgba(16, 185, 129, 0.15);
+      --danger: #EF4444;
+      --danger-soft: rgba(239, 68, 68, 0.15);
+      --shadow-card: 0 24px 64px -28px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+      scrollbar-gutter: stable;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--canvas);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 73px;
+      z-index: 50;
+      background: var(--surface);
+      padding: 14px 24px;
+      box-shadow: 0 1px 0 var(--border-soft), 0 4px 12px rgba(0, 0, 0, .03);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .brand-text {
+      font-family: 'Neuropol', sans-serif;
+      font-weight: 400;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: 1px;
+    }
+
+    .brand-sub {
+      font-family: 'Neuropol', sans-serif;
+      font-size: .5rem;
+      color: var(--muted);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+      margin-left: 5px;
+    }
+
+    .theme-toggle {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background .15s, border-color .15s, transform .15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--border-soft);
+      transform: scale(1.05);
+    }
+
+    /* ── CRM WRAPPER & SIDEBAR ── */
+    .crm-wrapper {
+      display: flex;
+      flex: 1;
+      position: relative;
+      margin-top: 73px;
+    }
+
+    .crm-sidebar {
+      width: 260px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .sidebar-header {
+      padding: 0 24px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      margin-bottom: 16px;
+    }
+
+    .sidebar-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 0 12px;
+    }
+
+    .nav-section-title {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin: 16px 12px 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      color: var(--ink-soft);
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item i {
+      font-size: 1.1rem;
+      color: var(--muted);
+      transition: color 0.15s ease;
+    }
+
+    .nav-item:hover {
+      background: var(--border-soft);
+      color: var(--ink);
+    }
+
+    .nav-item:hover i {
+      color: var(--accent);
+    }
+
+    .nav-item.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .nav-item.active i {
+      color: var(--accent);
+    }
+
+    .nav-item.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .nav-sub-list {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding-left: 20px;
+      margin-top: 2px;
+      border-left: 1px dashed var(--border);
+      margin-left: 20px;
+    }
+
+    .nav-sub-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .nav-sub-item:hover {
+      color: var(--ink);
+    }
+
+    .nav-sub-item.active {
+      color: var(--accent);
+      font-weight: 600;
+      background-color: var(--accent-soft);
+    }
+
+    /* ── CONTENT SHELL ── */
+    .dashboard-shell {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+      min-width: 0;
+      padding: 32px 24px 64px;
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── CARDS & TABLES ── */
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-width: 0;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .stat-data {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .stat-val {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.35rem;
+      color: var(--ink);
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    @media (max-width: 1399.98px) {
+      .stat-card {
+        padding: 10px 12px;
+        gap: 8px;
+      }
+
+      .stat-icon {
+        width: 34px;
+        height: 34px;
+        font-size: 1.1rem;
+        border-radius: 6px;
+      }
+
+      .stat-val {
+        font-size: 1.15rem;
+      }
+
+      .stat-label {
+        font-size: 0.65rem;
+      }
+    }
+
+    /* ── MOBILE DEVICE OPTIMIZATIONS ── */
+    @media (max-width: 767px) {
+      .site-header {
+        padding: 10px 12px !important;
+      }
+
+      .brand-sub {
+        display: none !important;
+      }
+
+      .brand-text {
+        font-size: 0.95rem !important;
+      }
+
+      .site-header .d-flex.align-items-center.gap-3 {
+        gap: 8px !important;
+      }
+
+      #logoutBtn {
+        width: 38px !important;
+        height: 38px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      #logoutBtn span {
+        display: none !important;
+      }
+
+      #logoutBtn i {
+        margin: 0 !important;
+      }
+
+      .dashboard-shell {
+        padding: 16px 12px 48px !important;
+      }
+
+      .stat-card {
+        padding: 12px !important;
+        gap: 8px !important;
+        align-items: center !important;
+      }
+
+      .stat-label {
+        font-size: 0.7rem !important;
+      }
+
+      .stat-val {
+        font-size: 1.3rem !important;
+      }
+    }
+
+    .dashboard-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+      margin-bottom: 24px;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    }
+
+    .btn-new {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+
+    .btn-new:hover {
+      background: var(--accent-hover);
+      color: #fff;
+      transform: scale(1.02);
+    }
+
+    .btn-export-excel {
+      background: var(--success-soft);
+      color: var(--success);
+      border: 1px solid rgba(22, 138, 79, 0.15);
+    }
+
+    .btn-export-excel:hover {
+      background: rgba(22, 138, 79, 0.1);
+      transform: scale(1.02);
+    }
+
+    .btn-export-csv {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(36, 81, 227, 0.15);
+    }
+
+    .btn-export-csv:hover {
+      background: rgba(36, 81, 227, 0.1);
+      transform: scale(1.02);
+    }
+
+    .form-control,
+    .form-select {
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      background-color: var(--surface);
+    }
+
+    .filter-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .table-container {
+      margin-top: 24px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .crm-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+
+    .crm-table th {
+      background: var(--surface-alt);
+      color: var(--ink-soft);
+      font-weight: 600;
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--border);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+    }
+
+    .crm-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      vertical-align: middle;
+      color: var(--ink);
+    }
+
+    .crm-table tr:hover td {
+      background-color: var(--surface-alt);
+    }
+
+    /* Badges & Status */
+    .status-badge {
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 100px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      display: inline-block;
+    }
+
+    .status-active {
+      background-color: var(--success-soft);
+      color: var(--success);
+    }
+
+    .status-scheduled {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .status-stopped {
+      background-color: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .status-completed {
+      background-color: #E5E7EB;
+      color: #4B5563;
+    }
+
+    [data-theme="dark"] .status-completed {
+      background-color: rgba(75, 85, 99, 0.2);
+      color: #9CA3AF;
+    }
+
+    .btn-icon-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.1rem;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: color 0.15s, background-color 0.15s;
+    }
+
+    .btn-icon-btn:hover {
+      color: var(--accent);
+      background-color: var(--border-soft);
+    }
+
+    .btn-icon-danger:hover {
+      color: var(--danger);
+      background-color: var(--danger-soft);
+    }
+
+    /* ── SHUTDOWN ALERT ── */
+    .emergency-banner {
+      background-color: var(--danger);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      animation: pulseAlert 2s infinite alternate;
+    }
+
+    @keyframes pulseAlert {
+      from {
+        box-shadow: 0 0 0 rgba(232, 93, 93, 0.4);
+      }
+
+      to {
+        box-shadow: 0 0 20px rgba(232, 93, 93, 0.8);
+      }
+    }
+
+    /* Mobile Responsive Sidebar classes */
+    @media (max-width: 991.98px) {
+      .crm-sidebar {
+        position: fixed;
+        top: 73px;
+        left: -260px;
+        height: calc(100vh - 73px);
+        z-index: 1000;
+        box-shadow: var(--shadow-card);
+      }
+
+      .crm-sidebar.show {
+        left: 0;
+      }
+
+      .sidebar-backdrop {
+        position: fixed;
+        top: 73px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 999;
+        display: none;
+        backdrop-filter: blur(2px);
+      }
+
+      .sidebar-backdrop.show {
+        display: block;
+      }
+    }
+
+    /* Fixed Sidebar on Desktop */
+    @media (min-width: 992px) {
+      .crm-sidebar {
+        position: fixed;
+        top: 73px;
+        left: 0;
+        bottom: 0;
+        width: 260px;
+        height: calc(100vh - 73px);
+        overflow-y: auto;
+        z-index: 40;
+      }
+
+      .dashboard-shell {
+        margin-left: 260px;
+      }
+    }
+
+    /* ── TIMELINE LOGS ── */
+    .log-timeline {
+      position: relative;
+      padding-left: 32px;
+      margin-top: 10px;
+    }
+
+    .log-timeline::before {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 4px;
+      bottom: 4px;
+      width: 2px;
+      background: var(--border);
+    }
+
+    .log-item {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .log-item::before {
+      content: '';
+      position: absolute;
+      left: -29px;
+      top: 5px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--canvas);
+      border: 3px solid var(--accent);
+    }
+
+    .log-item.log-danger::before {
+      border-color: var(--danger);
+    }
+
+    .log-item.log-success::before {
+      border-color: var(--success);
+    }
+
+    .log-date {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    .log-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin: 2px 0;
+    }
+
+    .log-desc {
+      font-size: 0.84rem;
+      color: var(--ink-soft);
+    }
+
+    .tab-content-panel {
+      display: none;
+    }
+
+    .tab-content-panel.active {
+      display: block;
+    }
+
+    /* ── SWEETALERT2 STYLING FOR THEME COMPATIBILITY ── */
+    .swal2-popup {
+      background: var(--surface) !important;
+      color: var(--ink) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      box-shadow: var(--shadow-card) !important;
+    }
+
+    .swal2-title {
+      color: var(--ink) !important;
+      font-family: var(--font-display) !important;
+      font-weight: 600 !important;
+    }
+
+    .swal2-html-container {
+      color: var(--ink-soft) !important;
+      font-family: var(--font-body) !important;
+    }
+
+    .swal2-confirm {
+      border-radius: var(--radius-sm) !important;
+      font-weight: 600 !important;
+      padding: 10px 24px !important;
+    }
+
+    .swal2-cancel {
+      border-radius: var(--radius-sm) !important;
+      font-weight: 600 !important;
+      padding: 10px 24px !important;
+    }
+
+    /* Fix SweetAlert2 white/light background lines in Dark Mode */
+    .swal2-popup .swal2-success-circular-line-left,
+    .swal2-popup .swal2-success-circular-line-right,
+    .swal2-popup .swal2-success-fix {
+      background-color: transparent !important;
+    }
+
+    /* Close button dark mode styling */
+    [data-theme="dark"] .btn-close {
+      filter: invert(1) grayscale(1) brightness(2);
+    }
+
+    /* ── PAGINATION ── */
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .pagination-controls {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-page {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--ink-soft);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-page:hover {
+      background: var(--surface-alt);
+      border-color: var(--ink-soft);
+    }
+
+    .btn-page.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-page:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Select2 overrides for Admin */
+    .select2-container {
+      width: 100% !important;
+    }
+
+    .select2-container--default .select2-selection--single {
+      background-color: var(--surface-alt) !important;
+      border: 1px solid var(--border) !important;
+      height: 40px !important;
+      border-radius: var(--radius-sm) !important;
+      transition: border-color .25s, box-shadow .25s !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 38px !important;
+      color: var(--ink) !important;
+      padding-left: 14px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 38px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: var(--muted) transparent transparent !important;
+    }
+
+    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+      border-color: transparent transparent var(--muted) !important;
+    }
+
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--single {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 3px var(--accent-soft) !important;
+    }
+
+    .select2-dropdown {
+      background-color: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--ink) !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .select2-search--dropdown .select2-search__field {
+      background-color: var(--surface-alt) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--ink) !important;
+      border-radius: var(--radius-sm) !important;
+      padding: 6px 10px !important;
+    }
+
+    .select2-results__option {
+      color: var(--ink) !important;
+      padding: 8px 14px !important;
+    }
+
+    .select2-results__option--highlighted {
+      background-color: var(--accent) !important;
+      color: #fff !important;
+    }
+
+    .select2-container--default .select2-results__option--selected {
+      background-color: var(--accent-soft) !important;
+      color: var(--ink) !important;
+    }
+
+    .select2-results__option[aria-disabled=true] {
+      color: var(--muted) !important;
+    }
+
+    /* Dark Mode Select2 Tweaks */
+    [data-theme="dark"] .select2-container--default .select2-selection--single {
+      background-color: var(--surface) !important;
+    }
+
+    [data-theme="dark"] .select2-dropdown {
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── HEADER ── -->
+  <header th:replace="~{layout :: header}"></header>
+
+  <!-- ── MAIN WRAPPER ── -->
+  <div class="crm-wrapper">
+    <!-- Sidebar backdrop for mobile -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Left Sidebar -->
+    <aside th:replace="~{layout :: sidebar('offers')}"></aside>
+
+    <!-- Content panel -->
+    <main class="dashboard-shell">
+
+      <!-- Emergency STOP Banner (Triggered dynamically) -->
+      <div class="emergency-banner" id="globalEmergencyAlert" style="display: none;">
+        <i class="bi bi-exclamation-octagon-fill" style="font-size: 2.5rem;"></i>
+        <div>
+          <h4 class="mb-1" style="font-weight: 700; letter-spacing: -0.5px;">OFFER SYSTEM TEMPORARILY DISABLED</h4>
+          <p class="mb-0 fs-7" id="globalEmergencyDetails">Emergency lockdown enabled by Admin (kunal@technokraft.com)
+            at 12:20 PM. Reason: Critical database upgrade.</p>
+        </div>
+        <button class="btn btn-light btn-sm ms-auto fw-bold px-3 py-2" id="btnResumeGlobal">Resume System</button>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 1: ANALYTICS -->
+      <!-- ======================================================== -->
+      <div class="tab-content-panel active" id="tab-analytics">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h3 mb-1 fw-bold" style="font-family: var(--font-display);">Offers Analytics Dashboard</h2>
+            <p class="text-muted mb-0">Overview of spin wheel and coupon conversions</p>
+          </div>
+        </div>
+
+        <!-- Metric widgets -->
+        <div class="row g-4 mb-4">
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(36, 81, 227, 0.1); color: var(--accent);"><i
+                  class="bi bi-people-fill"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Participants</span>
+                <span class="stat-val" id="metricParticipants">2,481</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(232, 146, 11, 0.1); color: var(--amber);"><i
+                  class="bi bi-trophy-fill"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Winners</span>
+                <span class="stat-val" id="metricWinners">340</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(22, 138, 79, 0.1); color: var(--success);"><i
+                  class="bi bi-check-circle-fill"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Redeemed</span>
+                <span class="stat-val" id="metricRedeemed">186</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(36, 81, 227, 0.1); color: var(--accent);"><i
+                  class="bi bi-percent"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Conversion</span>
+                <span class="stat-val" id="metricConversion">54.7%</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(232, 146, 11, 0.1); color: var(--amber);"><i
+                  class="bi bi-shield-lock-fill"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Duplicates</span>
+                <span class="stat-val" id="metricDuplicates">29</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-4 col-xl-2">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(22, 138, 79, 0.1); color: var(--success);"><i
+                  class="bi bi-toggle-on"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Active</span>
+                <span class="stat-val" id="metricActive">1</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Grid -->
+        <div class="row g-4">
+          <div class="col-lg-8">
+            <div class="dashboard-panel">
+              <h5 class="fw-bold mb-3"><i class="bi bi-graph-up text-primary me-2"></i>Participation Trend</h5>
+              <div style="height: 300px;"><canvas id="chartTrend"></canvas></div>
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="dashboard-panel">
+              <h5 class="fw-bold mb-3"><i class="bi bi-pie-chart-fill text-success me-2"></i>Prize Distribution</h5>
+              <div style="height: 300px; display: flex; justify-content: center;"><canvas id="chartPrizes"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="dashboard-panel">
+              <h5 class="fw-bold mb-3"><i class="bi bi-bar-chart-fill text-warning me-2"></i>Daily Winners (Last 7 Days)
+              </h5>
+              <div style="height: 250px;"><canvas id="chartWinners"></canvas></div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="dashboard-panel">
+              <h5 class="fw-bold mb-3"><i class="bi bi-book-fill text-info me-2"></i>Course Wise Participation</h5>
+              <div style="height: 250px;"><canvas id="chartCourses"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prize performance & redemption report -->
+        <div class="row g-4 mt-2">
+          <div class="col-12">
+            <div class="dashboard-panel">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0"><i class="bi bi-trophy-fill text-warning me-2"></i>Prize-wise Distribution
+                  &amp; Redemption Report</h5>
+                <span class="badge bg-primary-subtle text-primary border px-2.5 py-1"
+                  style="font-size: 0.75rem; font-weight: 600;">Active Campaign Data</span>
+              </div>
+              <div class="table-container mt-0">
+                <table class="crm-table">
+                  <thead>
+                    <tr>
+                      <th>Prize Item / Name</th>
+                      <th>Prize Type</th>
+                      <th>Win Count (Won)</th>
+                      <th>Redeemed Count</th>
+                      <th>Pending Claim</th>
+                      <th>Expired Count</th>
+                      <th>Remaining Slots</th>
+                      <th>Conversion Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody id="analyticsPrizesReportBody">
+                    <!-- Javascript populated -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- ======================================================== -->
+      <!-- TAB 3: PRIZE CONFIGURATION -->
+      <!-- ======================================================== -->
+      <div class="tab-content-panel" id="tab-prizes">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h3 mb-1 fw-bold" style="font-family: var(--font-display);">Prize Wheel Configuration</h2>
+            <p class="text-muted mb-0">Set odds, win probabilities, and prize volume limits</p>
+          </div>
+
+        </div>
+
+        <!-- Prizes Progress Cards -->
+        <div class="row g-4 mb-4" id="prizeCardsGrid">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <div class="dashboard-panel">
+          <h5 class="fw-bold mb-3"><i class="bi bi-list-stars text-primary me-2"></i>Prize Inventory &amp; odds</h5>
+          <div class="table-container">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Prize Name</th>
+                  <th>Type</th>
+                  <th>Win Probability</th>
+                  <th>Total Vol</th>
+                  <th>Awarded</th>
+                  <th>Remaining</th>
+                  <th>Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="prizesTableBody">
+                <!-- Javascript populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ======================================================== -->
+      <!-- TAB 5: PARTICIPANTS -->
+      <!-- ======================================================== -->
+      <div class="tab-content-panel" id="tab-participants">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h3 mb-1 fw-bold" style="font-family: var(--font-display);">Offer Participants List</h2>
+            <p class="text-muted mb-0">Monitor recent spin users and win checks</p>
+          </div>
+        </div>
+
+        <!-- Metric widgets -->
+        <div class="row g-4 mb-4">
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(36,81,224,0.1); color: var(--accent);"><i
+                  class="bi bi-people-fill"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Total Participants</span>
+                <span class="stat-val" id="partMetricTotal">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(30,158,99,0.1); color: var(--success);"><i
+                  class="bi bi-calendar-event"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Today's Entries</span>
+                <span class="stat-val" id="partMetricToday">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(232,146,11,0.1); color: var(--amber);"><i
+                  class="bi bi-arrow-repeat"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Duplicate Blocks</span>
+                <span class="stat-val" id="partMetricDuplicates">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(232,93,93,0.1); color: var(--danger);"><i
+                  class="bi bi-clock-history"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Expired Coupons</span>
+                <span class="stat-val" id="partMetricExpired">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <!-- Top actions bar -->
+          <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+            <div class="d-flex gap-2">
+              <button class="btn btn-action btn-export-excel" id="partBtnExportExcel">
+                <i class="bi bi-file-earmark-excel"></i> Export Excel
+              </button>
+              <button class="btn btn-action btn-export-csv" id="partBtnExportCsv">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+              </button>
+            </div>
+
+            <div class="d-flex gap-2 align-items-center mt-2 mt-md-0">
+              <div class="input-group" style="max-width: 320px; width:100%;">
+                <span class="input-group-text bg-transparent text-muted border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" id="partSearchInput" class="form-control border-start-0 ps-0"
+                  placeholder="Search name, mobile, course..." />
+              </div>
+              <select id="partPageSizeSelect" class="form-select w-auto">
+                <option value="10">10</option>
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Filters segment -->
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-md-3">
+              <label class="filter-label">Course Filter</label>
+              <select id="partCourseFilter" class="form-select select2-init">
+                <!-- Populated via Javascript -->
+              </select>
+            </div>
+
+            <div class="col-12 col-md-2">
+              <label class="filter-label">Prize Filter</label>
+              <select id="partPrizeFilter" class="form-select">
+                <option value="ALL">-- All Prizes --</option>
+                <option value="CCNA">CCNA Free Course</option>
+                <option value="RedHat">RedHat Free Course</option>
+                <option value="Discount">Discounts</option>
+                <option value="BetterLuck">Better Luck Next Time</option>
+              </select>
+            </div>
+
+            <div class="col-12 col-md-2">
+              <label class="filter-label">Status Filter</label>
+              <select id="partStatusFilter" class="form-select">
+                <option value="ALL">-- All Statuses --</option>
+                <option value="ENQUIRED">Enquired</option>
+                <option value="WON">Won</option>
+                <option value="BETTER LUCK">Better Luck</option>
+                <option value="EXPIRED">Expired</option>
+                <option value="REDEEMED">Redeemed</option>
+              </select>
+            </div>
+
+            <div class="col-6 col-md-2">
+              <label class="filter-label">From Date</label>
+              <input type="date" id="partDateFromFilter" class="form-control" />
+            </div>
+
+            <div class="col-6 col-md-2">
+              <label class="filter-label">To Date</label>
+              <input type="date" id="partDateToFilter" class="form-control" />
+            </div>
+
+            <div class="col-12 col-md-1 d-flex align-items-end">
+              <button class="btn btn-outline-secondary w-100 py-2" id="partBtnClearFilters">
+                <i class="bi bi-x-circle"></i> Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Desktop Table view -->
+          <div class="table-container d-none d-md-block">
+            <table class="crm-table" id="participantsTable">
+              <thead>
+                <tr>
+                  <th style="cursor: pointer;" id="partColSortId">ID <i class="bi bi-arrow-down-up ms-1"></i></th>
+                  <th style="cursor: pointer;" id="partColSortDate">Date &amp; Time <i class="bi bi-arrow-down-up ms-1"></i></th>
+                  <th style="cursor: pointer;" id="partColSortName">Student Name <i class="bi bi-arrow-down-up ms-1"></i></th>
+                  <th>Mobile</th>
+                  <th>Email</th>
+                  <th style="cursor: pointer;" id="partColSortCourse">Course Selected <i class="bi bi-arrow-down-up ms-1"></i></th>
+                  <th style="cursor: pointer;" id="partColSortPrize">Prize Won <i class="bi bi-arrow-down-up ms-1"></i></th>
+                  <th>Coupon Code</th>
+                  <th style="cursor: pointer;" id="partColSortStatus">Status <i class="bi bi-arrow-down-up ms-1"></i></th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="participantsTableBody">
+                <!-- Javascript populated -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards list view -->
+          <div class="mobile-cards-container d-md-none mt-3" id="partMobileCardsContainer">
+            <!-- Dynamically populated cards -->
+          </div>
+
+          <!-- Pagination Footer -->
+          <div class="pagination-bar">
+            <span id="partPaginationInfo">Showing 0 to 0 of 0 entries</span>
+            <div class="pagination-controls" id="partPaginationPages">
+              <!-- Page buttons -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 6: WINNERS -->
+      <!-- ======================================================== -->
+      <div class="tab-content-panel" id="tab-winners">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h3 mb-1 fw-bold" style="font-family: var(--font-display);">Winners Verification Database</h2>
+            <p class="text-muted mb-0">Record of all users who won valid prizes and discounts</p>
+          </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(36,81,224,0.1); color: var(--accent);"><i
+                  class="bi bi-award"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Total Winners</span>
+                <span class="stat-val">340</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(30,158,99,0.1); color: var(--success);"><i
+                  class="bi bi-check-circle"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Redeemed</span>
+                <span class="stat-val">186</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(232,146,11,0.1); color: var(--amber);"><i
+                  class="bi bi-hourglass-split"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Pending Checks</span>
+                <span class="stat-val">142</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-lg-3">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(232,93,93,0.1); color: var(--danger);"><i
+                  class="bi bi-calendar-x"></i></div>
+              <div class="stat-data">
+                <span class="stat-label">Expired</span>
+                <span class="stat-val">12</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <div class="row g-3 justify-content-between align-items-center">
+            <div class="col-md-4">
+              <input type="text" class="form-control" placeholder="Search by name, mobile, coupon code..."
+                id="winnerSearchInput" />
+            </div>
+            <div class="col-md-8 d-flex justify-content-end gap-2">
+              <select class="form-select w-auto" id="winnerStatusFilter">
+                <option value="ALL">All Status</option>
+                <option value="REDEEMED">Redeemed</option>
+                <option value="PENDING">Pending</option>
+                <option value="EXPIRED">Expired</option>
+              </select>
+              <button class="btn btn-action btn-export-excel"><i class="bi bi-file-earmark-excel-fill"></i> Export
+                excel</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Winner Name</th>
+                  <th>Mobile Number</th>
+                  <th>Prize Title</th>
+                  <th>Coupon Code</th>
+                  <th>Spin Date</th>
+                  <th>Expiry Date</th>
+                  <th>Redeemed</th>
+                  <th>Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="winnersTableBody">
+                <!-- Javascript populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 7: COUPON VERIFICATION -->
+      <!-- ======================================================== -->
+      <div class="tab-content-panel" id="tab-verify">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h3 mb-1 fw-bold" style="font-family: var(--font-display);">Coupon Validation Panel</h2>
+            <p class="text-muted mb-0">Verify and redeem spin wheel coupon codes</p>
+          </div>
+        </div>
+
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6">
+            <div class="dashboard-panel text-center p-5">
+              <i class="bi bi-qr-code-scan text-primary mb-4" style="font-size: 3.5rem; display: block;"></i>
+              <h4 class="fw-bold mb-2">Scan or Enter Coupon Code</h4>
+              <p class="text-muted mb-4 fs-7">Enter the unique 8-character coupon code received by the student to verify
+                legitimacy and process course discounts.</p>
+
+              <form id="couponVerifyForm">
+                <div class="input-group input-group-lg mb-3">
+                  <input type="text" class="form-control text-center fw-bold font-monospace border-primary"
+                    placeholder="e.g. TK-MON-384" required id="verifyCouponCode" style="letter-spacing: 2px;" />
+                  <button class="btn btn-primary fw-bold" type="submit" id="btnVerifyCoupon"><i
+                      class="bi bi-shield-fill-check me-1"></i> Verify</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Validation Result Card -->
+            <div class="dashboard-panel mt-4 p-4" id="verifyResultCard" style="display: none;">
+              <h5 class="fw-bold mb-3 border-bottom pb-2 text-success" id="resultHeader"><i
+                  class="bi bi-check-circle-fill me-2"></i>Coupon Code Valid</h5>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <div class="text-muted fs-7">Student Name</div>
+                  <div class="fw-bold" id="resultName">Abhishek Patil</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="text-muted fs-7">Mobile Number</div>
+                  <div class="fw-bold" id="resultMobile">9876543210</div>
+                </div>
+                <div class="col-md-12">
+                  <div class="text-muted fs-7">Prize Won</div>
+                  <div class="fw-bold text-primary fs-5" id="resultPrize"><i class="bi bi-trophy-fill me-2"></i>CCNA
+                    Free Course Package</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="text-muted fs-7">Issued Date</div>
+                  <div class="fw-bold" id="resultIssued">June 24, 2026</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="text-muted fs-7">Expiry Date</div>
+                  <div class="fw-bold" id="resultExpiry">July 09, 2026</div>
+                </div>
+                <div class="col-md-6">
+                  <div class="text-muted fs-7">Redemption Status</div>
+                  <div class="fw-bold" id="resultRedeemed">PENDING VERIFICATION</div>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-3 border-top d-flex gap-2">
+                <button class="btn btn-success flex-grow-1 fw-bold" id="btnRedeemAction"><i
+                    class="bi bi-check-circle-fill me-1"></i> Redeem Prize Coupon</button>
+                <button class="btn btn-outline-secondary" id="btnPrintAction"><i class="bi bi-printer"></i>
+                  Print</button>
+                <button class="btn btn-outline-success" id="btnWhatsAppAction"><i class="bi bi-whatsapp"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 8: OFFER LOGS -->
+      <!-- ======================================================== -->
+      <div class="tab-content-panel" id="tab-logs">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h3 mb-1 fw-bold" style="font-family: var(--font-display);">Offers Log History</h2>
+            <p class="text-muted mb-0">Audit log of administrator configuration updates and stops</p>
+          </div>
+        </div>
+
+        <div class="dashboard-panel">
+          <div class="log-timeline" id="offerLogsTimeline">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- TAB 9: SETTINGS -->
+      <!-- ======================================================== -->
+      <div class="tab-content-panel" id="tab-settings">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <div>
+            <h2 class="h3 mb-1 fw-bold" style="font-family: var(--font-display);">Offers Settings Panel</h2>
+            <p class="text-muted mb-0">Configure database options, security rules, and global triggers</p>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <div class="col-md-12">
+            <div class="dashboard-panel">
+              <h5 class="fw-bold border-bottom pb-2 mb-3"><i
+                  class="bi bi-calendar2-week-fill text-success me-2"></i>Offer Validity &amp; Notifications</h5>
+              
+              <div class="row g-3 mb-3">
+                <div class="col-sm-6">
+                  <label for="settOfferStart" class="form-label filter-label">Offer Start Date &amp; Time</label>
+                  <input type="datetime-local" class="form-control" id="settOfferStart" value="2026-06-24T00:00" />
+                </div>
+                <div class="col-sm-6">
+                  <label for="settOfferEnd" class="form-label filter-label">Offer End Date &amp; Time</label>
+                  <input type="datetime-local" class="form-control" id="settOfferEnd" value="2026-07-24T23:59" />
+                </div>
+              </div>
+
+              <!-- Premium toggle for Email sending -->
+              <div class="d-flex align-items-center justify-content-between p-3 rounded mb-3" style="background: var(--bg-hover, rgba(0,0,0,0.02)); border: 1px solid var(--border);">
+                <div>
+                  <div class="fw-bold text-dark fs-7" style="font-size: 0.85rem;">Send Email Notifications</div>
+                  <div class="text-muted fs-8" style="font-size: 0.72rem;">Deliver coupons automatically to winners via email</div>
+                </div>
+                <div class="form-check form-switch p-0 m-0 d-flex align-items-center gap-2">
+                  <input class="form-check-input ms-0 me-2" type="checkbox" id="settSendEmail" checked style="width: 2.5em; height: 1.25em; cursor: pointer; float: none;">
+                  <span class="badge bg-success-subtle text-success border" id="settSendEmailLabel" style="font-size: 0.72rem; line-height: 1.2;">Enabled</span>
+                </div>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-sm-12">
+                  <div class="mb-3">
+                    <label class="form-label filter-label">Default Coupon Grace Period (Days)</label>
+                    <input type="number" class="form-control" id="settGracePeriod" value="15" />
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <button class="btn btn-primary btn-action btn-new fw-bold px-4" id="btnSaveSettings"><i class="bi bi-save me-1"></i> Save Settings</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="dashboard-panel border-danger">
+              <h5 class="fw-bold text-danger border-bottom border-danger-subtle pb-2 mb-3"><i
+                  class="bi bi-exclamation-triangle-fill me-2"></i>Emergency Shutdown Panel</h5>
+              <p class="text-muted fs-7 mb-4">Activating the emergency stop toggle will immediately freeze all running
+                campaigns. No user will be able to access the spin wheel page or submit new verification queries.</p>
+
+              <div class="row align-items-center g-3">
+                <div class="col-md-4">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="settEmergencyTrigger">
+                    <label class="form-check-label text-danger fw-bold filter-label mb-0"
+                      for="settEmergencyTrigger">EMERGENCY SYSTEM LOCKDOWN</label>
+                  </div>
+                </div>
+                <div class="col-md-8">
+                  <input type="text" class="form-control" placeholder="Specify reason for lockdown (required)..."
+                    id="settEmergencyReason" disabled />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ── MODAL: VIEW PARTICIPANT DETAILS ── -->
+  <div class="modal fade" id="viewParticipantModal" tabindex="-1" aria-labelledby="viewParticipantModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewParticipantModalLabel"><i
+              class="bi bi-info-circle-fill text-primary me-2"></i>Participant Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="participantDetailsModalBody">
+          <!-- Dynamically populated via javascript -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery + Select2 + Bootstrap JS + SweetAlert2 + Chart.js -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script th:inline="javascript">
+    // Override SweetAlert2 default behavior to prevent heightAuto layout shifting
+    if (window.Swal) {
+      const originalFire = Swal.fire;
+      Swal.fire = function (options) {
+        if (options && typeof options === 'object' && options.heightAuto === undefined) {
+          options.heightAuto = false;
+        }
+        return originalFire.apply(this, arguments);
+      };
+    }
+
+    (function () {
+      // ── MOCK DATA STORAGE ──────────────────────────────────────
+      let offers = [
+        { id: "OFF-101", name: "Monsoon Lucky Spin 2026", start: "2026-06-01T00:00", end: "2026-07-31T23:59", status: "ACTIVE", stop: false, participants: 2481, winners: 340, author: "admin@technokraft.com" },
+        { id: "OFF-102", name: "Independence Day Carnival", start: "2026-08-10T00:00", end: "2026-08-20T23:59", status: "SCHEDULED", stop: false, participants: 0, winners: 0, author: "kunal@technokraft.com" },
+        { id: "OFF-103", name: "Cyber Security Month Event", start: "2026-10-01T00:00", end: "2026-10-31T23:59", status: "SCHEDULED", stop: false, participants: 0, winners: 0, author: "admin@technokraft.com" },
+        { id: "OFF-104", name: "Summer Crash Course Spin", start: "2026-04-01T00:00", end: "2026-05-15T23:59", status: "COMPLETED", stop: false, participants: 1820, winners: 212, author: "kunal@technokraft.com" }
+      ];
+
+      let prizes = [
+        { name: "CCNA Free Course", type: "Full Course", prob: 2, total: 5, used: 2, won: 2, redeemed: 1, pending: 1, expired: 0, remaining: 3, status: "Active", progressClass: "bg-primary" },
+        { name: "RedHat Free Course", type: "Full Course", prob: 2, total: 5, used: 2, won: 2, redeemed: 0, pending: 1, expired: 1, remaining: 3, status: "Active", progressClass: "bg-success" },
+        { name: "C & C++ Free Course", type: "Full Course", prob: 5, total: 30, used: 18, won: 18, redeemed: 10, pending: 8, expired: 0, remaining: 12, status: "Active", progressClass: "bg-info" },
+        { name: "Data Analytics Free Course", type: "Full Course", prob: 3, total: 15, used: 10, won: 10, redeemed: 6, pending: 4, expired: 0, remaining: 5, status: "Active", progressClass: "bg-warning" },
+        { name: "40% Admission Discount", type: "Discount", prob: 10, total: 80, used: 58, won: 58, redeemed: 32, pending: 24, expired: 2, remaining: 22, status: "Active", progressClass: "bg-danger" },
+        { name: "20% Admission Discount", type: "Discount", prob: 30, total: 350, used: 250, won: 250, redeemed: 137, pending: 104, expired: 9, remaining: 100, status: "Active", progressClass: "bg-secondary" },
+        { name: "Better Luck Next Time", type: "No Win", prob: 48, total: 3000, used: 2141, won: 2141, redeemed: 0, pending: 0, expired: 0, remaining: 859, status: "Active", progressClass: "bg-dark" }
+      ];
+
+      let participants = []; // Fallback empty array
+      let participantsList = [];
+      let partCurrentPage = 1;
+      let partPageSize = 25;
+      let partCurrentSort = { col: 'id', dir: 'desc' };
+      let partTotalElements = 0;
+      let partTotalPages = 0;
+
+      const allCourses = [
+        { name: "PYTHON", fees: 10000, cat: "programming" },
+        { name: "C PROGRAMMING", fees: 3000, cat: "programming" },
+        { name: "C++ PROGRAMMING", fees: 3000, cat: "programming" },
+        { name: "C & C++ PROGRAMMING", fees: 6000, cat: "programming" },
+        { name: "JAVASCRIPT", fees: 5000, cat: "programming" },
+        { name: "PHP", fees: 7000, cat: "programming" },
+        { name: "JAVA CORE", fees: 6000, cat: "programming" },
+        { name: "JAVA ADVANCE", fees: 6000, cat: "programming" },
+        { name: "JAVA CORE AND ADVANCE", fees: 12000, cat: "programming" },
+        { name: "JAVA CORE & ADV + JAVA MVC", fees: 20000, cat: "programming" },
+        { name: "SPRING BOOT", fees: 6000, cat: "programming" },
+        { name: "EXPRESS JS", fees: 7000, cat: "programming" },
+        { name: "NODE JS", fees: 10000, cat: "programming" },
+        { name: "Angular JS", fees: 10000, cat: "programming" },
+        { name: "REACT JS", fees: 18000, cat: "programming" },
+        { name: "DJANGO", fees: 5000, cat: "programming" },
+        { name: "LARAVEL", fees: 12000, cat: "programming" },
+        { name: "ASP.NET", fees: 9000, cat: "programming" },
+        { name: ".NET", fees: 14000, cat: "programming" },
+        { name: ".NET MVC", fees: 20000, cat: "programming" },
+        { name: "JAVA FRAMEWORK", fees: 9000, cat: "programming" },
+        { name: "JAVA MVC", fees: 20000, cat: "programming" },
+        { name: "FULL STACK", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK JavaScript DEVELOPMENT", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK PYTHON DEVELOPMENT", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK JAVA DEVELOPMENT", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK PHP DEVELOPMENT", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND JavaScript", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND PYTHON", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND PHP", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND JAVA CORE & ADVANCE", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK FRONTEND", fees: 20000, cat: "fullstack" },
+        { name: "MEAN STACK", fees: 20000, cat: "fullstack" },
+        { name: "MERN STACK", fees: 25000, cat: "fullstack" },
+        { name: "WEB DEVELOPMENT", fees: 7000, cat: "fullstack" },
+        { name: "WEB DESIGNING AND DEVELOPMENT", fees: 18000, cat: "fullstack" },
+        { name: "WEBSITE DESIGNING", fees: 7000, cat: "fullstack" },
+        { name: "HARDWARE", fees: 5000, cat: "networking" },
+        { name: "PALOALTO", fees: 10000, cat: "networking" },
+        { name: "CYBER SECURITY", fees: 20000, cat: "networking" },
+        { name: "HACKING", fees: 10000, cat: "networking" },
+        { name: "PENETRATION TESTING", fees: 15000, cat: "networking" },
+        { name: "MCSA", fees: 7500, cat: "networking" },
+        { name: "MCSE", fees: 7500, cat: "networking" },
+        { name: "MCSA & MCSE", fees: 15000, cat: "networking" },
+        { name: "SAP - ABAP", fees: 25000, cat: "sap" },
+        { name: "SAP-MM", fees: 50000, cat: "sap" },
+        { name: "SAP PP", fees: 50000, cat: "sap" },
+        { name: "SAP SD", fees: 50000, cat: "sap" },
+        { name: "SAP FICO", fees: 40000, cat: "sap" },
+        { name: "MEDICAL CODING", fees: 20000, cat: "sap" },
+        { name: "GRAPHICS DESIGN", fees: 12000, cat: "design" },
+        { name: "ANIMATION", fees: 100000, cat: "design" },
+        { name: "AUTO CAD", fees: 8000, cat: "design" },
+        { name: "UGNX", fees: 20000, cat: "design" },
+        { name: "CATIA", fees: 15000, cat: "design" },
+        { name: "SOLID-WORKS", fees: 10000, cat: "design" },
+        { name: "CREO", fees: 5000, cat: "design" },
+        { name: "AMAZON WEB SERVICES", fees: 15000, cat: "cloud" },
+        { name: "Azure", fees: 15000, cat: "cloud" },
+        { name: "DEVOPS", fees: 18000, cat: "cloud" },
+        { name: "KUBERNETES", fees: 6000, cat: "cloud" },
+        { name: "ANSIBLE", fees: 5000, cat: "cloud" },
+        { name: "DOCKER / SHELL SCRIPTING", fees: 7000, cat: "cloud" },
+        { name: "SHELL SCRIPTING", fees: 7000, cat: "cloud" },
+        { name: "VMWARE", fees: 15000, cat: "cloud" },
+        { name: "REDHAT (RHCSA)", fees: 7000, cat: "cloud" },
+        { name: "REDHAT (RHCE)", fees: 7000, cat: "cloud" },
+        { name: "REDHAT (RHCSA & RHCE)", fees: 12000, cat: "cloud" },
+        { name: "REDHAT (RHCVA)", fees: 15000, cat: "cloud" },
+        { name: "REDHAT (OpenStack)", fees: 15000, cat: "cloud" },
+        { name: "C PANEL AND WHM", fees: 10000, cat: "cloud" },
+        { name: "MANUAL TESTING", fees: 10000, cat: "testing" },
+        { name: "AUTOMATION TESTING", fees: 10000, cat: "testing" },
+        { name: "SOFTWARE TESTING", fees: 18000, cat: "testing" },
+        { name: "ENGLISH AND MARATHI TYPING", fees: 4000, cat: "other" },
+        { name: "Professional English Communication", fees: 3000, cat: "other" },
+        { name: "DIGITAL MARKETING", fees: 16000, cat: "other" },
+        { name: "ANDROID", fees: 15000, cat: "other" }
+      ];
+
+      const categoryLabels = {
+        programming: "Programming & Web",
+        fullstack: "Full Stack Development",
+        data: "Data, AI & Analytics",
+        networking: "Networking & Security",
+        sap: "SAP / ERP",
+        design: "Design & CAD",
+        cloud: "Cloud & DevOps",
+        testing: "Software Testing",
+        other: "Other Courses"
+      };
+
+      let winners = [
+        { name: "Abhishek Patil", mobile: "9876543210", prize: "CCNA Free Course", coupon: "TK-MON-384", date: "2026-06-24", expiry: "2026-07-09", redeemed: false, status: "PENDING" },
+        { name: "Simran Kaur", mobile: "7654321098", prize: "20% Admission Discount", coupon: "TK-DIS-092", date: "2026-06-24", expiry: "2026-07-09", redeemed: false, status: "PENDING" },
+        { name: "Rahul Deshmukh", mobile: "9123456789", prize: "40% Admission Discount", coupon: "TK-DIS-185", date: "2026-06-23", expiry: "2026-07-08", redeemed: true, status: "REDEEMED" },
+        { name: "Sneha Gite", mobile: "9456781230", prize: "RedHat Free Course", coupon: "TK-RH-741", date: "2026-06-08", expiry: "2026-06-23", redeemed: false, status: "EXPIRED" }
+      ];
+
+
+      let logs = [
+        { date: "2026-06-24 10:15 AM", user: "kunal@technokraft.com", action: "Campaign Activated", ip: "103.142.12.8", remarks: "Activated Monsoon Lucky Spin 2026", class: "log-success" },
+        { date: "2026-06-24 09:30 AM", user: "admin@technokraft.com", action: "Prize Odds Configured", ip: "103.142.12.2", remarks: "Updated odds of CCNA Free Course to 2%", class: "" },
+        { date: "2026-06-23 11:20 AM", user: "kunal@technokraft.com", action: "Emergency Stop Tested", ip: "103.142.12.8", remarks: "Temporarily enabled and disabled stop state", class: "log-danger" }
+      ];
+
+      let isEmergencyActive = false;
+      let chartInstances = {};
+
+      // ── DOM READY ──────────────────────────────────────────────
+      $(document).ready(function () {
+        // Theme toggler
+        const $themeBtn = $('#themeToggle');
+        const $themeIcon = $themeBtn.find('i');
+
+        function updateToggleIcon(theme) {
+          if (theme === 'dark') {
+            $themeIcon.removeClass('bi-moon-stars-fill').addClass('bi-sun-fill');
+          } else {
+            $themeIcon.removeClass('bi-sun-fill').addClass('bi-moon-stars-fill');
+          }
+        }
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        updateToggleIcon(currentTheme);
+
+        $themeBtn.on('click', function () {
+          const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+          const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', newTheme);
+          try {
+            localStorage.setItem('theme', newTheme);
+          } catch (e) {
+            console.warn('Failed to save theme in localStorage:', e);
+          }
+          updateToggleIcon(newTheme);
+          // Re-trigger chart render to adjust grid lines if needed
+          renderCharts();
+        });
+
+        // Sidebar mobile layout toggle
+        $('#sidebarToggle, #sidebarBackdrop').on('click', function () {
+          $('#crmSidebar').toggleClass('show');
+          $('.sidebar-backdrop').toggleClass('show');
+        });
+
+        // Tab Switching Logic
+        $('.nav-sub-item').on('click', function (e) {
+          if (e) e.preventDefault();
+          const tabId = $(this).data('tab');
+          if (!tabId) return;
+
+          $('.nav-sub-item').removeClass('active');
+          $(this).addClass('active');
+
+          $('.tab-content-panel').removeClass('active');
+          $('#' + tabId).addClass('active');
+
+          // Close mobile menu
+          $('#crmSidebar').removeClass('show');
+          $('.sidebar-backdrop').removeClass('show');
+
+          // Trigger view re-loads / chart resize
+          if (tabId === 'tab-analytics') {
+            setTimeout(renderCharts, 100);
+            updateDashboardMetrics();
+            renderPrizesReportTable();
+          } else if (tabId === 'tab-prizes') {
+            renderPrizesSection();
+          } else if (tabId === 'tab-participants') {
+            partCurrentPage = 1;
+            fetchParticipants();
+          } else if (tabId === 'tab-winners') {
+            loadWinners().then(renderWinnersTable);
+          } else if (tabId === 'tab-logs') {
+            renderLogsTimeline();
+          }
+        });
+
+        // Initialize charts, analytics and load settings
+        renderCharts();
+        updateDashboardMetrics();
+        renderPrizesReportTable();
+        loadSettings();
+        loadPartCoursesDropdown();
+
+        // ── TAB INTERACTION: COUPON VERIFICATION ─────────────────
+        $('#couponVerifyForm').on('submit', function (e) {
+          e.preventDefault();
+          const enteredCode = $('#verifyCouponCode').val().trim().toUpperCase();
+
+          fetch('/api/lucky-spin/verify', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ couponCode: enteredCode })
+          })
+          .then(r => r.json())
+          .then(res => {
+            if (res.success) {
+              $('#resultName').text(res.studentName);
+              $('#resultMobile').text(res.studentMobile);
+              $('#resultPrize').html(`<i class="bi bi-trophy-fill me-2 text-warning"></i>${res.prizeWon}`);
+              $('#resultIssued').text(res.spinDate || '-');
+              $('#resultExpiry').text(res.expiryDate || '-');
+
+              const isRedeemed = res.redeemed;
+              const $redeemBtn = $('#btnRedeemAction');
+
+              if (isRedeemed) {
+                $('#resultRedeemed').html(`<span class="badge bg-success-subtle text-success border px-3 py-1">REDEEMED</span>`);
+                $redeemBtn.attr('disabled', true).text('Already Redeemed');
+                $('#resultHeader').removeClass('text-success').addClass('text-muted').html('<i class="bi bi-info-circle-fill me-2"></i>Coupon Already Claimed');
+              } else {
+                $('#resultRedeemed').html(`<span class="badge bg-warning-subtle text-warning border px-3 py-1">PENDING VERIFICATION</span>`);
+                $redeemBtn.attr('disabled', false).text('Redeem Prize Coupon');
+                $('#resultHeader').removeClass('text-muted').addClass('text-success').html('<i class="bi bi-check-circle-fill me-2"></i>Coupon Code Valid');
+              }
+
+              $('#verifyResultCard').slideDown();
+            } else {
+              $('#verifyResultCard').slideUp();
+              Swal.fire({
+                icon: 'error',
+                title: 'Invalid Coupon',
+                text: res.message || 'The coupon code entered does not match any winning record. Please check spelling.',
+                confirmButtonColor: '#E85D5D'
+              });
+            }
+          })
+          .catch(err => {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Failed to verify coupon.' });
+          });
+        });
+
+        $('#btnRedeemAction').on('click', function () {
+          const enteredCode = $('#verifyCouponCode').val().trim().toUpperCase();
+          fetch('/api/lucky-spin/redeem', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ couponCode: enteredCode })
+          })
+          .then(r => r.json())
+          .then(res => {
+            if (res.success) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Coupon Redeemed!',
+                text: `The coupon has been successfully verified & redeemed!`,
+                confirmButtonColor: '#168A4F'
+              });
+
+              // Reload reports and data
+              loadWinners().then(renderWinnersTable);
+              fetchParticipants();
+              updateDashboardMetrics();
+              renderPrizesReportTable();
+
+              $('#verifyCouponCode').val('');
+              $('#verifyResultCard').slideUp();
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: res.message || 'Redemption failed.'
+              });
+            }
+          })
+          .catch(err => {
+            Swal.fire({ icon: 'error', title: 'Error', text: 'Redemption failed.' });
+          });
+        });
+
+        // ── TAB INTERACTION: EMERGENCY SWITCHES ──────────────────
+        $('#settEmergencyTrigger').on('change', function () {
+          const isActive = $(this).is(':checked');
+          isEmergencyActive = isActive;
+          $('#settEmergencyReason').attr('disabled', !isActive);
+
+          if (isActive) {
+            $('#settEmergencyReason').val("Critical database system maintenance.").trigger('change');
+            triggerEmergencyLockdown("Critical database system maintenance.");
+          } else {
+            disableEmergencyLockdown();
+          }
+          saveSettings('toast');
+        });
+
+        $('#settEmergencyReason').on('change', function () {
+          if (isEmergencyActive) {
+            const reason = $(this).val() || "Unspecified administrative lock.";
+            $('#globalEmergencyDetails').text(`Emergency lockdown enabled by Admin (admin@technokraft.com) just now. Reason: ${reason}`);
+            saveSettings('toast');
+          }
+        });
+
+        $('#btnResumeGlobal').on('click', function () {
+          disableEmergencyLockdown();
+          $('#settEmergencyTrigger').prop('checked', false);
+          $('#settEmergencyReason').attr('disabled', true).val('');
+          saveSettings('toast');
+        });
+
+        // ── TAB INTERACTION: EMAIL TOGGLE ────────────────────────
+        $('#settSendEmail').on('change', function () {
+          const isEnabled = $(this).is(':checked');
+          const $label = $('#settSendEmailLabel');
+          if (isEnabled) {
+            $label.text('Enabled').removeClass('bg-secondary-subtle text-secondary').addClass('bg-success-subtle text-success');
+          } else {
+            $label.text('Disabled').removeClass('bg-success-subtle text-success').addClass('bg-secondary-subtle text-secondary');
+          }
+        });
+
+        $('#btnSaveSettings').on('click', function (e) {
+          e.preventDefault();
+          saveSettings();
+        });
+      });
+
+      // ── RENDERING FUNCTIONS ─────────────────────────────────────
+      function renderPrizesReportTable() {
+        const $tbody = $('#analyticsPrizesReportBody');
+        $tbody.empty();
+
+        prizes.forEach(p => {
+          const convRate = p.won > 0 ? ((p.redeemed / p.won) * 100).toFixed(1) + '%' : '0.0%';
+          const subtleClass = p.progressClass ? p.progressClass + '-subtle text-' + p.progressClass.replace('bg-', '') : 'bg-secondary-subtle text-secondary';
+          const tr = `
+            <tr>
+              <td><strong>${p.name}</strong></td>
+              <td><span class="badge ${subtleClass} border px-2.5 py-1" style="font-size: 0.75rem; font-weight: 600;">${p.type}</span></td>
+              <td class="font-monospace fw-bold text-primary">${(p.won || 0).toLocaleString()}</td>
+              <td class="font-monospace text-success">${(p.redeemed || 0).toLocaleString()}</td>
+              <td class="font-monospace text-warning">${(p.pending || 0).toLocaleString()}</td>
+              <td class="font-monospace text-danger">${(p.expired || 0).toLocaleString()}</td>
+              <td class="font-monospace text-muted">${(p.remaining || 0).toLocaleString()}</td>
+              <td class="font-monospace fw-bold">${convRate}</td>
+            </tr>
+          `;
+          $tbody.append(tr);
+        });
+      }
+
+      function updateDashboardMetrics() {
+        fetch('/api/lucky-spin/stats')
+          .then(r => r.json())
+          .then(s => {
+            $('#metricParticipants').text(s.totalParticipants.toLocaleString());
+            $('#metricWinners').text(s.totalWinners.toLocaleString());
+            $('#metricRedeemed').text(s.redeemed.toLocaleString());
+            $('#metricConversion').text(s.conversionRate);
+            $('#metricDuplicates').text((s.duplicatesBlocked || 0).toLocaleString());
+
+            // Update participant tab specific metric cards
+            $('#partMetricTotal').text(s.totalParticipants.toLocaleString());
+            $('#partMetricToday').text((s.todayEntries || 0).toLocaleString());
+            $('#partMetricDuplicates').text((s.duplicatesBlocked || 0).toLocaleString());
+            $('#partMetricExpired').text(s.expired.toLocaleString());
+
+            // Also update other cards if any
+            $('.stat-card').each(function () {
+              const $label = $(this).find('.stat-label');
+              const $val = $(this).find('.stat-val');
+              if ($label.length && $val.length) {
+                const labelText = $label.text().trim().toUpperCase();
+                if (labelText === 'TOTAL WINNERS' || labelText === 'WINNERS') {
+                  $val.text(s.totalWinners.toLocaleString());
+                } else if (labelText === 'REDEEMED') {
+                  $val.text(s.redeemed.toLocaleString());
+                } else if (labelText === 'PENDING CHECKS' || labelText === 'PENDING') {
+                  $val.text(s.pending.toLocaleString());
+                } else if (labelText === 'EXPIRED' || labelText === 'EXPIRED COUPONS') {
+                  $val.text(s.expired.toLocaleString());
+                } else if (labelText === 'TOTAL PARTICIPANTS' || labelText === 'PARTICIPANTS') {
+                  $val.text(s.totalParticipants.toLocaleString());
+                } else if (labelText === "TODAY'S ENTRIES" || labelText === 'TODAY ENTRIES') {
+                  $val.text((s.todayEntries || 0).toLocaleString());
+                } else if (labelText === 'DUPLICATE BLOCKS' || labelText === 'DUPLICATES') {
+                  $val.text((s.duplicatesBlocked || 0).toLocaleString());
+                }
+              }
+            });
+          })
+          .catch(err => console.error("Error loading stats:", err));
+      }
+
+      // ── Prize Config: real API wiring ──────────────────────────
+      function getProgressClass(name) {
+        if (!name) return 'bg-secondary';
+        const n = name.toUpperCase();
+        if (n.includes('CCNA'))         return 'bg-primary';
+        if (n.includes('REDHAT'))       return 'bg-success';
+        if (n.includes('C &') || n.includes('C++')) return 'bg-info';
+        if (n.includes('DATA'))         return 'bg-warning';
+        if (n.includes('40%'))          return 'bg-danger';
+        if (n.includes('10%') || n.includes('20%')) return 'bg-secondary';
+        return 'bg-dark';
+      }
+
+      function renderPrizesSection() {
+        const $cardsGrid = $('#prizeCardsGrid');
+        const $tbody     = $('#prizesTableBody');
+        $cardsGrid.empty();
+        $tbody.html('<tr><td colspan="8" class="text-center py-4"><div class="spinner-border spinner-border-sm text-primary"></div> Loading prizes...</td></tr>');
+
+        fetch('/api/lucky-spin/prizes')
+          .then(r => r.json())
+          .then(apiPrizes => {
+            $cardsGrid.empty();
+            $tbody.empty();
+
+            if (!apiPrizes || apiPrizes.length === 0) {
+              $tbody.html('<tr><td colspan="8" class="text-center text-muted py-4">No prizes configured.</td></tr>');
+              return;
+            }
+
+            apiPrizes.forEach(p => {
+              const pc      = getProgressClass(p.name);
+              const used    = p.used  || 0;
+              const total   = p.total || 1;
+              const percent = Math.min(100, Math.round((used / total) * 100));
+              const remaining = p.remaining || 0;
+              const statusBadge = p.status === 'Active'
+                ? 'bg-success-subtle text-success'
+                : 'bg-danger-subtle text-danger';
+
+              const card = `
+                <div class="col-sm-6 col-md-4 col-xl-3">
+                  <div class="stat-card flex-column align-items-start gap-2 h-100">
+                    <div class="d-flex justify-content-between w-100 align-items-center">
+                      <span class="badge ${pc}-subtle text-dark border px-2 py-1" style="font-size:0.72rem;font-weight:600;">${p.type}</span>
+                      <span class="fw-bold font-monospace text-primary">${p.prob}% Odds</span>
+                    </div>
+                    <h6 class="fw-bold mb-1 mt-1 text-truncate w-100" title="${p.name}">${p.name}</h6>
+                    <div class="d-flex justify-content-between w-100 font-monospace" style="font-size:0.75rem;color:var(--muted);">
+                      <span>Vol: ${total}</span>
+                      <span>Used: ${used}</span>
+                      <span>Left: ${remaining}</span>
+                    </div>
+                    <div class="progress w-100 mt-1" style="height:6px;">
+                      <div class="progress-bar ${pc}" role="progressbar" style="width:${percent}%;"></div>
+                    </div>
+                  </div>
+                </div>`;
+              $cardsGrid.append(card);
+
+              const tr = `
+                <tr data-prize-id="${p.id}">
+                  <td><strong>${p.name}</strong></td>
+                  <td>${p.type}</td>
+                  <td class="font-monospace fw-bold text-primary">${p.prob}%</td>
+                  <td class="font-monospace">${total}</td>
+                  <td class="font-monospace">${used}</td>
+                  <td class="font-monospace">${remaining}</td>
+                  <td><span class="badge ${statusBadge} border rounded-pill px-2" style="font-size:0.72rem;">${p.status}</span></td>
+                  <td class="text-end">
+                    <button class="btn-icon-btn btnEditPrize" data-id="${p.id}" data-name="${p.name}" data-type="${p.type}" data-prob="${p.prob}" data-vol="${total}" data-status="${p.status}"><i class="bi bi-pencil-square"></i></button>
+                    <button class="btn-icon-btn btn-icon-danger btnTogglePrize" data-id="${p.id}" title="Toggle Active/Inactive"><i class="bi bi-slash-circle"></i></button>
+                    <button class="btn-icon-btn text-danger btn-icon-danger btnDeletePrize" data-id="${p.id}"><i class="bi bi-trash"></i></button>
+                  </td>
+                </tr>`;
+              $tbody.append(tr);
+            });
+
+            // Edit prize
+            $('.btnEditPrize').off('click').on('click', function () {
+              const $btn = $(this);
+              const id   = $btn.data('id');
+              Swal.fire({
+                title: '<i class="bi bi-pencil-square text-primary me-2"></i>Edit Prize',
+                html: `
+                  <div class="text-start px-2">
+                    <div class="mb-3">
+                      <label for="ePrizeName" class="form-label fs-7 fw-bold text-muted text-uppercase mb-1" style="font-size:0.72rem;">Prize Name</label>
+                      <input id="ePrizeName" type="text" class="form-control" placeholder="e.g. 50% Discount" value="${$btn.data('name')}">
+                    </div>
+                    <div class="row g-2 mb-3">
+                      <div class="col-6">
+                        <label for="ePrizeType" class="form-label fs-7 fw-bold text-muted text-uppercase mb-1" style="font-size:0.72rem;">Prize Type</label>
+                        <select id="ePrizeType" class="form-select">
+                          <option ${$btn.data('type')==='Free Course'?'selected':''}>Free Course</option>
+                          <option ${$btn.data('type')==='Discount'?'selected':''}>Discount</option>
+                          <option ${$btn.data('type')==='No Win'?'selected':''}>No Win</option>
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <label for="ePrizeStatus" class="form-label fs-7 fw-bold text-muted text-uppercase mb-1" style="font-size:0.72rem;">Status</label>
+                        <select id="ePrizeStatus" class="form-select">
+                          <option ${$btn.data('status')==='Active'?'selected':''}>Active</option>
+                          <option ${$btn.data('status')==='Inactive'?'selected':''}>Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="row g-2">
+                      <div class="col-6">
+                        <label for="ePrizeProb" class="form-label fs-7 fw-bold text-muted text-uppercase mb-1" style="font-size:0.72rem;">Win Probability %</label>
+                        <input id="ePrizeProb" type="number" min="1" max="100" class="form-control font-monospace" placeholder="Odds (1-100)" value="${$btn.data('prob')}">
+                      </div>
+                      <div class="col-6">
+                        <label for="ePrizeVol" class="form-label fs-7 fw-bold text-muted text-uppercase mb-1" style="font-size:0.72rem;">Total Volume</label>
+                        <input id="ePrizeVol" type="number" min="1" class="form-control font-monospace" placeholder="Total Volume" value="${$btn.data('vol')}">
+                      </div>
+                    </div>
+                  </div>`,
+                showCancelButton: true,
+                confirmButtonText: 'Save Changes',
+                confirmButtonColor: '#2451E3',
+                preConfirm: () => ({
+                  name: document.getElementById('ePrizeName').value.trim(),
+                  type: document.getElementById('ePrizeType').value,
+                  winProbability: parseInt(document.getElementById('ePrizeProb').value),
+                  totalVolume: parseInt(document.getElementById('ePrizeVol').value),
+                  status: document.getElementById('ePrizeStatus').value
+                })
+              }).then(result => {
+                if (result.isConfirmed && result.value && result.value.name) {
+                  fetch(`/api/lucky-spin/prizes/${id}`, {
+                    method: 'PUT',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(result.value)
+                  })
+                  .then(r => r.json())
+                  .then(res => {
+                    if (res.success) {
+                      Swal.fire({ icon:'success', title:'Updated!', text:'Prize updated successfully.', timer:1800, showConfirmButton:false });
+                      renderPrizesSection();
+                      renderPrizesReportTable();
+                    } else {
+                      Swal.fire({ icon:'error', title:'Error', text: res.message || 'Update failed.' });
+                    }
+                  });
+                }
+              });
+            });
+
+            // Toggle prize status
+            $('.btnTogglePrize').off('click').on('click', function () {
+              const id = $(this).data('id');
+              fetch(`/api/lucky-spin/prizes/${id}/toggle-status`, { method: 'POST' })
+                .then(r => r.json())
+                .then(res => {
+                  if (res.success) {
+                    renderPrizesSection();
+                  } else {
+                    Swal.fire({ icon:'error', title:'Error', text: res.message || 'Toggle failed.' });
+                  }
+                });
+            });
+
+            // Delete prize
+            $('.btnDeletePrize').off('click').on('click', function () {
+              const id = $(this).data('id');
+              Swal.fire({
+                title: 'Delete Prize?',
+                text: 'This cannot be undone. Active prize data in spin_draws will be preserved.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#D6483D',
+                confirmButtonText: 'Yes, Delete'
+              }).then(result => {
+                if (result.isConfirmed) {
+                  fetch(`/api/lucky-spin/prizes/${id}`, { method: 'DELETE' })
+                    .then(r => r.json())
+                    .then(res => {
+                      if (res.success) {
+                        Swal.fire({ icon:'success', title:'Deleted', timer:1500, showConfirmButton:false });
+                        renderPrizesSection();
+                      } else {
+                        Swal.fire({ icon:'error', title:'Error', text: res.message || 'Delete failed.' });
+                      }
+                    });
+                }
+              });
+            });
+          })
+          .catch(err => {
+            $tbody.html(`<tr><td colspan="8" class="text-center text-danger py-4">Failed to load prizes: ${err.message}</td></tr>`);
+          });
+      }
+
+
+
+      function highlightText(text, searchWord) {
+        if (!text) return '';
+        if (!searchWord) return text;
+        const escaped = searchWord.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(`(${escaped})`, 'gi');
+        return text.replace(regex, '<span class="highlight">$1</span>');
+      }
+
+      function renderCourseBadges(service, searchWord) {
+        if (!service) return '<span class="badge bg-secondary-subtle text-secondary border" style="font-size:0.72rem;">None</span>';
+        const courses = service.split(',').map(c => c.trim()).filter(c => c.length > 0);
+        const colors = ['primary', 'success', 'info', 'warning', 'danger'];
+        return courses.map((c, i) => {
+          const col = colors[i % colors.length];
+          return `<span class="badge bg-${col}-subtle text-${col}-emphasis border border-${col}-subtle" style="font-size:0.72rem;white-space:nowrap;">${highlightText(c, searchWord)}</span>`;
+        }).join('');
+      }
+
+      function renderParticipantsTable(data) {
+        const $tbody = $('#participantsTableBody');
+        $tbody.empty();
+        
+        const $cardsContainer = $('#partMobileCardsContainer');
+        $cardsContainer.empty();
+
+        const limit = parseInt($('#partPageSizeSelect').val());
+        const startIdx = data.number * limit;
+        const endIdx = Math.min(startIdx + data.numberOfElements, partTotalElements);
+        const searchWord = $('#partSearchInput').val().trim();
+
+        if (participantsList.length === 0) {
+          $tbody.append('<tr><td colspan="10" class="text-center py-4 text-muted"><i class="bi bi-info-circle me-1"></i> No matching participant records found.</td></tr>');
+          $cardsContainer.append('<div class="text-center py-4 text-muted border rounded p-3" style="background: var(--surface); border-color: var(--border) !important;"><i class="bi bi-info-circle me-1"></i> No matching participant records found.</div>');
+          $('#partPaginationInfo').text('Showing 0 to 0 of 0 entries');
+          renderPartPagination(0);
+          return;
+        }
+
+        participantsList.forEach(p => {
+          let badgeClass = 'bg-secondary-subtle text-secondary';
+          if (p.status === 'WON') badgeClass = 'bg-success-subtle text-success';
+          else if (p.status === 'REDEEMED') badgeClass = 'bg-primary-subtle text-primary';
+          else if (p.status === 'EXPIRED') badgeClass = 'bg-danger-subtle text-danger';
+          else if (p.status === 'BETTER LUCK') badgeClass = 'bg-dark-subtle text-dark';
+
+          const formattedDate = formatDateTime(p.createdAt);
+
+          const tr = `
+            <tr>
+              <td><strong>PAR-${p.id}</strong></td>
+              <td class="font-monospace">${formattedDate}</td>
+              <td><strong>${highlightText(p.name, searchWord)}</strong></td>
+              <td class="font-monospace"><a href="https://wa.me/${p.mobile.replace(/\D/g, '').length === 10 ? '91' + p.mobile.replace(/\D/g, '') : p.mobile.replace(/\D/g, '')}" target="_blank" class="text-decoration-none text-success">${highlightText(p.mobile, searchWord)}</a></td>
+              <td>${highlightText(p.email, searchWord)}</td>
+              <td>${renderCourseBadges(p.courseSelected, searchWord)}</td>
+              <td>${highlightText(p.prizeWon || '-', searchWord)}</td>
+              <td class="font-monospace fw-bold text-primary">${highlightText(p.couponCode || '-', searchWord)}</td>
+              <td><span class="badge ${badgeClass} border px-2 py-1">${p.status}</span></td>
+              <td class="text-end">
+                <button class="btn-icon-btn btnViewParticipant" data-id="${p.id}" title="View Details" data-bs-toggle="modal" data-bs-target="#viewParticipantModal"><i class="bi bi-eye"></i></button>
+                <button class="btn-icon-btn text-success btnWhatsAppParticipant" data-id="${p.id}" title="WhatsApp"><i class="bi bi-whatsapp"></i></button>
+              </td>
+            </tr>
+          `;
+          $tbody.append(tr);
+
+          // Card layout for mobile screens
+          const card = `
+            <div class="mobile-card p-3 mb-3 border rounded shadow-sm" style="background: var(--surface); border-color: var(--border) !important;">
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom" style="border-color: var(--border-soft) !important;">
+                <div>
+                  <code class="text-muted" style="font-size:0.75rem;">PAR-${p.id}</code>
+                  <div style="font-size: 0.72rem; color: var(--muted);">${formattedDate}</div>
+                </div>
+                <div>
+                  <span class="badge ${badgeClass} border px-2 py-1" style="font-size: 0.72rem;">${p.status}</span>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <strong class="text-accent fs-6 d-block mb-1">${highlightText(p.name, searchWord)}</strong>
+                <div class="d-flex flex-wrap gap-1 mt-1">${renderCourseBadges(p.courseSelected, searchWord)}</div>
+                
+                <div class="mt-2" style="font-size: 0.82rem; color: var(--ink-soft);">
+                  <div class="mb-1"><i class="bi bi-envelope text-muted me-2"></i>${highlightText(p.email, searchWord)}</div>
+                  <div class="mb-1"><i class="bi bi-whatsapp text-success me-2"></i><a href="https://wa.me/${p.mobile.replace(/\D/g, '').length === 10 ? '91' + p.mobile.replace(/\D/g, '') : p.mobile.replace(/\D/g, '')}" target="_blank" class="text-decoration-none text-success fw-medium">${highlightText(p.mobile, searchWord)}</a></div>
+                  <div class="mb-1"><i class="bi bi-trophy text-muted me-2"></i>Prize: ${highlightText(p.prizeWon || '-', searchWord)}</div>
+                  <div><i class="bi bi-ticket-perforated text-muted me-2"></i>Coupon: <span class="font-monospace fw-bold text-primary">${highlightText(p.couponCode || '-', searchWord)}</span></div>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 justify-content-end pt-2 border-top" style="border-color: var(--border-soft) !important;">
+                <button class="btn btn-sm btn-outline-secondary btnViewParticipant" data-id="${p.id}" data-bs-toggle="modal" data-bs-target="#viewParticipantModal">
+                  <i class="bi bi-eye me-1"></i> View
+                </button>
+                <button class="btn btn-sm btn-outline-success btnWhatsAppParticipant" data-id="${p.id}">
+                  <i class="bi bi-whatsapp me-1"></i> Chat
+                </button>
+              </div>
+            </div>
+          `;
+          $cardsContainer.append(card);
+        });
+
+        $('#partPaginationInfo').text(`Showing ${startIdx + 1} to ${endIdx} of ${partTotalElements} entries`);
+        renderPartPagination(partTotalPages);
+      }
+
+      function renderPartPagination(totalPages) {
+        const $container = $('#partPaginationPages');
+        $container.empty();
+
+        $container.append(`<button class="btn-page" id="partBtnPrev" ${partCurrentPage === 1 ? 'disabled' : ''}>Previous</button>`);
+
+        const pages = [];
+        if (totalPages <= 7) {
+          for (let i = 1; i <= totalPages; i++) {
+            pages.push(i);
+          }
+        } else {
+          if (partCurrentPage <= 4) {
+            pages.push(1, 2, 3, 4, 5, '...', totalPages);
+          } else if (partCurrentPage >= totalPages - 3) {
+            pages.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+          } else {
+            pages.push(1, '...', partCurrentPage - 1, partCurrentPage, partCurrentPage + 1, '...', totalPages);
+          }
+        }
+
+        pages.forEach(p => {
+          if (p === '...') {
+            $container.append(`<span class="px-2 text-muted align-self-center" style="font-weight: 500; font-family: var(--font-mono);">...</span>`);
+          } else {
+            $container.append(`<button class="btn-page ${p === partCurrentPage ? 'active' : ''}" data-page="${p}">${p}</button>`);
+          }
+        });
+
+        $container.append(`<button class="btn-page" id="partBtnNext" ${partCurrentPage === totalPages ? 'disabled' : ''}>Next</button>`);
+      }
+
+      function fetchParticipants() {
+        const page = partCurrentPage - 1;
+        const size = $('#partPageSizeSelect').val();
+        const sortBy = partCurrentSort.col;
+        const sortDir = partCurrentSort.dir;
+
+        const search = $('#partSearchInput').val().trim();
+        const course = $('#partCourseFilter').val();
+        const prize = $('#partPrizeFilter').val();
+        const status = $('#partStatusFilter').val();
+        const dateFrom = $('#partDateFromFilter').val();
+        const dateTo = $('#partDateToFilter').val();
+
+        let url = `/api/lucky-spin/participants-paged?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        if (course && course !== 'all') url += `&course=${encodeURIComponent(course)}`;
+        if (prize && prize !== 'ALL') url += `&prize=${encodeURIComponent(prize)}`;
+        if (status && status !== 'ALL') url += `&status=${encodeURIComponent(status)}`;
+        if (dateFrom) url += `&dateFrom=${dateFrom}`;
+        if (dateTo) url += `&dateTo=${dateTo}`;
+
+        $.getJSON(url, function (data) {
+          participantsList = data.content;
+          partTotalElements = data.totalElements;
+          partTotalPages = data.totalPages;
+          renderParticipantsTable(data);
+        }).fail(function () {
+          console.error("Failed to load participants.");
+        });
+      }
+
+      function loadPartCoursesDropdown() {
+        const $filters = $('#partCourseFilter');
+        $filters.empty().append(new Option('-- All Courses --', 'all', true, false));
+
+        const groups = {};
+        allCourses.forEach(c => {
+          if (!groups[c.cat]) groups[c.cat] = [];
+          groups[c.cat].push(c);
+        });
+
+        Object.keys(groups).forEach(cat => {
+          const label = categoryLabels[cat] || cat;
+          const $filterGroup = $('<optgroup>').attr('label', label);
+          groups[cat].forEach(c => {
+            $filterGroup.append(new Option(c.name, c.name, false, false));
+          });
+          $filters.append($filterGroup);
+        });
+
+        $filters.select2({
+          placeholder: '-- All Courses --',
+          allowClear: false,
+          width: '100%'
+        });
+
+        bindPartEvents();
+      }
+
+      function bindPartEvents() {
+        // Search debounce
+        let searchTimeout;
+        $('#partSearchInput').off('input').on('input', function () {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            partCurrentPage = 1;
+            fetchParticipants();
+          }, 350);
+        });
+
+        // Filters change
+        $('#partCourseFilter, #partPrizeFilter, #partStatusFilter, #partDateFromFilter, #partDateToFilter, #partPageSizeSelect').off('change').on('change', function () {
+          partCurrentPage = 1;
+          fetchParticipants();
+        });
+
+        // Clear filters
+        $('#partBtnClearFilters').off('click').on('click', function () {
+          $('#partSearchInput').val('');
+          $('#partCourseFilter').val('all').trigger('change');
+          $('#partPrizeFilter').val('ALL');
+          $('#partStatusFilter').val('ALL');
+          $('#partDateFromFilter').val('');
+          $('#partDateToFilter').val('');
+          partCurrentPage = 1;
+          fetchParticipants();
+        });
+
+        // Sorting columns
+        $('#partColSortId').off('click').on('click', function () { togglePartSort('id'); });
+        $('#partColSortDate').off('click').on('click', function () { togglePartSort('createdAt'); });
+        $('#partColSortName').off('click').on('click', function () { togglePartSort('name'); });
+        $('#partColSortCourse').off('click').on('click', function () { togglePartSort('courseSelected'); });
+        $('#partColSortPrize').off('click').on('click', function () { togglePartSort('prizeWon'); });
+        $('#partColSortStatus').off('click').on('click', function () { togglePartSort('status'); });
+
+        // Export Excel
+        $('#partBtnExportExcel').off('click').on('click', function () {
+          const sortBy = partCurrentSort.col;
+          const sortDir = partCurrentSort.dir;
+          const search = $('#partSearchInput').val().trim();
+          const course = $('#partCourseFilter').val();
+          const prize = $('#partPrizeFilter').val();
+          const status = $('#partStatusFilter').val();
+          const dateFrom = $('#partDateFromFilter').val();
+          const dateTo = $('#partDateToFilter').val();
+
+          let url = `/api/lucky-spin/participants/export/excel?sortBy=${sortBy}&sortDir=${sortDir}`;
+          if (search) url += `&search=${encodeURIComponent(search)}`;
+          if (course && course !== 'all') url += `&course=${encodeURIComponent(course)}`;
+          if (prize && prize !== 'ALL') url += `&prize=${encodeURIComponent(prize)}`;
+          if (status && status !== 'ALL') url += `&status=${encodeURIComponent(status)}`;
+          if (dateFrom) url += `&dateFrom=${dateFrom}`;
+          if (dateTo) url += `&dateTo=${dateTo}`;
+
+          window.location.href = url;
+        });
+
+        // Export CSV
+        $('#partBtnExportCsv').off('click').on('click', function () {
+          const sortBy = partCurrentSort.col;
+          const sortDir = partCurrentSort.dir;
+          const search = $('#partSearchInput').val().trim();
+          const course = $('#partCourseFilter').val();
+          const prize = $('#partPrizeFilter').val();
+          const status = $('#partStatusFilter').val();
+          const dateFrom = $('#partDateFromFilter').val();
+          const dateTo = $('#partDateToFilter').val();
+
+          let url = `/api/lucky-spin/participants/export?sortBy=${sortBy}&sortDir=${sortDir}`;
+          if (search) url += `&search=${encodeURIComponent(search)}`;
+          if (course && course !== 'all') url += `&course=${encodeURIComponent(course)}`;
+          if (prize && prize !== 'ALL') url += `&prize=${encodeURIComponent(prize)}`;
+          if (status && status !== 'ALL') url += `&status=${encodeURIComponent(status)}`;
+          if (dateFrom) url += `&dateFrom=${dateFrom}`;
+          if (dateTo) url += `&dateTo=${dateTo}`;
+
+          window.location.href = url;
+        });
+
+        // Pagination buttons
+        $('#partPaginationPages').off('click').on('click', '.btn-page', function () {
+          const $btn = $(this);
+          if ($btn.attr('id') === 'partBtnPrev') {
+            if (partCurrentPage > 1) {
+              partCurrentPage--;
+              fetchParticipants();
+            }
+          } else if ($btn.attr('id') === 'partBtnNext') {
+            if (partCurrentPage < partTotalPages) {
+              partCurrentPage++;
+              fetchParticipants();
+            }
+          } else {
+            partCurrentPage = parseInt($btn.data('page'));
+            fetchParticipants();
+          }
+        });
+
+        // Actions: View Details Modal
+        $(document).off('click', '.btnViewParticipant').on('click', '.btnViewParticipant', function () {
+          const id = $(this).data('id');
+          const p = participantsList.find(item => item.id == id);
+          if (p) {
+            let badgeClass = 'bg-secondary-subtle text-secondary';
+            if (p.status === 'WON') badgeClass = 'bg-success-subtle text-success';
+            else if (p.status === 'REDEEMED') badgeClass = 'bg-primary-subtle text-primary';
+            else if (p.status === 'EXPIRED') badgeClass = 'bg-danger-subtle text-danger';
+            else if (p.status === 'BETTER LUCK') badgeClass = 'bg-dark-subtle text-dark';
+
+            const formattedDate = formatDateTime(p.createdAt);
+
+            const detailHtml = `
+              <div class="view-details-container">
+                <!-- Top Header Card -->
+                <div class="d-flex align-items-center justify-content-between p-3 mb-4 rounded-3" style="background: var(--surface-alt); border: 1px solid var(--border-soft);">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="avatar-circle" style="width: 50px; height: 50px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.25rem; font-family: var(--font-display);">
+                      ${p.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <h4 class="mb-0 fw-bold fs-5 text-accent">${p.name}</h4>
+                      <code style="font-size: 0.78rem; color: var(--muted);">Participant ID: PAR-${p.id}</code>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="badge ${badgeClass} border px-3 py-2" style="font-size:0.8rem;">${p.status}</span>
+                  </div>
+                </div>
+
+                <div class="row g-4">
+                  <!-- Contact Info Section -->
+                  <div class="col-md-6">
+                    <div class="card h-100 border-0 p-3" style="background: var(--surface-alt); border: 1px solid var(--border-soft) !important; border-radius: var(--radius-sm);">
+                      <h6 class="filter-label mb-3 text-primary"><i class="bi bi-person-lines-fill me-2"></i>Contact Details</h6>
+                      
+                      <div class="mb-3">
+                        <span class="d-block text-muted" style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase;">Email Address</span>
+                        <a href="mailto:${p.email}" class="text-decoration-none fw-medium fs-6"><i class="bi bi-envelope me-2 text-muted"></i>${p.email}</a>
+                      </div>
+                      
+                      <div>
+                        <span class="d-block text-muted" style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase;">WhatsApp Number</span>
+                        <a href="https://wa.me/${p.mobile.replace(/\D/g, '').length === 10 ? '91' + p.mobile.replace(/\D/g, '') : p.mobile.replace(/\D/g, '')}" target="_blank" class="text-decoration-none text-success fw-medium fs-6"><i class="bi bi-whatsapp me-2"></i>${p.mobile}</a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Spin Wheel Info Section -->
+                  <div class="col-md-6">
+                    <div class="card h-100 border-0 p-3" style="background: var(--surface-alt); border: 1px solid var(--border-soft) !important; border-radius: var(--radius-sm);">
+                      <h6 class="filter-label mb-3 text-primary"><i class="bi bi-trophy-fill me-2"></i>Spin Draw Details</h6>
+                      
+                      <div class="mb-3">
+                        <span class="d-block text-muted" style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase;">Prize Won</span>
+                        <span class="fs-6 fw-medium text-ink-soft"><i class="bi bi-gift me-2 text-muted"></i>${p.prizeWon || 'Not Spun / Better Luck'}</span>
+                      </div>
+                      
+                      <div class="mb-3">
+                        <span class="d-block text-muted" style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase;">Coupon Code</span>
+                        <span class="fs-6 fw-bold text-primary font-monospace"><i class="bi bi-ticket-perforated me-2 text-muted"></i>${p.couponCode || '-'}</span>
+                      </div>
+
+                      <div>
+                        <span class="d-block text-muted" style="font-size: 0.72rem; font-weight: 600; text-transform: uppercase;">Registration Date</span>
+                        <span class="fs-6 fw-medium text-ink-soft"><i class="bi bi-calendar-check me-2 text-muted"></i>${formattedDate}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Course Selection Section -->
+                  <div class="col-12">
+                    <div class="card border-0 p-3" style="background: var(--surface-alt); border: 1px solid var(--border-soft) !important; border-radius: var(--radius-sm);">
+                      <h6 class="filter-label mb-2 text-primary"><i class="bi bi-journal-bookmark-fill me-2"></i>Course Selected</h6>
+                      <div class="d-flex flex-wrap gap-1">${renderCourseBadges(p.courseSelected, '')}</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Footer Quick Actions inside Modal -->
+                <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top" style="border-color: var(--border-soft) !important;">
+                  <button class="btn btn-success px-3 btnWhatsAppParticipant" data-id="${p.id}" style="border-radius: var(--radius-sm);">
+                    <i class="bi bi-whatsapp me-2"></i>Send WhatsApp Message
+                  </button>
+                </div>
+              </div>
+            `;
+            $('#participantDetailsModalBody').html(detailHtml);
+          }
+        });
+
+        // Actions: WhatsApp direct chat
+        $(document).off('click', '.btnWhatsAppParticipant').on('click', '.btnWhatsAppParticipant', function () {
+          const id = $(this).data('id');
+          const p = participantsList.find(item => item.id == id);
+          if (p) {
+            const cleanMobile = p.mobile.replace(/\D/g, '');
+            const mobileWithCountry = cleanMobile.length === 10 ? '91' + cleanMobile : cleanMobile;
+            
+            let messageStr = `Hello ${p.name},\n\n`;
+            if (p.prizeWon && p.prizeWon !== 'Better Luck Next Time' && p.couponCode && p.couponCode !== '-') {
+              messageStr += `Congratulations! You won the *${p.prizeWon}* prize in our TechnoKraft Lucky Spin Wheel! \n\n`;
+              messageStr += `Your Coupon Code: *${p.couponCode}*\n\n`;
+              messageStr += `You can redeem this coupon code at our center. Our counselor will contact you shortly.`;
+            } else {
+              messageStr += `Thank you for participating in the TechnoKraft Spin Wheel! \n\n`;
+              messageStr += `We recorded your course preference for *${p.courseSelected || 'our courses'}*. Our counselor will contact you shortly to provide batch details.`;
+            }
+
+            const waMsg = encodeURIComponent(messageStr);
+            window.open(`https://wa.me/${mobileWithCountry}?text=${waMsg}`, '_blank');
+          }
+        });
+      }
+
+      function togglePartSort(col) {
+        if (partCurrentSort.col === col) {
+          partCurrentSort.dir = partCurrentSort.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+          partCurrentSort.col = col;
+          partCurrentSort.dir = 'desc';
+        }
+        partCurrentPage = 1;
+        fetchParticipants();
+      }
+
+      function renderWinnersTable() {
+        const $tbody = $('#winnersTableBody');
+        const search = $('#winnerSearchInput').val().toLowerCase();
+        const statusFilter = $('#winnerStatusFilter').val();
+        $tbody.empty();
+
+        const filtered = winners.filter(w => {
+          const matchSearch = w.name.toLowerCase().includes(search) || w.mobile.includes(search) || w.coupon.toLowerCase().includes(search);
+          const matchStatus = statusFilter === 'ALL' || w.status === statusFilter;
+          return matchSearch && matchStatus;
+        });
+
+        if (filtered.length === 0) {
+          $tbody.append('<tr><td colspan="9" class="text-center text-muted py-4">No winning records found.</td></tr>');
+          return;
+        }
+
+        filtered.forEach(w => {
+          let badgeClass = 'bg-warning-subtle text-warning';
+          if (w.status === 'REDEEMED') badgeClass = 'bg-success-subtle text-success';
+          else if (w.status === 'EXPIRED') badgeClass = 'bg-danger-subtle text-danger';
+
+          const tr = `
+            <tr>
+              <td><strong>${w.name}</strong></td>
+              <td class="font-monospace">${w.mobile}</td>
+              <td>${w.prize}</td>
+              <td class="font-monospace fw-bold text-primary">${w.coupon}</td>
+              <td class="font-monospace">${w.date}</td>
+              <td class="font-monospace">${w.expiry}</td>
+              <td class="font-monospace">${w.redeemed ? 'Yes' : 'No'}</td>
+              <td><span class="badge ${badgeClass} border px-2 py-1">${w.status}</span></td>
+              <td class="text-end">
+                <button class="btn-icon-btn btnPrintWinner"><i class="bi bi-printer"></i></button>
+                <button class="btn-icon-btn text-success"><i class="bi bi-whatsapp"></i></button>
+              </td>
+            </tr>
+          `;
+          $tbody.append(tr);
+        });
+      }
+
+      function renderLogsTimeline() {
+        const $tl = $('#offerLogsTimeline');
+        $tl.empty();
+
+        logs.forEach(l => {
+          const item = `
+            <div class="log-item ${l.class}">
+              <div class="log-date">${l.date} &bull; IP: ${l.ip}</div>
+              <div class="log-title">${l.action}</div>
+              <div class="log-desc text-muted">${l.remarks} &bull; Triggered by <strong class="text-dark">${l.user}</strong></div>
+            </div>
+          `;
+          $tl.append(item);
+        });
+      }
+
+      function triggerEmergencyLockdown(reason) {
+        $('#globalEmergencyAlert').slideDown();
+        $('#globalEmergencyDetails').text(`Emergency shutdown initiated directly. Reason: ${reason}`);
+      }
+
+      function disableEmergencyLockdown() {
+        $('#globalEmergencyAlert').slideUp();
+      }
+
+      // ── CHART GENERATOR ─────────────────────────────────────────
+      function renderCharts() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const gridColor = isDark ? '#242F41' : '#ECEEF2';
+        const labelColor = isDark ? '#9CA3AF' : '#6B7280';
+
+        // Destroy previous instances to avoid layout memory leaks
+        Object.keys(chartInstances).forEach(key => {
+          if (chartInstances[key]) chartInstances[key].destroy();
+        });
+
+        // Chart 1: Line graph trend
+        const ctxTrend = document.getElementById('chartTrend');
+        if (ctxTrend) {
+          chartInstances.trend = new Chart(ctxTrend, {
+            type: 'line',
+            data: {
+              labels: ['June 18', 'June 19', 'June 20', 'June 21', 'June 22', 'June 23', 'June 24'],
+              datasets: [{
+                label: 'Spin Wheel Participations',
+                data: [320, 290, 410, 390, 480, 520, 560],
+                borderColor: '#3157E0',
+                backgroundColor: 'rgba(49, 87, 224, 0.1)',
+                fill: true,
+                tension: 0.3
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { grid: { color: gridColor }, ticks: { color: labelColor } },
+                y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+              }
+            }
+          });
+        }
+
+        // Chart 2: Pie distribution
+        const ctxPrizes = document.getElementById('chartPrizes');
+        if (ctxPrizes) {
+          let freeCourseCount = 0;
+          let discount40Count = 0;
+          let discount20Count = 0;
+          let betterLuckCount = 0;
+
+          prizes.forEach(p => {
+            if (p.name === '40% Admission Discount') {
+              discount40Count += (p.won || 0);
+            } else if (p.name === '20% Admission Discount') {
+              discount20Count += (p.won || 0);
+            } else if (p.name === 'Better Luck Next Time') {
+              betterLuckCount += (p.won || 0);
+            } else if (p.type === 'Full Course') {
+              freeCourseCount += (p.won || 0);
+            }
+          });
+
+          chartInstances.prizes = new Chart(ctxPrizes, {
+            type: 'doughnut',
+            data: {
+              labels: ['Free Course', '40% Off', '20% Off', 'Better Luck'],
+              datasets: [{
+                data: [freeCourseCount, discount40Count, discount20Count, betterLuckCount],
+                backgroundColor: ['#1E9E63', '#EAA024', '#3157E0', '#4B5563'],
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'bottom',
+                  labels: { color: labelColor, boxWidth: 12 }
+                }
+              }
+            }
+          });
+        }
+
+        // Chart 3: Bar chart winners
+        const ctxWinners = document.getElementById('chartWinners');
+        if (ctxWinners) {
+          chartInstances.winners = new Chart(ctxWinners, {
+            type: 'bar',
+            data: {
+              labels: ['Jun 18', 'Jun 19', 'Jun 20', 'Jun 21', 'Jun 22', 'Jun 23', 'Jun 24'],
+              datasets: [{
+                label: 'Winners Count',
+                data: [22, 18, 35, 29, 42, 45, 52],
+                backgroundColor: '#EAA024',
+                borderRadius: 4
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { grid: { display: false }, ticks: { color: labelColor } },
+                y: { grid: { color: gridColor }, ticks: { color: labelColor } }
+              }
+            }
+          });
+        }
+
+        // Chart 4: Course wide
+        const ctxCourses = document.getElementById('chartCourses');
+        if (ctxCourses) {
+          chartInstances.courses = new Chart(ctxCourses, {
+            type: 'bar',
+            data: {
+              labels: ['Python', 'Java', 'Full Stack', 'Cyber Sec', 'AWS Cloud'],
+              datasets: [{
+                label: 'Entries',
+                data: [820, 640, 510, 390, 120],
+                backgroundColor: '#3157E0',
+                borderRadius: 4
+              }]
+            },
+            options: {
+              indexAxis: 'y',
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { grid: { color: gridColor }, ticks: { color: labelColor } },
+                y: { grid: { display: false }, ticks: { color: labelColor } }
+              }
+            }
+          });
+        }
+      }
+      function loadSettings() {
+        fetch('/api/lucky-spin/settings')
+          .then(r => r.json())
+          .then(s => {
+            $('#settOfferStart').val(s.offerStart ? s.offerStart.substring(0, 16) : '');
+            $('#settOfferEnd').val(s.offerEnd ? s.offerEnd.substring(0, 16) : '');
+            $('#settSendEmail').prop('checked', s.sendEmail).trigger('change');
+            $('#settGracePeriod').val(s.gracePeriod);
+            $('#settEmergencyTrigger').prop('checked', s.isEmergencyLocked).trigger('change');
+            $('#settEmergencyReason').val(s.emergencyReason);
+            
+            if (s.isEmergencyLocked) {
+              triggerEmergencyLockdown(s.emergencyReason);
+            } else {
+              disableEmergencyLockdown();
+            }
+          })
+          .catch(err => console.error("Error loading settings:", err));
+      }
+
+      function saveSettings(mode = false) {
+        const settings = {
+          offerStart: $('#settOfferStart').val(),
+          offerEnd: $('#settOfferEnd').val(),
+          sendEmail: $('#settSendEmail').is(':checked'),
+          gracePeriod: parseInt($('#settGracePeriod').val()) || 15,
+          isEmergencyLocked: $('#settEmergencyTrigger').is(':checked'),
+          emergencyReason: $('#settEmergencyReason').val() || ''
+        };
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true
+        });
+
+        return fetch('/api/lucky-spin/settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(settings)
+        })
+        .then(r => r.json())
+        .then(res => {
+          if (res.success) {
+            if (mode === 'toast') {
+              Toast.fire({
+                icon: 'success',
+                title: 'Settings updated'
+              });
+            } else if (!mode) {
+              Swal.fire({
+                icon: 'success',
+                title: 'Settings Saved!',
+                text: 'Campaign settings have been successfully updated.',
+                timer: 1800,
+                showConfirmButton: false,
+                confirmButtonColor: '#2451E3'
+              });
+            }
+            return true;
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Update Failed',
+              text: res.message || 'Could not save campaign settings.',
+              confirmButtonColor: '#E85D5D'
+            });
+            return false;
+          }
+        })
+        .catch(err => {
+          console.error("Error saving settings:", err);
+          Swal.fire({
+            icon: 'error',
+            title: 'Connection Error',
+            text: 'Could not connect to the backend server.',
+            confirmButtonColor: '#E85D5D'
+          });
+          return false;
+        });
+      }
+      
+
+      function loadWinners() {
+        return fetch('/api/lucky-spin/winners')
+          .then(r => r.json())
+          .then(data => {
+            winners = data.map(w => ({
+              name: w.name,
+              mobile: w.mobile,
+              prize: w.prizeWon || '-',
+              coupon: w.couponCode || '-',
+              date: formatDate(w.createdAt),
+              expiry: w.createdAt ? formatDate(new Date(new Date(w.createdAt).getTime() + 15 * 24 * 60 * 60 * 1000)) : '-',
+              redeemed: w.status === 'REDEEMED',
+              status: w.status
+            }));
+          })
+          .catch(err => console.error("Error loading winners:", err));
+      }
+
+      function formatDateTime(isoString) {
+        if (!isoString) return '-';
+        const d = new Date(isoString);
+        return d.toLocaleString('en-US', { hour12: true });
+      }
+
+      function formatDate(isoString) {
+        if (!isoString) return '-';
+        const d = new Date(isoString);
+        return d.toISOString().split('T')[0];
+      }
+    })();
+  </script>
+</body>
+
+</html>

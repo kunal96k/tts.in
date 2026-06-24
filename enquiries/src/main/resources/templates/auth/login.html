@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <script>
+    (function () {
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {
+        console.warn('localStorage is blocked:', e);
+      }
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F1E3A" />
+  <title>Admin Sign In | TechnoKraft Training & Solution</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Michroma&display=swap"
+    rel="stylesheet" />
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <style>
+    @font-face {
+      font-family: 'Neuropol';
+      src: url('/fonts/Neuropol.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    :root {
+      --canvas: #F5F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #FAFBFD;
+      --ink: #161A23;
+      --ink-soft: #3D4456;
+      --muted: #6B7280;
+      --border: #E3E6EC;
+      --border-soft: #ECEEF2;
+      --accent: #2451E3;
+      --accent-hover: #1B3FBE;
+      --accent-soft: #EAF0FE;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --shadow-card: 0 24px 64px -28px rgba(22, 52, 138, 0.18), 0 2px 10px rgba(20, 24, 35, 0.04);
+    }
+
+    [data-theme="dark"] {
+      --canvas: #0B0F19;
+      --surface: #121826;
+      --surface-alt: #171E30;
+      --ink: #F3F4F6;
+      --ink-soft: #D1D5DB;
+      --muted: #9CA3AF;
+      --border: #242F41;
+      --border-soft: #1E293B;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --accent-soft: rgba(59, 130, 246, 0.15);
+      --shadow-card: 0 24px 64px -28px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      scrollbar-gutter: stable;
+    }
+
+    html.swal2-shown,
+    body.swal2-shown,
+    html.modal-open,
+    body.modal-open {
+      scrollbar-gutter: stable !important;
+    }
+
+    body.swal2-shown,
+    body.modal-open {
+      padding-right: 0 !important;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--canvas);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--surface);
+      padding: 14px 24px;
+      box-shadow: 0 1px 0 var(--border-soft), 0 4px 12px rgba(0, 0, 0, .03);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .08));
+    }
+
+    .logo-fallback {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .9rem;
+      letter-spacing: .02em;
+    }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .brand-text {
+      font-family: 'Neuropol', sans-serif;
+      font-weight: 400;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: 1px;
+    }
+
+    .brand-sub {
+      font-size: .5rem;
+      color: var(--muted);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+      margin-left: 5px;
+    }
+
+    .theme-toggle {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background .15s, border-color .15s, transform .15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--border-soft);
+      transform: scale(1.05);
+    }
+
+    /* ── LOGIN CONTAINER ── */
+    .login-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: 40px;
+      width: 100%;
+      max-width: 440px;
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .login-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .filter-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      background-color: var(--surface);
+    }
+
+    .btn-new {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s, transform 0.15s;
+    }
+
+    .btn-new:hover {
+      background: var(--accent-hover);
+      color: #fff;
+      transform: scale(1.02);
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 767px) {
+      .brand-sub {
+        display: none !important;
+      }
+
+      .brand-text {
+        font-size: 0.95rem !important;
+      }
+    }
+
+    /* ── SWEETALERT2 STYLING FOR THEME COMPATIBILITY ── */
+    .swal2-popup {
+      background: var(--surface) !important;
+      color: var(--ink) !important;
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius) !important;
+      box-shadow: var(--shadow-card) !important;
+    }
+
+    .swal2-title {
+      color: var(--ink) !important;
+      font-family: var(--font-display) !important;
+      font-weight: 600 !important;
+    }
+
+    .swal2-html-container {
+      color: var(--ink-soft) !important;
+      font-family: var(--font-body) !important;
+    }
+
+    .swal2-confirm {
+      border-radius: var(--radius-sm) !important;
+      font-weight: 600 !important;
+      padding: 10px 24px !important;
+    }
+
+    .swal2-cancel {
+      border-radius: var(--radius-sm) !important;
+      font-weight: 600 !important;
+      padding: 10px 24px !important;
+    }
+
+    /* Fix SweetAlert2 white/light background lines in Dark Mode */
+    .swal2-popup .swal2-success-circular-line-left,
+    .swal2-popup .swal2-success-circular-line-right,
+    .swal2-popup .swal2-success-fix {
+      background-color: transparent !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo-container">
+        <div class="logo-mark">
+          <img th:src="@{/assets/img/logo/tts-logo-ev.png}" alt="TechnoKraft Logo" />
+          <div class="logo-fallback">TK</div>
+        </div>
+        <div class="brand-info">
+          <div class="d-flex align-items-center gap-2">
+            <span class="brand-text">TechnoKraft</span>
+            <span class="badge bg-secondary-subtle text-secondary-emphasis border px-2 py-0.5"
+              style="font-size: 0.65rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">Admin</span>
+          </div>
+          <span class="brand-sub">Training &amp; Solution Pvt. Ltd.</span>
+        </div>
+      </a>
+
+      <div class="d-flex align-items-center gap-3">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+          <i class="bi bi-moon-stars-fill"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── LOGIN FORM CONTAINER ── -->
+  <div class="login-container">
+    <div class="login-card">
+      <h2 class="login-title">Administrator Sign In</h2>
+      <p class="login-subtitle">Access student enquiries database</p>
+
+      <form th:action="@{/auth/login}" method="post">
+        <div class="mb-3">
+          <label class="form-label filter-label">Username / Email</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0 text-muted"
+              style="border-color: var(--border);"><i class="bi bi-person"></i></span>
+            <input type="text" name="username" id="username" class="form-control border-start-0 ps-0"
+              placeholder="admin@technokraft.com" required autocomplete="username" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label filter-label">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0 text-muted"
+              style="border-color: var(--border);"><i class="bi bi-lock"></i></span>
+            <input type="password" name="password" id="password" class="form-control border-start-0 border-end-0 ps-0"
+              placeholder="••••••••" required autocomplete="current-password" />
+            <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword"
+              style="border-color: var(--border);">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit"
+          class="btn btn-primary w-100 py-2 btn-new justify-content-center mt-2 d-flex align-items-center gap-2">
+          Sign In <i class="bi bi-arrow-right-short"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- jQuery + Bootstrap JS + SweetAlert2 -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script th:inline="javascript">
+    // Override SweetAlert2 default behavior to prevent heightAuto layout shifting
+    if (window.Swal) {
+      const originalFire = Swal.fire;
+      Swal.fire = function (options) {
+        if (options && typeof options === 'object' && options.heightAuto === undefined) {
+          options.heightAuto = false;
+        }
+        return originalFire.apply(this, arguments);
+      };
+    }
+
+    $(document).ready(function () {
+      // ── THEME TOGGLE ──
+      const $themeBtn = $('#themeToggle');
+      const $themeIcon = $themeBtn.find('i');
+
+      function updateToggleIcon(theme) {
+        if (theme === 'dark') {
+          $themeIcon.removeClass('bi-moon-stars-fill').addClass('bi-sun-fill');
+        } else {
+          $themeIcon.removeClass('bi-sun-fill').addClass('bi-moon-stars-fill');
+        }
+      }
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      updateToggleIcon(currentTheme);
+
+      $themeBtn.on('click', function () {
+        const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        try {
+          localStorage.setItem('theme', newTheme);
+        } catch (e) {
+          console.warn('Failed to save theme in localStorage:', e);
+        }
+        updateToggleIcon(newTheme);
+      });
+
+      // ── PASSWORD VISIBILITY TOGGLE ──
+      $('#togglePassword').on('click', function () {
+        const $passInput = $('#password');
+        const type = $passInput.attr('type') === 'password' ? 'text' : 'password';
+        $passInput.attr('type', type);
+        $(this).find('i').toggleClass('bi-eye bi-eye-slash');
+      });
+
+      // ── URL PARAM ALERT CHECK (SWEETALERT) ──
+      const urlParams = new URLSearchParams(window.location.search);
+
+      if (urlParams.has('error')) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Authentication Failed',
+          text: 'Invalid username or password. Please try again.',
+          confirmButtonColor: '#2451E3',
+          background: document.documentElement.getAttribute('data-theme') === 'dark' ? '#121826' : '#fff',
+          color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#F3F4F6' : '#161A23'
+        });
+        window.history.replaceState(null, null, window.location.pathname);
+      }
+
+      if (urlParams.has('logout')) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Logged Out',
+          text: 'You have been successfully signed out.',
+          confirmButtonColor: '#2451E3',
+          timer: 3000,
+          timerProgressBar: true,
+          background: document.documentElement.getAttribute('data-theme') === 'dark' ? '#121826' : '#fff',
+          color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#F3F4F6' : '#161A23'
+        });
+        window.history.replaceState(null, null, window.location.pathname);
+      }
+
+      if (urlParams.has('session') && urlParams.get('session') === 'expired') {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Session Expired',
+          text: 'Your session has expired. Please sign in again.',
+          confirmButtonColor: '#2451E3',
+          background: document.documentElement.getAttribute('data-theme') === 'dark' ? '#121826' : '#fff',
+          color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#F3F4F6' : '#161A23'
+        });
+        window.history.replaceState(null, null, window.location.pathname);
+      }
+    });
+  </script>
+</body>
+
+</html>

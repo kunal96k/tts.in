@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Spin & Win exclusive IT course rewards at TechnoKraft Training & Solution. Win free CCNA, RedHat, Data Analytics courses and admission discounts." />
+  <title>Spin &amp; Win | TechnoKraft Training &amp; Solution</title>
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="icon">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&family=Space+Grotesk:wght@600;700&family=Michroma&display=swap"
+    rel="stylesheet">
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Swiper -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- SweetAlert2 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <style>
+    @font-face {
+      font-family: 'Neuropol';
+      src: url('/fonts/Neuropol.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* ========================================================
+       CSS VARIABLES — same as offers.html / enquiry dashboard
+       ======================================================== */
+    :root {
+      --canvas: #F5F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #FAFBFD;
+      --ink: #161A23;
+      --ink-soft: #3D4456;
+      --muted: #6B7280;
+      --border: #E3E6EC;
+      --border-soft: #ECEEF2;
+      --accent: #2451E3;
+      --accent-hover: #1B3FBE;
+      --accent-soft: #EAF0FE;
+      --accent-deep: #16348C;
+      --amber: #E8920B;
+      --success: #168A4F;
+      --success-soft: #E7F6EE;
+      --danger: #D6483D;
+      --danger-soft: #FDF2F2;
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 22px;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --shadow-card: 0 24px 64px -28px rgba(22, 52, 138, .18), 0 2px 10px rgba(20, 24, 35, .04);
+      /* Wheel-specific palette */
+      --gold: #F5C418;
+      --gold-dark: #B38E07;
+    }
+
+    [data-theme="dark"] {
+      --canvas: #0B0F19;
+      --surface: #121826;
+      --surface-alt: #171E30;
+      --ink: #F3F4F6;
+      --ink-soft: #D1D5DB;
+      --muted: #9CA3AF;
+      --border: #242F41;
+      --border-soft: #1E293B;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --accent-soft: rgba(59, 130, 246, .15);
+      --accent-deep: #60A5FA;
+      --amber: #F59E0B;
+      --success: #10B981;
+      --success-soft: rgba(16, 185, 129, .15);
+      --danger: #EF4444;
+      --danger-soft: rgba(239, 68, 68, .15);
+      --shadow-card: 0 24px 64px -28px rgba(0, 0, 0, .7), 0 2px 10px rgba(0, 0, 0, .5);
+    }
+
+    /* ======================================================
+       BASE
+       ====================================================== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html,
+    body {
+      overflow-x: hidden;
+      scrollbar-gutter: stable;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--canvas);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background .3s, color .3s;
+    }
+
+    /* Global — remove ALL link underlines */
+    a {
+      text-decoration: none !important;
+    }
+
+    /* ======================================================
+       HEADER  (matches offers.html exactly)
+       ====================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--surface);
+      padding: 14px 24px;
+      box-shadow: 0 1px 0 var(--border-soft), 0 4px 12px rgba(0, 0, 0, .03);
+      transition: background .3s;
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none !important;
+    }
+
+    .logo-container:hover {
+      text-decoration: none !important;
+    }
+
+    .logo-mark {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .brand-text {
+      font-family: 'Neuropol', sans-serif;
+      font-weight: 400;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: 1px;
+      transition: color .3s;
+    }
+
+    .brand-sub {
+      font-family: 'Neuropol', sans-serif;
+      font-size: .5rem;
+      color: var(--muted);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+      margin-left: 5px;
+    }
+
+    .spin-badge {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: #000;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .75rem;
+      text-transform: uppercase;
+      padding: 5px 13px;
+      border-radius: 100px;
+      letter-spacing: .5px;
+      box-shadow: 0 0 15px rgba(245, 196, 24, .3);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .theme-toggle {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.05rem;
+      transition: background .15s, border-color .15s, transform .15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--border-soft);
+      transform: scale(1.05);
+    }
+
+    /* ======================================================
+       HERO SECTION
+       ====================================================== */
+    .hero-section {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 60px 0 52px;
+      position: relative;
+      overflow: hidden;
+      transition: background .3s;
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: -30%;
+      left: -8%;
+      width: 45%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(36, 81, 227, .06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-section::after {
+      content: '';
+      position: absolute;
+      bottom: -20%;
+      right: -5%;
+      width: 40%;
+      height: 90%;
+      background: radial-gradient(circle, rgba(245, 196, 24, .06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    [data-theme="dark"] .hero-section::before {
+      background: radial-gradient(circle, rgba(59, 130, 246, .1) 0%, transparent 70%);
+    }
+
+    [data-theme="dark"] .hero-section::after {
+      background: radial-gradient(circle, rgba(245, 196, 24, .08) 0%, transparent 70%);
+    }
+
+    .tag-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      padding: 5px 13px;
+      border-radius: 100px;
+      margin-bottom: 18px;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      line-height: 1.15;
+      color: var(--ink);
+      letter-spacing: -.5px;
+      margin-bottom: 14px;
+    }
+
+    .hero-title .hl-gold {
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(245, 196, 24, .25);
+    }
+
+    .hero-sub {
+      font-size: .97rem;
+      color: var(--muted);
+      max-width: 540px;
+      margin: 0 auto 28px;
+      line-height: 1.65;
+    }
+
+    /* Timer */
+    .timer-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 28px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow-card);
+      transition: background .3s, border-color .3s;
+    }
+
+    [data-theme="dark"] .timer-card {
+      border-color: rgba(245, 196, 24, .25);
+    }
+
+    .timer-label {
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .timer-digits {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 2.1rem;
+      color: var(--amber);
+      letter-spacing: 3px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      display: inline-block;
+      min-width: 170px;
+      text-align: center;
+    }
+
+    /* Buttons */
+    .btn-accent {
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      padding: 11px 26px;
+      border-radius: var(--radius-sm);
+      transition: background .2s, transform .15s;
+      font-size: .9rem;
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-hover);
+      color: #fff;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: #000;
+      font-weight: 700;
+      border: none;
+      padding: 11px 26px;
+      border-radius: var(--radius-sm);
+      font-size: .9rem;
+      transition: all .25s cubic-bezier(.16, 1, .3, 1);
+      box-shadow: 0 4px 14px rgba(245, 196, 24, .25);
+    }
+
+    .btn-gold:hover {
+      background: linear-gradient(135deg, #FFD840 0%, var(--gold) 100%);
+      color: #000;
+      box-shadow: 0 6px 20px rgba(245, 196, 24, .4);
+    }
+
+    .btn-gold:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* ======================================================
+       MARQUEE BAR
+       ====================================================== */
+    .marquee-bar {
+      overflow: hidden;
+      white-space: nowrap;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 13px 0;
+      transition: background .3s;
+    }
+
+    .marquee-track {
+      display: inline-block;
+      animation: marquee 32s linear infinite;
+    }
+
+    .marquee-track:hover {
+      animation-play-state: paused;
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+
+      100% {
+        transform: translate3d(-50%, 0, 0);
+      }
+    }
+
+    .prize-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: .83rem;
+      margin: 0 7px;
+      border: 1px solid var(--border);
+      color: var(--ink-soft);
+      background: var(--surface-alt);
+    }
+
+    /* ======================================================
+       SECTION HEADINGS
+       ====================================================== */
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: .72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 5px 12px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(1.4rem, 3vw, 1.9rem);
+      color: var(--ink);
+      letter-spacing: -.3px;
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      font-size: .93rem;
+      color: var(--muted);
+      max-width: 520px;
+    }
+
+    /* ======================================================
+       HOW IT WORKS STEPS
+       ====================================================== */
+    .how-section {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 0;
+      transition: background .3s;
+    }
+
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 22px;
+      height: 100%;
+      text-align: center;
+      transition: transform .2s, box-shadow .2s;
+      position: relative;
+    }
+
+    .step-card:hover {
+      box-shadow: var(--shadow-card);
+    }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .95rem;
+      margin: 0 auto 14px;
+    }
+
+    .step-icon {
+      font-size: 1.9rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .step-card h5 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .98rem;
+      color: var(--ink);
+      margin-bottom: 7px;
+    }
+
+    .step-card p {
+      font-size: .84rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .step-connector {
+      position: absolute;
+      right: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1.1rem;
+      z-index: 10;
+    }
+
+    @media (max-width: 991.98px) {
+      .step-connector {
+        display: none;
+      }
+    }
+
+    /* ======================================================
+       PRIZES & WHEEL SECTION
+       ====================================================== */
+    .prizes-section {
+      padding: 60px 0;
+      background: var(--canvas);
+      transition: background .3s;
+    }
+
+    /* Wheel Arena Card */
+    .wheel-arena {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 24px 28px;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+      transition: background .3s, border-color .3s;
+    }
+
+    [data-theme="dark"] .wheel-arena {
+      border-color: rgba(245, 196, 24, .15);
+      background: linear-gradient(160deg, #121826 0%, #0d1a30 100%);
+    }
+
+    .wheel-arena::before {
+      content: '';
+      position: absolute;
+      inset: -50%;
+      background: radial-gradient(circle at center, rgba(245, 196, 24, .04) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    /* Wheel DOM wrapper */
+    .wheel-outer-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 1 / 1;
+      margin: 0 auto 24px;
+    }
+
+    /* Glow ring */
+    .wheel-glow-ring {
+      position: absolute;
+      top: -14px;
+      left: -14px;
+      right: -14px;
+      bottom: -14px;
+      border-radius: 50%;
+      border: 3px dashed rgba(245, 196, 24, .28);
+      background: radial-gradient(circle, rgba(245, 196, 24, .07) 0%, transparent 70%);
+      animation: rotateGlow 12s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    @keyframes rotateGlow {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Pointer triangle at top */
+    .wheel-pointer-el {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 16;
+      width: 0;
+      height: 0;
+      border-left: 16px solid transparent;
+      border-right: 16px solid transparent;
+      border-top: 26px solid var(--gold);
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .45));
+    }
+
+    /* Canvas container */
+    .wheel-canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 6px solid #1a2236;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6),
+        inset 0 0 24px rgba(0, 0, 0, 0.8),
+        0 0 35px rgba(245, 196, 24, 0.25);
+      overflow: hidden;
+      z-index: 5;
+    }
+
+    #wheelCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Center hub */
+    .wheel-center-hub {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFE47E 0%, var(--gold) 40%, #B38E07 80%, #6E5602 100%);
+      border: 5px solid #1e253a;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, .55), 0 0 18px rgba(245, 196, 24, .55);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .95rem;
+      color: #1a1000;
+      letter-spacing: .5px;
+      transition: transform .2s;
+      user-select: none;
+    }
+
+    .wheel-center-hub:hover {
+      transform: translate(-50%, -50%) scale(1.09);
+    }
+
+    /* Spin button */
+    .spin-now-btn {
+      background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+      color: #000;
+      font-weight: 700;
+      font-family: var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border: none;
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: var(--radius-sm);
+      font-size: .95rem;
+      transition: all .3s cubic-bezier(.16, 1, .3, 1);
+      box-shadow: 0 4px 15px rgba(245, 196, 24, .3);
+      cursor: pointer;
+    }
+
+    .spin-now-btn:hover {
+      background: linear-gradient(135deg, #FFD840 0%, var(--gold) 100%);
+      box-shadow: 0 6px 22px rgba(245, 196, 24, .45);
+    }
+
+    .spin-now-btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Prize legend grid */
+    .prize-legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 576px) {
+      .prize-legend-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media (min-width: 992px) {
+      .prize-legend-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .prize-legend-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .legend-item {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 13px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .legend-item:hover {
+      border-color: var(--accent);
+    }
+
+    .legend-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      flex: 1;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--ink);
+      min-width: 0;
+      line-height: 1.3;
+    }
+
+    .legend-prob {
+      font-size: .68rem;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--border-soft);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* Prize detail cards */
+    .prize-detail-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      height: 100%;
+      transition: border-color .2s, transform .2s;
+    }
+
+    .prize-detail-card:hover {
+      border-color: var(--accent);
+      box-shadow: var(--shadow-card);
+    }
+
+    .pdc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: 3px 9px;
+      border-radius: 100px;
+      margin-bottom: 10px;
+    }
+
+    .pdc-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .95rem;
+      color: var(--ink);
+      margin-bottom: 6px;
+    }
+
+    .pdc-desc {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    .pdc-meta {
+      font-size: .73rem;
+      color: var(--ink-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pdc-meta span {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ======================================================
+       STATS BAND
+       ====================================================== */
+    .stats-band {
+      background: var(--accent);
+      padding: 44px 0;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 12px 8px;
+    }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 2.1rem;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-lbl {
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .72);
+    }
+
+    .stat-sep {
+      border-right: 1px solid rgba(255, 255, 255, .2);
+    }
+
+    @media (max-width: 767.98px) {
+      .stat-sep {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, .18);
+      }
+    }
+
+    /* ======================================================
+       TESTIMONIALS
+       ====================================================== */
+    .testi-section {
+      background: var(--canvas);
+      padding: 56px 0;
+      transition: background .3s;
+    }
+
+    .testi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      height: 100%;
+      transition: background .3s;
+    }
+
+    .testi-text {
+      font-size: .88rem;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      font-style: italic;
+      margin-bottom: 14px;
+    }
+
+    .testi-name {
+      font-weight: 700;
+      color: var(--ink);
+      font-size: .88rem;
+      margin-bottom: 2px;
+    }
+
+    .testi-role {
+      font-size: .76rem;
+      color: var(--muted);
+    }
+
+    /* ======================================================
+       FAQ & TERMS ACCORDIONS
+       ====================================================== */
+    .faq-section {
+      background: var(--surface);
+      padding: 56px 0;
+      transition: background .3s;
+    }
+
+    .terms-section {
+      background: var(--canvas);
+      padding: 56px 0;
+      transition: background .3s;
+    }
+
+    .crm-accordion .accordion-item {
+      background: var(--surface);
+      border: 1px solid var(--border) !important;
+      border-radius: var(--radius-sm) !important;
+      margin-bottom: 9px;
+      overflow: hidden;
+      transition: background .3s;
+    }
+
+    .crm-accordion .accordion-button {
+      background: var(--surface);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: .9rem;
+      font-weight: 600;
+      padding: 15px 20px;
+      border: none;
+      box-shadow: none !important;
+      transition: background .3s, color .3s;
+    }
+
+    .crm-accordion .accordion-button:not(.collapsed) {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .crm-accordion .accordion-button::after {
+      /* keep default chevron; invert for dark */
+    }
+
+    [data-theme="dark"] .crm-accordion .accordion-button::after {
+      filter: invert(1);
+    }
+
+    .crm-accordion .accordion-body {
+      background: var(--surface-alt);
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.65;
+      padding: 15px 20px;
+      transition: background .3s;
+    }
+
+    /* ======================================================
+       STATE PANELS (Already Spun / Expired / Emergency)
+       ====================================================== */
+    .state-wrap {
+      max-width: 520px;
+      margin: 72px auto;
+      padding: 0 20px;
+    }
+
+    .state-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 48px 36px;
+      text-align: center;
+      box-shadow: var(--shadow-card);
+      transition: background .3s;
+    }
+
+    .state-icon {
+      font-size: 3.8rem;
+      margin-bottom: 18px;
+      display: block;
+    }
+
+    .state-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.55rem;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .state-desc {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 26px;
+    }
+
+    /* Coupon box */
+    .coupon-box {
+      background: var(--surface-alt);
+      border: 2px dashed var(--gold);
+      padding: 13px 48px 13px 18px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--gold);
+      margin: 18px 0;
+      position: relative;
+      text-align: left;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      font-size: .78rem;
+      padding: 5px 10px;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: opacity .2s;
+    }
+
+    .copy-btn:hover {
+      opacity: .8;
+    }
+
+    /* ======================================================
+       WINNING MODAL
+       ====================================================== */
+    .modal-win-content {
+      background: var(--surface);
+      border: 2px solid var(--gold);
+      border-radius: var(--radius);
+      box-shadow: 0 0 40px rgba(245, 196, 24, .22);
+    }
+
+    .modal-trophy {
+      font-size: 3.8rem;
+      color: var(--gold);
+      filter: drop-shadow(0 0 14px rgba(245, 196, 24, .55));
+      animation: bounceTrophy 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes bounceTrophy {
+      0% {
+        transform: scale(.9);
+      }
+
+      100% {
+        transform: scale(1.06);
+      }
+    }
+
+    /* ======================================================
+       FLOATING WHATSAPP FAB
+       ====================================================== */
+    .whatsapp-fab {
+      position: fixed;
+      bottom: 26px;
+      right: 26px;
+      background: #25D366;
+      color: #fff;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.75rem;
+      box-shadow: 0 4px 15px rgba(37, 211, 102, .4);
+      z-index: 200;
+      transition: all .3s;
+      text-decoration: none;
+    }
+
+    .whatsapp-fab:hover {
+      transform: scale(1.1);
+      color: #fff;
+    }
+
+    /* ======================================================
+       FOOTER  (matches offers.html)
+       ====================================================== */
+    .site-footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 48px 0 24px;
+      margin-top: auto;
+      transition: background .3s;
+    }
+
+    .footer-brand {
+      font-family: 'Neuropol', sans-serif;
+      font-weight: 400;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: 1px;
+    }
+
+    .footer-desc {
+      font-size: .84rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+
+    .footer-heading {
+      font-size: .72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .footer-contact-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: .84rem;
+      color: var(--ink-soft);
+      margin-bottom: 8px;
+    }
+
+    .footer-contact-item i {
+      color: var(--accent);
+      width: 15px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .footer-contact-item a {
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+
+    .footer-contact-item a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    .footer-divider {
+      border-color: var(--border);
+      margin: 22px 0;
+    }
+
+    .footer-copy {
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    .footer-social {
+      margin-right: 0;
+      transition: margin-right .3s;
+    }
+
+    @media (min-width: 768px) {
+      .footer-social {
+        margin-right: 80px;
+        /* Shift to left to avoid WhatsApp FAB overlap */
+      }
+    }
+
+    .footer-social a {
+      color: var(--muted);
+      font-size: 1.15rem;
+      transition: color .15s;
+    }
+
+    .footer-social a:hover {
+      color: var(--accent);
+    }
+
+    /* ======================================================
+       VIEW TOGGLE SYSTEM
+       ====================================================== */
+    .view-container {
+      display: none;
+    }
+
+    .view-container.active {
+      display: block;
+      animation: fadeInUp .4s ease both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ======================================================
+       RESPONSIVE TWEAKS
+       ====================================================== */
+    @media (max-width: 767.98px) {
+      .hero-section {
+        padding: 38px 0 36px;
+      }
+
+      .prizes-section {
+        padding: 44px 0;
+      }
+
+      .how-section {
+        padding: 40px 0;
+      }
+
+      .wheel-arena {
+        padding: 28px 16px 22px;
+      }
+
+      .state-card {
+        padding: 36px 22px;
+      }
+
+      .site-header {
+        padding: 11px 16px;
+      }
+
+      .brand-sub {
+        display: none !important;
+      }
+
+      .brand-text {
+        font-size: 0.95rem !important;
+      }
+
+      .timer-digits {
+        font-size: 1.75rem;
+        min-width: 140px;
+      }
+
+      .coupon-box {
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .prize-legend-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Spin animation helper */
+    @keyframes spinningIcon {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spinning-icon {
+      display: inline-block;
+      animation: spinningIcon .7s linear infinite;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Floating WhatsApp -->
+  <a href="https://wa.me/918645628278?text=Hi%20TechnoKraft%2C%20I%27m%20interested%20in%20the%20Spin%20%26%20Win%20offer!"
+    class="whatsapp-fab" target="_blank" aria-label="Chat on WhatsApp">
+    <i class="bi bi-whatsapp"></i>
+  </a>
+
+  <!-- =====================================================================
+       HEADER  (identical style to offers.html / enquiry dashboard)
+       ===================================================================== -->
+  <header class="site-header" id="mainHeader">
+    <div class="header-inner">
+      <a th:href="@{/}" class="logo-container">
+        <div class="logo-mark">
+          <img th:src="@{/assets/img/logo/tts-logo-ev.png}" alt="TechnoKraft Logo" style="height: 44px; width: auto; max-width: 100%; object-fit: contain;">
+        </div>
+        <div class="brand-info">
+          <span class="brand-text">TechnoKraft</span>
+          <span class="brand-sub">Training &amp; Solution Pvt. Ltd.</span>
+        </div>
+      </a>
+
+      <div class="d-flex align-items-center gap-2 gap-sm-3">
+        <div class="spin-badge d-none d-sm-flex">
+          <i class="bi bi-stars"></i> 12th Anniversary Offer
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark / light mode" aria-label="Toggle theme">
+          <i class="bi bi-moon-fill" id="themeIcon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       STATE 1 — LANDING VIEW (always shown unless spun / expired / locked)
+       ===================================================================== -->
+  <div id="viewLanding" class="view-container">
+
+    <!-- ── HERO ── -->
+    <section class="hero-section text-center">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-7 col-md-9">
+            <div class="tag-pill"><i class="bi bi-gift-fill"></i> Exclusive Anniversary Campaign</div>
+            <h1 class="hero-title">
+              SPIN THE WHEEL,<br>
+              WIN <span class="hl-gold">AMAZING PRIZES</span>
+            </h1>
+            <p class="hero-sub">
+              Celebrating 12 years of IT Academic Excellence! Spin once to win free IT courses,
+              exclusive course rewards &amp; discounts worth ₹30,000+.
+            </p>
+
+            <!-- Countdown -->
+            <div class="d-flex justify-content-center mb-4">
+              <div class="timer-card">
+                <span class="timer-label">Offer Closes In</span>
+                <div class="timer-digits" id="countdownTimer">03:00:00</div>
+                <div class="progress w-100 mt-1" style="height: 3px; background: var(--border-soft);">
+                  <div class="progress-bar bg-warning progress-bar-striped progress-bar-animated" id="timerProgress"
+                    role="progressbar" style="width: 100%"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+              <a href="#sectionPrizes" class="btn-accent" style="border-radius: var(--radius-sm);">
+                See All Prizes
+              </a>
+              <a href="#sectionSpin" class="btn-gold" style="border-radius: var(--radius-sm);">
+                Spin Now!
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MARQUEE ── -->
+    <div class="marquee-bar" aria-label="Prize preview">
+      <div class="marquee-track">
+        <span class="prize-chip"><i class="bi bi-mortarboard-fill" style="color:#3B82F6;"></i> CCNA Free Course</span>
+        <span class="prize-chip"><i class="bi bi-mortarboard-fill" style="color:#EF4444;"></i> RedHat Free Course</span>
+        <span class="prize-chip"><i class="bi bi-bar-chart-fill" style="color:#A855F7;"></i> Data Analytics
+          Course</span>
+        <span class="prize-chip"><i class="bi bi-code-slash" style="color:#22C55E;"></i> C &amp; C++ Course with Free
+          Course</span>
+        <span class="prize-chip"><i class="bi bi-percent" style="color:#E8920B;"></i> 40% Discount</span>
+        <span class="prize-chip"><i class="bi bi-percent" style="color:#14B8A6;"></i> 10% Discount</span>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <span class="prize-chip"><i class="bi bi-mortarboard-fill" style="color:#3B82F6;"></i> CCNA Free Course</span>
+        <span class="prize-chip"><i class="bi bi-mortarboard-fill" style="color:#EF4444;"></i> RedHat Free Course</span>
+        <span class="prize-chip"><i class="bi bi-bar-chart-fill" style="color:#A855F7;"></i> Data Analytics
+          Course</span>
+        <span class="prize-chip"><i class="bi bi-code-slash" style="color:#22C55E;"></i> C &amp; C++ Course with Free
+          Course</span>
+        <span class="prize-chip"><i class="bi bi-percent" style="color:#E8920B;"></i> 40% Discount</span>
+        <span class="prize-chip"><i class="bi bi-percent" style="color:#14B8A6;"></i> 10% Discount</span>
+      </div>
+    </div>
+
+    <!-- ── PRIZES & SPIN WHEEL SECTION (TOP POSITION) ── -->
+    <section class="prizes-section" id="sectionPrizes" style="padding-top:50px; padding-bottom:50px;">
+      <div class="container">
+
+        <div class="text-center mb-4">
+          <div class="section-tag"><i class="bi bi-trophy-fill"></i> Lucky Spin</div>
+          <h2 class="section-title" id="sectionSpin">Spin the Wheel of Fortune</h2>
+          <p class="section-sub mx-auto">Tap the golden hub or the button to spin. One spin per device. All prizes
+            redeemable at TechnoKraft Nashik.</p>
+        </div>
+
+        <div class="row g-4 g-xl-5 align-items-start">
+
+          <!-- LEFT: WHEEL -->
+          <div class="col-lg-5">
+            <div class="wheel-arena">
+              <!-- Wheel Container -->
+              <div id="wheelContainer" style="display: block;">
+                <!-- Wheel -->
+                <div class="wheel-outer-wrapper">
+                  <div class="wheel-glow-ring"></div>
+                  <div class="wheel-pointer-el"></div>
+                  <div class="wheel-canvas-wrap">
+                    <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                    <div class="wheel-center-hub" id="btnSpin" role="button" aria-label="Spin the wheel">SPIN</div>
+                  </div>
+                </div>
+
+                <p class="mb-2" style="font-size:.82rem; color:var(--muted);">
+                  <i class="bi bi-info-circle-fill text-warning"></i> Click the golden hub or button below
+                </p>
+                <button class="spin-now-btn" id="btnSpinText">
+                  SPIN WHEEL NOW
+                </button>
+                <p class="mt-2" style="font-size:.72rem; color:var(--muted);">
+                  <i class="bi bi-shield-check text-success"></i> One spin per device. Result is final &amp; binding.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: LEGEND + PRIZE CARDS -->
+          <div class="col-lg-7">
+
+            <!-- Legend -->
+            <h3 class="section-title mb-3" style="font-size:1.1rem;">Prize Slots Overview</h3>
+            <div class="prize-legend-grid mb-4">
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#3B82F6;"></div>
+                <div class="legend-name">CCNA Free Course</div>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#EF4444;"></div>
+                <div class="legend-name">RedHat Free Course</div>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#A855F7;"></div>
+                <div class="legend-name">Data Analytics Course</div>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#22C55E;"></div>
+                <div class="legend-name">C &amp; C++ Course with Free Course</div>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#F5C418;"></div>
+                <div class="legend-name">40% Discount</div>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#14B8A6;"></div>
+                <div class="legend-name">10% Discount</div>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:#6B7280;"></div>
+                <div class="legend-name">Better Luck Next Time</div>
+              </div>
+            </div>
+
+            <!-- Prize Detail Cards -->
+            <h3 class="section-title mb-3" style="font-size:1.05rem;">Prize Details</h3>
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="prize-detail-card">
+                  <span class="pdc-badge" style="background:rgba(59,130,246,.1);color:#3B82F6;">
+                    <i class="bi bi-mortarboard-fill"></i> Free Course
+                  </span>
+                  <div class="pdc-title">CCNA Networking</div>
+                  <div class="pdc-desc">Cisco Certified Network Associate 200-301 full course package with lab
+                    worksheets.</div>
+                  <div class="pdc-meta">
+                    <span><i class="bi bi-clock text-muted"></i> Valid 15 days</span>
+                    <span><i class="bi bi-check-circle text-success"></i> New students</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="prize-detail-card">
+                  <span class="pdc-badge" style="background:rgba(239,68,68,.1);color:#EF4444;">
+                    <i class="bi bi-mortarboard-fill"></i> Free Course
+                  </span>
+                  <div class="pdc-title">RedHat Linux</div>
+                  <div class="pdc-desc">RedHat RHCSA full sponsored training seat with dedicated lab sessions.</div>
+                  <div class="pdc-meta">
+                    <span><i class="bi bi-clock text-muted"></i> Valid 15 days</span>
+                    <span><i class="bi bi-check-circle text-success"></i> Non-transferable</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="prize-detail-card">
+                  <span class="pdc-badge" style="background:rgba(168,85,247,.1);color:#A855F7;">
+                    <i class="bi bi-bar-chart-fill"></i> Free Course
+                  </span>
+                  <div class="pdc-title">Data Analytics</div>
+                  <div class="pdc-desc">SQL, Excel Analytics &amp; PowerBI workspace training — industry-ready skills.
+                  </div>
+                  <div class="pdc-meta">
+                    <span><i class="bi bi-clock text-muted"></i> Valid 15 days</span>
+                    <span><i class="bi bi-check-circle text-success"></i> 75% attendance</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="prize-detail-card">
+                  <span class="pdc-badge" style="background:rgba(34,197,94,.1);color:#22C55E;">
+                    <i class="bi bi-code-slash"></i> Free Course
+                  </span>
+                  <div class="pdc-title">C &amp; C++ Course</div>
+                  <div class="pdc-desc">Systems programming, data structures &amp; debugging with completion
+                    certificate.</div>
+                  <div class="pdc-meta">
+                    <span><i class="bi bi-clock text-muted"></i> Valid 15 days</span>
+                    <span><i class="bi bi-check-circle text-success"></i> Certificate</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="prize-detail-card">
+                  <span class="pdc-badge" style="background:rgba(245,196,24,.12);color:#B38E07;">
+                    <i class="bi bi-percent"></i> Discount
+                  </span>
+                  <div class="pdc-title">40% Discount</div>
+                  <div class="pdc-desc">Direct 40% deduction on all professional full-stack training tracks. Online
+                    &amp; offline.</div>
+                  <div class="pdc-meta">
+                    <span><i class="bi bi-clock text-muted"></i> Valid 15 days</span>
+                    <span><i class="bi bi-check-circle text-success"></i> Not combinable</span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="prize-detail-card">
+                  <span class="pdc-badge" style="background:rgba(20,184,166,.1);color:#0D9488;">
+                    <i class="bi bi-percent"></i> Discount
+                  </span>
+                  <div class="pdc-title">10% Discount</div>
+                  <div class="pdc-desc">Instant 10% on diploma and specialization tracks for new student registrations.
+                  </div>
+                  <div class="pdc-meta">
+                    <span><i class="bi bi-clock text-muted"></i> Valid 15 days</span>
+                    <span><i class="bi bi-check-circle text-success"></i> New students</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── HOW IT WORKS ── -->
+    <section class="how-section">
+      <div class="container">
+        <div class="text-center mb-4">
+          <div class="section-tag"><i class="bi bi-list-check"></i> How It Works</div>
+          <h2 class="section-title">Simple 3-Step Process</h2>
+          <p class="section-sub mx-auto">Spin once and claim your exclusive IT training reward in minutes.</p>
+        </div>
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-4 position-relative">
+            <div class="step-card">
+              <div class="step-num">1</div>
+              <i class="bi bi-arrow-down-circle-fill step-icon text-primary"></i>
+              <h5>Scroll to the Wheel</h5>
+              <p>Scroll down to the Spin &amp; Win section below to find the lucky wheel ready to go.</p>
+              <div class="step-connector d-none d-md-block"><i class="bi bi-arrow-right-circle-fill text-accent"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 position-relative">
+            <div class="step-card">
+              <div class="step-num">2</div>
+              <i class="bi bi-cursor-fill step-icon" style="color:var(--gold);"></i>
+              <h5>Click Spin Now</h5>
+              <p>Tap the golden SPIN hub or click the button. One chance per device — make it count!</p>
+              <div class="step-connector d-none d-md-block"><i class="bi bi-arrow-right-circle-fill text-accent"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="step-card">
+              <div class="step-num">3</div>
+              <i class="bi bi-qr-code-scan step-icon text-success"></i>
+              <h5>Claim Your Prize</h5>
+              <p>Save your unique coupon code and visit TechnoKraft center within 15 days to redeem.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+
+    <!-- ── STATS BAND ── -->
+    <section class="stats-band">
+      <div class="container">
+        <div class="row g-0">
+          <div class="col-6 col-md-3 stat-sep">
+            <div class="stat-item">
+              <div class="stat-num">5,000+</div>
+              <div class="stat-lbl">Students Trained</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 stat-sep">
+            <div class="stat-item">
+              <div class="stat-num">12 Yrs</div>
+              <div class="stat-lbl">IT Industry Experience</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 stat-sep">
+            <div class="stat-item">
+              <div class="stat-num">100+</div>
+              <div class="stat-lbl">Industry Courses</div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="stat-item">
+              <div class="stat-num">10,000+</div>
+              <div class="stat-lbl">Successful Placements</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TESTIMONIALS ── -->
+    <section class="testi-section">
+      <div class="container">
+        <div class="text-center mb-4">
+          <div class="section-tag"><i class="bi bi-star-fill"></i> Student Reviews</div>
+          <h2 class="section-title">What Our Students Say</h2>
+          <div class="d-flex justify-content-center align-items-center gap-1 mt-2" style="color:var(--gold);">
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i><i class="bi bi-star-half"></i>
+            <span class="ms-2 text-muted" style="font-size:.82rem;">4.8 / 5 · Google Reviews</span>
+          </div>
+        </div>
+        <div class="row g-4 justify-content-center">
+          <div class="col-md-4">
+            <div class="testi-card">
+              <p class="testi-text">"I won a 40% discount from the lucky spin! The Cisco labs at TechnoKraft are
+                amazing, and the teachers help you clear certification exams easily."</p>
+              <div class="testi-name">Pratik Borse</div>
+              <div class="testi-role">CCNA Graduate · Placed at Wipro</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="testi-card">
+              <p class="testi-text">"TechnoKraft has the best Linux training in Nashik. I got a full RedHat course
+                coupon and cleared my RHCSA exam on the first attempt!"</p>
+              <div class="testi-name">Neha Deshmukh</div>
+              <div class="testi-role">RHCSA Student · Placed at Capgemini</div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="testi-card">
+              <p class="testi-text">"Outstanding faculty! The Python &amp; Data Analytics courses are very structured,
+                and the mock interview sessions built my confidence completely."</p>
+              <div class="testi-name">Abhishek Patil</div>
+              <div class="testi-role">Data Analytics Pro · Placed at TCS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FAQ ── -->
+    <section class="faq-section">
+      <div class="container">
+        <div class="text-center mb-4">
+          <div class="section-tag"><i class="bi bi-question-circle-fill"></i> FAQ</div>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-sub mx-auto">Quick answers about rules, verification flow, and claiming terms.</p>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-lg-7">
+            <div class="accordion crm-accordion" id="faqAccordion">
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#faq1" aria-expanded="false">
+                    Can I spin the wheel more than once?
+                  </button>
+                </h3>
+                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">No. The spin tool is limited to one try per device. Browser storage
+                    actively prevents duplicate spins to guarantee equal chances for everyone.</div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#faq2" aria-expanded="false">
+                    Can I transfer my coupon code to someone else?
+                  </button>
+                </h3>
+                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">No. Coupons are strictly non-transferable. Only the original winner can
+                    claim it by showing matching ID at the TechnoKraft center.</div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#faq3" aria-expanded="false">
+                    How long is my winning coupon valid?
+                  </button>
+                </h3>
+                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">All winning coupons are valid for 15 days from the date of spin. Expired
+                    coupons cannot be claimed or renewed under any circumstances.</div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#faq4" aria-expanded="false">
+                    Is physical presence required at the center?
+                  </button>
+                </h3>
+                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">Yes. To activate free course seats or redeem admission discounts,
+                    students must visit TechnoKraft center in Nashik for physical verification.</div>
+                </div>
+              </div>
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#faq5" aria-expanded="false">
+                    Can existing enrolled students participate?
+                  </button>
+                </h3>
+                <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">This promotional campaign is intended strictly for new admission
+                    enquiries. Existing enrolled students are not eligible for these discount vouchers.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TERMS ── -->
+    <section class="terms-section">
+      <div class="container">
+        <div class="text-center mb-4">
+          <div class="section-tag"><i class="bi bi-file-earmark-text-fill"></i> Guidelines</div>
+          <h2 class="section-title">Terms &amp; Conditions</h2>
+          <p class="section-sub mx-auto">Official campaign guidelines and legal notices for TechnoKraft Spin &amp; Win
+            2026.</p>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            <style>
+              .terms-scroll-list::-webkit-scrollbar {
+                width: 6px;
+              }
+
+              .terms-scroll-list::-webkit-scrollbar-track {
+                background: var(--border-soft);
+                border-radius: 4px;
+              }
+
+              .terms-scroll-list::-webkit-scrollbar-thumb {
+                background: var(--gold);
+                border-radius: 4px;
+              }
+            </style>
+            <div class="terms-card-wrapper p-4"
+              style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-card); transition: background 0.3s;">
+              <div class="terms-scroll-list" style="max-height: 400px; overflow-y: auto; padding-right: 12px;">
+                <ol class="list-group list-group-numbered list-group-flush gap-2">
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Only one spin is allowed per participant.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">The organizer reserves the right to verify the eligibility of participants before
+                      prize distribution.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">If a selected winner is found ineligible, the prize may be forfeited and awarded
+                      to another eligible participant.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Admission for prize winners must be completed within 15 days from the date of the
+                      offer.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Winners must be physically present at TechnoKraft Training &amp; Solution for
+                      admission and prize redemption.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Admission and prize redemption are subject to seat availability.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">The offer is applicable only for eligible courses specified by
+                      TechnoKraft.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Prizes and offers are non-transferable and cannot be exchanged with friends,
+                      relatives, or any other person.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Existing discounts or offers cannot be combined with this offer.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Participants are responsible for providing accurate information. Incorrect
+                      details may result in disqualification.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">The organizer reserves the right to modify, suspend, or terminate the offer at
+                      any time in case of technical issues, misuse, or unforeseen circumstances.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">TechnoKraft Training &amp; Solution's decision regarding winners and prize
+                      distribution shall be final and binding.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Participation in the lucky draw is available only to registered and eligible
+                      participants.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Prize redemption requires identity verification using the registered details and
+                      valid identification proof.</span>
+                  </li>
+                  <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                    style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                    <span class="ms-2">Participation in this offer implies acceptance of all the above terms and
+                      conditions.</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /viewLanding -->
+
+
+  <!-- =====================================================================
+       STATE 2 — ALREADY SPUN
+       ===================================================================== -->
+  <div id="viewAlreadySpun" class="view-container">
+    <div class="container">
+      <div class="state-wrap">
+        <div class="state-card">
+          <i class="bi bi-shield-slash-fill text-danger state-icon"></i>
+          <h2 class="state-title">Already Participated</h2>
+          <p class="state-desc">Our records show your device has already spun the anniversary wheel. Only one spin per
+            device is allowed to ensure fairness for all students.</p>
+          <div class="coupon-box" id="savedCouponBox" style="display:none;">
+            CODE: <span id="savedCouponText">TTS-EXP-000</span>
+            <button class="copy-btn" onclick="copyCode('savedCouponText', this)">Copy</button>
+          </div>
+          <div class="d-flex flex-column gap-2" style="max-width:300px; margin:0 auto;">
+            <a href="https://wa.me/918645628278?text=Hi%2C%20I%20have%20already%20spun%20the%20wheel%20and%20want%20to%20verify%20my%20coupon."
+              class="btn-gold d-block text-center"
+              style="border-radius:var(--radius-sm); padding:12px 20px; text-decoration:none;" target="_blank">
+              <i class="bi bi-whatsapp me-2"></i>Chat on WhatsApp
+            </a>
+            <button class="btn btn-outline-secondary" onclick="resetSpinDemo()">
+              <i class="bi bi-arrow-clockwise me-2"></i>Reset Demo Session
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       STATE 3 — OFFER EXPIRED
+       ===================================================================== -->
+  <div id="viewExpired" class="view-container">
+    <div class="container">
+      <div class="state-wrap">
+        <div class="state-card">
+          <i class="bi bi-hourglass-bottom text-primary state-icon"></i>
+          <h2 class="state-title">Offer Campaign Closed</h2>
+          <p class="state-desc">Thank you for your interest. The 12th Anniversary promotional spin campaign has
+            officially concluded. Stay connected for future course reward campaigns.</p>
+          <div style="max-width:260px; margin:0 auto;">
+            <a href="https://wa.me/918645628278?text=Hi%2C%20I%20missed%20the%20lucky%20spin%20but%20want%20to%20enquire%20about%20IT%20courses."
+              class="btn-accent d-block text-center"
+              style="border-radius:var(--radius-sm); padding:12px 20px; text-decoration:none;" target="_blank">
+              Contact Admissions
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       STATE 4 — EMERGENCY / MAINTENANCE
+       ===================================================================== -->
+  <div id="viewEmergency" class="view-container">
+    <div class="container">
+      <div class="state-wrap">
+        <div class="state-card" style="border-color:var(--danger);">
+          <i class="bi bi-pause-circle-fill text-danger state-icon"></i>
+          <h2 class="state-title" style="color:var(--danger);">Temporarily Unavailable</h2>
+          <p class="state-desc">The campaign spin platform is temporarily offline for backend maintenance. Please check
+            back after some time or contact us directly.</p>
+          <div style="max-width:260px; margin:0 auto;">
+            <a href="tel:+919876543210" class="btn-gold d-block text-center"
+              style="border-radius:var(--radius-sm); padding:12px 20px; text-decoration:none;">
+              <i class="bi bi-telephone-fill me-2"></i>Call Admissions Office
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================================================================
+       FOOTER  (identical style to offers.html / enquiry dashboard)
+       ====================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="row g-4 justify-content-between">
+        <div class="col-md-5">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <img th:src="@{/assets/img/logo/tts-logo-ev.png}" alt="TechnoKraft Logo" style="height:34px; width:auto;" />
+            <span class="footer-brand">TechnoKraft</span>
+          </div>
+          <p class="footer-desc">
+            Premium IT Training &amp; Solution provider in Nashik region. Delivering career-focused instruction
+            for 12+ years with 10,000+ successful placements across top Indian IT companies.
+          </p>
+        </div>
+        <div class="col-md-4">
+          <h6 class="footer-heading">Contact &amp; Office</h6>
+          <div class="footer-contact-item">
+            <i class="bi bi-geo-alt-fill"></i>
+            <span>1st Floor, Kanchwala Avenue, Above Viju's Dabeli, Thatte Nagar Marg, College Road, Nashik, Maharashtra
+              422005</span>
+          </div>
+          <div class="footer-contact-item">
+            <i class="bi bi-telephone-fill"></i>
+            <a href="tel:+918645628278" style="color:var(--ink-soft);">08645628278</a>
+          </div>
+          <div class="footer-contact-item">
+            <i class="bi bi-envelope-fill"></i>
+            <a href="mailto:info@tts.net.in" style="color:var(--ink-soft);">info@tts.net.in</a>
+          </div>
+          <div class="footer-contact-item">
+            <i class="bi bi-clock-fill"></i>
+            <span>Mon – Sat &nbsp;|&nbsp; 09:30 AM – 08:30 PM</span>
+          </div>
+        </div>
+      </div>
+      <hr class="footer-divider">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <div class="footer-copy">
+          &copy; 2026 TechnoKraft Training &amp; Solution Pvt. Ltd. All rights reserved.
+          &nbsp;&nbsp;·&nbsp;&nbsp;
+          <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal"
+            style="color:var(--muted); transition:color .25s;" onmouseover="this.style.color='var(--gold)'"
+            onmouseout="this.style.color='var(--muted)'">Terms &amp; Conditions</a>
+        </div>
+        <div class="footer-social d-flex gap-3">
+          <a href="https://facebook.com/tts.net.in" target="_blank" aria-label="Facebook"><i
+              class="bi bi-facebook"></i></a>
+          <a href="https://www.instagram.com/technokraft_tts" target="_blank" aria-label="Instagram"><i
+              class="bi bi-instagram"></i></a>
+          <a href="https://wa.me/918645628278" target="_blank" aria-label="WhatsApp"><i class="bi bi-whatsapp"></i></a>
+          <a href="https://www.linkedin.com/company/ttsnashik" target="_blank" aria-label="LinkedIn"><i
+              class="bi bi-linkedin"></i></a>
+          <a href="https://youtube.com/@technokraftts?si=TIV2jsMPITbKo_16" target="_blank" aria-label="YouTube"><i
+              class="bi bi-youtube"></i></a>
+          <a href="https://maps.google.com/maps?q=TechnoKraft+Nashik" target="_blank" aria-label="Google Maps"><i
+              class="bi bi-geo-alt-fill"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ======================================================================
+       MODAL: WINNING RESULT
+       ====================================================================== -->
+  <div class="modal fade" id="winningModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="winningModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-win-content">
+        <div class="modal-body text-center p-4 p-md-5">
+          <i class="bi bi-trophy-fill modal-trophy"></i>
+          <h2 class="fw-bold mt-3" id="winningModalLabel" style="font-family:var(--font-display); color:var(--gold);">
+            CONGRATULATIONS!</h2>
+          <p style="color:var(--ink-soft);" class="fs-6 mt-1">You spun the Wheel of Fortune and won:</p>
+          <h3 class="fw-bold my-2" id="wonPrizeTitle"
+            style="font-family:var(--font-display); color:var(--ink); font-size:clamp(1.3rem,4vw,1.9rem);">40%
+            DISCOUNT</h3>
+          <div class="coupon-box text-center" id="couponContainer" style="padding-right:54px;">
+            <span id="couponCodeText">TTS-DIS-3841</span>
+            <button class="copy-btn" onclick="copyCode('couponCodeText', this)">Copy</button>
+          </div>
+          <div class="mb-4" style="font-size:.78rem; color:var(--muted);">
+            <i class="bi bi-clock-history text-warning"></i> Valid for 15 days until <span id="expiryDateText">July 09,
+              2026</span>
+          </div>
+          <div class="d-flex flex-column gap-2">
+            <button class="btn-gold d-block w-100 py-3 fw-bold" id="btnClaimWhatsApp"
+              style="border-radius:var(--radius-sm);">
+              <i class="bi bi-whatsapp me-2"></i>CLAIM VIA WHATSAPP
+            </button>
+            <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close &amp; View Details</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: BETTER LUCK NEXT TIME
+       ====================================================================== -->
+  <div class="modal fade" id="betterLuckModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="betterLuckLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content"
+        style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);">
+        <div class="modal-body text-center p-4 p-md-5">
+          <div style="font-size:3.5rem; margin-bottom:14px; color:var(--muted);"><i class="bi bi-emoji-frown"></i></div>
+          <h2 class="fw-bold" id="betterLuckLabel" style="font-family:var(--font-display); color:var(--ink);">Better
+            Luck Next Time!</h2>
+          <p style="color:var(--muted);" class="fs-6 mb-4 mt-2">
+            Thank you for participating! Vouchers were fully allocated this round, but you can still
+            access direct placement guidance &amp; counselling sessions at no cost.
+          </p>
+          <div class="d-flex flex-column gap-2" style="max-width:260px; margin:0 auto;">
+            <a href="https://wa.me/918645628278?text=Hi%2C%20I%20participated%20in%20the%20lucky%20spin%20and%20want%20to%20enquire%20about%20direct%20admissions."
+              class="btn-gold d-block text-center py-3" style="border-radius:var(--radius-sm); text-decoration:none;"
+              target="_blank">
+              <i class="bi bi-whatsapp me-2"></i>Chat with Advisor
+            </a>
+            <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: UNLOCK WHEEL
+       ====================================================================== -->
+  <div class="modal fade" id="unlockWheelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="unlockWheelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);">
+        <div class="modal-header border-0 px-4 pt-4 pb-0">
+          <h5 class="modal-title fw-bold" id="unlockWheelModalLabel" style="font-family: var(--font-display); color: var(--ink);">
+            <i class="bi bi-shield-lock-fill text-warning me-2"></i>Unlock the Wheel
+          </h5>
+        </div>
+        <div class="modal-body px-4 py-4 text-center">
+          <p class="text-muted fs-7 mb-4">Please enter the mobile number you used to submit the enquiry form.</p>
+          <div class="mb-3">
+            <input type="tel" id="verifyMobileInput" class="form-control form-control-lg text-center" placeholder="Enter Mobile Number" style="border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); color: var(--ink);" maxlength="10">
+          </div>
+          <button class="btn-gold w-100 py-3 mb-2" id="btnVerifyMobile" style="border-radius: var(--radius-sm);">
+            <i class="bi bi-shield-lock-fill me-2"></i>VERIFY & UNLOCK
+          </button>
+          <p class="mt-3 mb-0" style="font-size: .75rem; color: var(--muted);">
+            Haven't submitted the enquiry yet? <a href="/" class="text-primary fw-semibold">Submit Enquiry Here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: TERMS & CONDITIONS
+       ====================================================================== -->
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content"
+        style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-card);">
+        <div class="modal-header border-0 px-4 pt-4 pb-0">
+          <h5 class="modal-title fw-bold" id="termsModalLabel"
+            style="font-family: var(--font-display); color: var(--ink); font-size: 1.4rem;">
+            <i class="bi bi-file-earmark-text-fill text-warning me-2"></i>Terms &amp; Conditions
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+            style="filter: var(--theme-close-filter);"></button>
+        </div>
+        <div class="modal-body px-4 py-3">
+          <div class="terms-scroll-list" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+            <ol class="list-group list-group-numbered list-group-flush gap-2">
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Only one spin is allowed per participant.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">The organizer reserves the right to verify the eligibility of participants before
+                  prize distribution.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">If a selected winner is found ineligible, the prize may be forfeited and awarded to
+                  another eligible participant.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Admission for prize winners must be completed within 15 days from the date of the
+                  offer.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Winners must be physically present at TechnoKraft Training &amp; Solution for
+                  admission and prize redemption.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Admission and prize redemption are subject to seat availability.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">The offer is applicable only for eligible courses specified by TechnoKraft.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Prizes and offers are non-transferable and cannot be exchanged with friends,
+                  relatives, or any other person.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Existing discounts or offers cannot be combined with this offer.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Participants are responsible for providing accurate information. Incorrect details
+                  may result in disqualification.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">The organizer reserves the right to modify, suspend, or terminate the offer at any
+                  time in case of technical issues, misuse, or unforeseen circumstances.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">TechnoKraft Training &amp; Solution's decision regarding winners and prize
+                  distribution shall be final and binding.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Participation in the lucky draw is available only to registered and eligible
+                  participants.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Prize redemption requires identity verification using the registered details and
+                  valid identification proof.</span>
+              </li>
+              <li class="list-group-item d-flex align-items-start border-0 bg-transparent py-2 px-0"
+                style="color: var(--ink-soft); font-size: 0.88rem; line-height: 1.6;">
+                <span class="ms-2">Participation in this offer implies acceptance of all the above terms and
+                  conditions.</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+        <div class="modal-footer border-0 px-4 pb-4 pt-0">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal"
+            style="border-radius: var(--radius-sm);">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ======================================================================
+       JS DEPENDENCIES
+       ====================================================================== -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <script>
+    /* ====================================================
+       DARK / LIGHT THEME TOGGLE
+       ==================================================== */
+    const htmlEl = document.documentElement;
+    const themeIcon = document.getElementById('themeIcon');
+
+    function applyTheme(t) {
+      htmlEl.setAttribute('data-theme', t);
+      localStorage.setItem('spinTheme', t);
+      themeIcon.className = t === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+    }
+
+    applyTheme(localStorage.getItem('spinTheme') || 'light');
+
+    document.getElementById('themeToggle').addEventListener('click', () => {
+      applyTheme(htmlEl.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    /* ====================================================
+       SYSTEM FEATURE FLAGS
+       ==================================================== */
+    let isEmergencyLocked = false; 
+    let isOfferExpired = false;
+
+    /* ====================================================
+       PRIZE DEFINITIONS
+       ==================================================== */
+    const prizes = [
+      { name: "CCNA Free Course", line1: "Free", line2: "Course", angleStart: 0, angleEnd: 45, color: "#3B82F6", isWin: true },
+      { name: "10% Discount", line1: "10%", line2: "Discount", angleStart: 45, angleEnd: 90, color: "#14B8A6", isWin: true },
+      { name: "RedHat Free Course", line1: "Free", line2: "Course", angleStart: 90, angleEnd: 135, color: "#EF4444", isWin: true },
+      { name: "Better Luck Next Time", line1: "Better", line2: "Luck", angleStart: 135, angleEnd: 180, color: "#374151", isWin: false },
+      { name: "Data Analytics Course", line1: "Free", line2: "Course", angleStart: 180, angleEnd: 225, color: "#A855F7", isWin: true },
+      { name: "10% Discount", line1: "10%", line2: "Discount", angleStart: 225, angleEnd: 270, color: "#14B8A6", isWin: true },
+      { name: "C & C++ Course with Free Course", line1: "Free", line2: "Course", angleStart: 270, angleEnd: 315, color: "#22C55E", isWin: true },
+      { name: "40% Discount", line1: "40%", line2: "Discount", angleStart: 315, angleEnd: 360, color: "#F5C418", isWin: true }
+    ];
+
+    /* ====================================================
+       CANVAS WHEEL DRAWING
+       ==================================================== */
+    const canvas = document.getElementById('wheelCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function drawWheel(extraDeg = 0) {
+      const sz = canvas.width;
+      const cx = sz / 2;
+      const cy = sz / 2;
+      const rad = cx - 8;
+
+      ctx.clearRect(0, 0, sz, sz);
+
+      // Apply whole-wheel rotation around center
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(extraDeg * Math.PI / 180);
+      ctx.translate(-cx, -cy);
+
+      prizes.forEach((p) => {
+        const s = p.angleStart * Math.PI / 180;
+        const e = p.angleEnd * Math.PI / 180;
+        const mid = (p.angleStart + p.angleEnd) / 2 * Math.PI / 180;
+
+        // Segment fill
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, rad, s, e);
+        ctx.closePath();
+        ctx.fillStyle = p.color;
+        ctx.fill();
+
+        // 3D Separator line (beveled divider)
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // ── Text ──
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.rotate(mid);
+
+        // Text position: 63% from center toward rim for bigger canvas
+        const tR = rad * 0.63;
+
+        // Colour: dark text on gold slice, white text elsewhere
+        const isDark = p.color === '#F5C418';
+
+        // 3D Shadow effect for text (makes it pop!)
+        ctx.shadowColor = isDark ? 'rgba(255, 255, 255, 0.35)' : 'rgba(0, 0, 0, 0.9)';
+        ctx.shadowBlur = 4;
+        ctx.shadowOffsetX = 1;
+        ctx.shadowOffsetY = 1.5;
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        // Line 1 - Rajdhani font, bold, uppercase
+        ctx.fillStyle = isDark ? '#160d00' : '#FFFFFF';
+        ctx.font = '700 16px Rajdhani, sans-serif';
+        ctx.fillText(p.line1.toUpperCase(), tR, -8);
+
+        // Line 2 - Rajdhani font, condensed
+        ctx.font = '600 12.5px Rajdhani, sans-serif';
+        ctx.fillStyle = isDark ? 'rgba(22, 13, 0, 0.85)' : 'rgba(255, 255, 255, 0.88)';
+        ctx.fillText(p.line2.toUpperCase(), tR, 9);
+
+        ctx.restore();
+      });
+
+      // 3D Shiny Metallic Overlay
+      // Radial gradient with a simulated light source at the top-left
+      const shine = ctx.createRadialGradient(cx - rad * 0.3, cy - rad * 0.3, 10, cx, cy, rad);
+      shine.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
+      shine.addColorStop(0.5, 'rgba(255, 255, 255, 0.05)');
+      shine.addColorStop(0.8, 'rgba(0, 0, 0, 0.15)');
+      shine.addColorStop(1, 'rgba(0, 0, 0, 0.5)');
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.fillStyle = shine;
+      ctx.fill();
+
+      // Outer 3D Gold Metallic Rim
+      const rimGrad = ctx.createLinearGradient(0, 0, sz, sz);
+      rimGrad.addColorStop(0, '#FFE893');
+      rimGrad.addColorStop(0.5, '#F5C418');
+      rimGrad.addColorStop(1, '#8A6D00');
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, rad + 2.5, 0, Math.PI * 2);
+      ctx.strokeStyle = rimGrad;
+      ctx.lineWidth = 6;
+      ctx.stroke();
+
+      // Thin inner highlight ring
+      ctx.beginPath();
+      ctx.arc(cx, cy, rad - 2, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    /* ====================================================
+       COUNTDOWN TIMER
+       ==================================================== */
+    let expTime = 0;
+
+    function runCountdown() {
+      const diff = expTime - Date.now();
+      if (diff <= 0) {
+        document.getElementById('countdownTimer').textContent = '00:00:00';
+        document.getElementById('timerProgress').style.width = '0%';
+        isOfferExpired = true;
+        checkPageState();
+        return;
+      }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('countdownTimer').textContent =
+        `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      document.getElementById('timerProgress').style.width =
+        `${Math.min((diff / (3 * 3600000)) * 100, 100)}%`;
+      setTimeout(runCountdown, 1000);
+    }
+
+    /* ====================================================
+       PAGE STATE MANAGER
+       ==================================================== */
+    function checkPageState() {
+      $('.view-container').removeClass('active');
+
+      if (isEmergencyLocked) { $('#viewEmergency').addClass('active'); return; }
+      if (isOfferExpired) { $('#viewExpired').addClass('active'); return; }
+
+      const hasSpun = localStorage.getItem('studentHasSpun') === 'true';
+      if (hasSpun) {
+        const code = localStorage.getItem('studentCouponCode') || 'TTS-EXP-000';
+        $('#savedCouponText').text(code);
+        if (code && code !== '-') $('#savedCouponBox').show();
+        $('#viewAlreadySpun').addClass('active');
+        
+        // Hide unlock modal if open
+        const modalEl = document.getElementById('unlockWheelModal');
+        if (modalEl) {
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+        }
+        return;
+      }
+
+      // Default: landing view
+      $('#viewLanding').addClass('active');
+
+      const verifiedMobile = sessionStorage.getItem('studentMobile');
+      if (verifiedMobile) {
+        // Hide unlock modal
+        const modalEl = document.getElementById('unlockWheelModal');
+        if (modalEl) {
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+        }
+        $('#wheelContainer').show();
+        drawWheel(0);
+      } else {
+        $('#wheelContainer').show();
+        drawWheel(0);
+        // Show static backdrop modal
+        const modalEl = document.getElementById('unlockWheelModal');
+        if (modalEl) {
+          let modal = bootstrap.Modal.getInstance(modalEl);
+          if (!modal) {
+            modal = new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: false });
+          }
+          modal.show();
+        }
+      }
+    }
+
+    /* ====================================================
+       MOBILE VERIFICATION AND ELIGIBILITY
+       ==================================================== */
+    $('#verifyMobileInput').on('keypress', function(e) {
+      if (e.which === 13) {
+        e.preventDefault();
+        $('#btnVerifyMobile').click();
+      }
+    });
+
+    // Restrict input to digits and maximum 10 digits
+    $('#verifyMobileInput').on('input', function () {
+      let val = $(this).val().replace(/\D/g, '');
+      if (val.length > 10) {
+        val = val.substring(0, 10);
+      }
+      $(this).val(val);
+    });
+
+    $('#btnVerifyMobile').on('click', function(e) {
+      if (e) e.preventDefault();
+      const mobile = $('#verifyMobileInput').val().trim();
+      if (!mobile) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Required',
+          text: 'Please enter your mobile number.'
+        });
+        return;
+      }
+
+      if (!/^\d{10}$/.test(mobile)) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Invalid Format',
+          text: 'Please enter a valid 10-digit mobile number.'
+        });
+        return;
+      }
+
+      $('#btnVerifyMobile').prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>VERIFYING...');
+
+      $.ajax({
+        url: '/api/lucky-spin/check-eligibility',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ mobile: mobile }),
+        success: function(response) {
+          $('#btnVerifyMobile').prop('disabled', false).html('<i class="bi bi-shield-lock-fill me-2"></i>VERIFY & UNLOCK');
+
+          if (response.success) {
+            sessionStorage.setItem('studentMobile', mobile);
+            sessionStorage.setItem('studentName', response.name);
+            sessionStorage.setItem('studentEmail', response.email);
+
+            Swal.fire({
+              icon: 'success',
+              title: 'Welcome ' + response.name + '!',
+              text: 'You are eligible to spin the wheel for your course: ' + response.course + '.',
+              timer: 3000,
+              showConfirmButton: false
+            }).then(() => {
+              checkPageState();
+            });
+          } else {
+            if (response.status === 'ALREADY_SPUN') {
+              localStorage.setItem('studentHasSpun', 'true');
+              let code = '-';
+              const match = response.message.match(/TTS-[A-Z0-9-]+/i);
+              if (match) code = match[0];
+              localStorage.setItem('studentCouponCode', code);
+              checkPageState();
+            } else if (response.status === 'NOT_REGISTERED') {
+              Swal.fire({
+                icon: 'error',
+                title: 'Not Registered',
+                text: response.message,
+                showCancelButton: true,
+                confirmButtonText: 'Register Now',
+                cancelButtonText: 'Cancel'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = '/';
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: response.message || 'Verification failed.'
+              });
+            }
+          }
+        },
+        error: function(xhr) {
+          $('#btnVerifyMobile').prop('disabled', false).html('<i class="bi bi-shield-lock-fill me-2"></i>VERIFY & UNLOCK');
+          let errMsg = 'Could not verify mobile. Please try again.';
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            errMsg = xhr.responseJSON.message;
+          }
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errMsg
+          });
+        }
+      });
+    });
+
+    /* ====================================================
+       AUDIO TICK
+       ==================================================== */
+    let audioCtx = null;
+    function playTick() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(700, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.05);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.06);
+      } catch (e) { }
+    }
+
+    /* ====================================================
+       SPIN LOGIC
+       ==================================================== */
+    let isSpinning = false;
+    let currentDeg = 0;
+
+    function spin(e) {
+      if (e) e.preventDefault();
+      if (isSpinning) return;
+
+      const mobile = sessionStorage.getItem('studentMobile');
+      if (!mobile) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Not Verified',
+          text: 'Please verify your mobile number first.'
+        });
+        checkPageState();
+        return;
+      }
+
+      isSpinning = true;
+
+      // Lock UI
+      $('#btnSpin').css('cursor', 'not-allowed').off('click');
+      $('#btnSpinText').prop('disabled', true).html('ROTATING...');
+
+      $.ajax({
+        url: '/api/lucky-spin/spin',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ mobile: mobile }),
+        success: function(response) {
+          if (response.success) {
+            const idx = response.wheelIndex;
+            const target = prizes[idx];
+
+            const mid = (target.angleStart + target.angleEnd) / 2;
+            const stopAngle = (270 - mid + 360) % 360;
+            const totalRot = 360 * 7 + stopAngle;   // 7 full spins + stop
+
+            let start = null;
+            const dur = 6800; // ms
+
+            function step(ts) {
+              if (!start) start = ts;
+              const t = Math.min((ts - start) / dur, 1);
+              const ease = 1 - Math.pow(1 - t, 3.2);   // cubic ease-out
+              const rotation = ease * totalRot;
+
+              drawWheel(rotation);
+
+              if (Math.floor(rotation / 45) > Math.floor(currentDeg / 45)) playTick();
+              currentDeg = rotation;
+
+              if (t < 1) {
+                requestAnimationFrame(step);
+              } else {
+                isSpinning = false;
+                handleSpinResult(target, response.couponCode, response.expiryDate);
+              }
+            }
+
+            requestAnimationFrame(step);
+          } else {
+            isSpinning = false;
+            $('#btnSpinText').prop('disabled', false).html('SPIN WHEEL NOW');
+            $('#btnSpin').css('cursor', 'pointer').on('click', spin);
+            Swal.fire({
+              icon: 'error',
+              title: 'Draw Failed',
+              text: response.message || 'Could not perform draw.'
+            });
+          }
+        },
+        error: function(xhr) {
+          isSpinning = false;
+          $('#btnSpinText').prop('disabled', false).html('SPIN WHEEL NOW');
+          $('#btnSpin').css('cursor', 'pointer').on('click', spin);
+          let errMsg = 'Failed to perform draw. Please try again.';
+          if (xhr.responseJSON && xhr.responseJSON.message) {
+            errMsg = xhr.responseJSON.message;
+          }
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: errMsg
+          }).then(() => {
+            if (errMsg.indexOf('Already participated') !== -1) {
+              localStorage.setItem('studentHasSpun', 'true');
+              let code = '-';
+              const match = errMsg.match(/TTS-[A-Z0-9-]+/i);
+              if (match) code = match[0];
+              localStorage.setItem('studentCouponCode', code);
+              checkPageState();
+            }
+          });
+        }
+      });
+    }
+
+    $('#btnSpin, #btnSpinText').on('click', spin);
+
+    /* ====================================================
+       RESULT HANDLER
+       ==================================================== */
+    function handleSpinResult(prize, couponCode, expiryDate) {
+      localStorage.setItem('studentHasSpun', 'true');
+      localStorage.setItem('studentCouponCode', couponCode);
+
+      if (prize.isWin && couponCode && couponCode !== '-') {
+        $('#wonPrizeTitle').text(prize.name.toUpperCase());
+        $('#couponCodeText').text(couponCode);
+        $('#expiryDateText').text(expiryDate || '');
+
+        new bootstrap.Modal(document.getElementById('winningModal')).show();
+        triggerConfetti();
+
+        $('#btnClaimWhatsApp').off('click').on('click', function () {
+          const msg = encodeURIComponent(`Hi TechnoKraft team! I participated in the Lucky Spin and won "${prize.name}". My coupon code is ${couponCode}. Please verify and register my slot.`);
+          window.open(`https://wa.me/918645628278?text=${msg}`, '_blank');
+        });
+
+      } else {
+        new bootstrap.Modal(document.getElementById('betterLuckModal')).show();
+      }
+    }
+
+    /* ====================================================
+       COPY CODE HELPER
+       ==================================================== */
+    function copyCode(elemId, btn) {
+      const text = document.getElementById(elemId).textContent.trim();
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = orig; }, 2000);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        btn.textContent = 'Copied!';
+        setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+      });
+    }
+
+    /* ====================================================
+       CONFETTI
+       ==================================================== */
+    function triggerConfetti() {
+      const end = Date.now() + 2500;
+      const iv = setInterval(() => {
+        const left = end - Date.now();
+        if (left <= 0) return clearInterval(iv);
+        const n = 50 * (left / 2500);
+        confetti({ particleCount: n, origin: { x: Math.random() * 0.3 + 0.1, y: Math.random() - 0.2 }, spread: 360, startVelocity: 30, ticks: 60, zIndex: 2000 });
+        confetti({ particleCount: n, origin: { x: Math.random() * 0.3 + 0.7, y: Math.random() - 0.2 }, spread: 360, startVelocity: 30, ticks: 60, zIndex: 2000 });
+      }, 250);
+    }
+
+    /* ====================================================
+       DEV: RESET DEMO SESSION
+       ==================================================== */
+    function resetSpinDemo() {
+      ['studentHasSpun', 'studentCouponCode', 'spinExpiryTime'].forEach(k => localStorage.removeItem(k));
+      ['studentRegistered', 'studentName', 'studentMobile', 'studentEmail'].forEach(k => sessionStorage.removeItem(k));
+      window.location.reload();
+    }
+
+    /* ====================================================
+       INIT
+       ==================================================== */
+    function initCampaign() {
+      fetch('/api/lucky-spin/settings-public')
+        .then(r => r.json())
+        .then(s => {
+          isEmergencyLocked = s.isEmergencyLocked;
+          const start = new Date(s.offerStart).getTime();
+          expTime = new Date(s.offerEnd).getTime();
+          const now = Date.now();
+          
+          isOfferExpired = (now < start || now > expTime);
+          
+          runCountdown();
+          checkPageState();
+        })
+        .catch(err => {
+          console.error("Error loading settings, fallback to defaults:", err);
+          isOfferExpired = false;
+          isEmergencyLocked = false;
+          expTime = Date.now() + 3 * 3600000;
+          runCountdown();
+          checkPageState();
+        });
+    }
+
+    initCampaign();
+  </script>
+</body>
+
+</html>

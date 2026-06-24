@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Internships - TechnoKraft Services</title>
+  <meta name="description" content="Explore free internships at TechnoKraft Services in web development, mobile apps, data science/AI, and cloud/DevOps. Apply and build real-world skills.">
+  <meta name="keywords" content="Internships Nashik, Web Development Internship, Mobile App Internship, Data Science Internship, DevOps Internship, Free Internship">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1YG90K895"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Q1YG90K895');
+  </script>
+
+  <link href="assets/img/logo/tts-logo-ev.png" rel="icon">
+  <link href="assets/img/logo/tts-logo-ev.png" rel="apple-touch-icon">
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+
+<body class="page">
+
+<header id="header" class="header sticky-top">
+  <div class="topbar d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+      <div class="contact-info d-flex align-items-center">
+        <i class="bi bi-envelope d-flex align-items-center"><a href="mailto:info@tehnokaftservices.com">info@tehnokaftservices.com</a></i>
+        <i class="bi bi-phone d-flex align-items-center ms-4"><span>+91 84080 00048</span></i>
+      </div>
+      <div class="social-links d-none d-md-flex align-items-center">
+        <a href="https://www.facebook.com/tts.net.in/" class="facebook" target="_blank" rel="noopener"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/technokraft_tts" class="instagram" target="_blank" rel="noopener"><i class="bi bi-instagram"></i></a>
+        <a href="https://www.linkedin.com/company/ttsnashik/" class="linkedin" target="_blank" rel="noopener"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="branding d-flex align-items-cente">
+    <div class="container position-relative d-flex align-items-center justify-content-between">
+      <a th:href="@{/}" class="logo">
+        <img th:src="@{/assets/img/logo/ev-logo.png}" alt="TechnoKraft" width="180px">
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a th:href="@{/}" class="active">Home</a></li>
+          <li><a th:href="@{/#about}">About</a></li>
+          <li><a th:href="@{/#services}">Services</a></li>
+          <li class="dropdown">
+            <a href="#"><span>More</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a th:href="@{/projects}">Projects</a></li>
+              <li><a th:href="@{/hire-developers}">Hire Developers</a></li>
+              <li><a th:href="@{/internships}" class="active">Internships</a></li>
+              <li><a th:href="@{/careers}">Careers</a></li>
+              <li><a th:href="@{/team}">Team</a></li>
+              <li><a th:href="@{/pricing}">Pricing</a></li>
+              <li><a th:href="@{/faq}">FAQ</a></li>
+            </ul>
+          </li>
+          <li><a th:href="@{/#contact}">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </div>
+</header>
+
+  <main class="main">
+
+    <div class="page-title" data-aos="fade">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">Internships</h1>
+        <nav class="breadcrumbs">
+          <ol>
+            <li><a th:href="@{/}">Home</a></li>
+            <li class="current">Internships</li>
+          </ol>
+        </nav>
+      </div>
+    </div>
+
+    <section class="section light-background">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row justify-content-center">
+          <div class="col-lg-10 text-center">
+            <h2>Learn by Building Real Projects</h2>
+            <p>Our internship programs focus on hands-on learning, mentorship, and industry-ready skills. Internship is free and designed to help students and freshers build a strong portfolio.</p>
+            <a href="../index.html#contact" class="btn-get-started">Apply Now</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="internships" class="internships section light-background">
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Open Internship Tracks</h2>
+        <p><span>Launch Your</span> <span class="description-title">Tech Career</span></p>
+      </div>
+
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="internship-item">
+              <div class="internship-header">
+                <h3>Web Development Internship</h3>
+                <span class="badge">3-6 Months</span>
+              </div>
+              <div class="internship-body">
+                <p><strong>Skills Required:</strong> HTML, CSS, JavaScript, React</p>
+                <p><strong>What You'll Learn:</strong></p>
+                <ul>
+                  <li>Frontend development with modern frameworks</li>
+                  <li>RESTful API integration</li>
+                  <li>Version control with Git</li>
+                  <li>Agile development practices</li>
+                </ul>
+                <p><strong>Stipend:</strong> Free Internship</p>
+                <a href="../index.html#contact" class="btn-apply">Apply Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+            <div class="internship-item">
+              <div class="internship-header">
+                <h3>Mobile App Development Internship</h3>
+                <span class="badge">3-6 Months</span>
+              </div>
+              <div class="internship-body">
+                <p><strong>Skills Required:</strong> Java/Kotlin or Flutter</p>
+                <p><strong>What You'll Learn:</strong></p>
+                <ul>
+                  <li>Native Android/iOS development</li>
+                  <li>Mobile UI/UX best practices</li>
+                  <li>API integration &amp; data management</li>
+                  <li>App deployment &amp; testing</li>
+                </ul>
+                <p><strong>Stipend:</strong> Free Internship</p>
+                <a href="../index.html#contact" class="btn-apply">Apply Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="300">
+            <div class="internship-item">
+              <div class="internship-header">
+                <h3>Data Science &amp; AI Internship</h3>
+                <span class="badge">4-6 Months</span>
+              </div>
+              <div class="internship-body">
+                <p><strong>Skills Required:</strong> Python, Statistics, Machine Learning basics</p>
+                <p><strong>What You'll Learn:</strong></p>
+                <ul>
+                  <li>Data analysis &amp; visualization</li>
+                  <li>Machine learning model development</li>
+                  <li>Natural Language Processing</li>
+                  <li>Deep learning fundamentals</li>
+                </ul>
+                <p><strong>Stipend:</strong> Free Internship</p>
+                <a href="../index.html#contact" class="btn-apply">Apply Now</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="400">
+            <div class="internship-item">
+              <div class="internship-header">
+                <h3>Cloud &amp; DevOps Internship</h3>
+                <span class="badge">3-6 Months</span>
+              </div>
+              <div class="internship-body">
+                <p><strong>Skills Required:</strong> Linux, Basic scripting, Cloud basics</p>
+                <p><strong>What You'll Learn:</strong></p>
+                <ul>
+                  <li>AWS/Azure cloud services</li>
+                  <li>Docker &amp; Kubernetes</li>
+                  <li>CI/CD pipeline setup</li>
+                  <li>Infrastructure as Code</li>
+                </ul>
+                <p><strong>Stipend:</strong> Free Internship</p>
+                <a href="../index.html#contact" class="btn-apply">Apply Now</a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+          <div class="col-lg-6">
+            <h3>Internship Process</h3>
+            <ul>
+              <li>Apply with basic details and skills</li>
+              <li>Short discussion / screening task (if needed)</li>
+              <li>Mentored project work</li>
+              <li>Final evaluation and completion certificate</li>
+            </ul>
+          </div>
+          <div class="col-lg-6">
+            <h3>What You Get</h3>
+            <ul>
+              <li>Project experience and mentorship</li>
+              <li>Portfolio-ready work</li>
+              <li>Learning roadmap and guidance</li>
+              <li>Certificate after completion</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="footer" class="footer">
+
+    <div class="container copyright text-center mt-4">
+      <p>© 2025 <strong class="px-1 sitename">TechnoKraft Services LLP.</strong> All Rights Reserved</p>
+    </div>
+
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+  <script>
+    AOS.init({
+      duration: 1000,
+      easing: 'ease-in-out',
+      once: true,
+      mirror: false
+    });
+
+    const mobileNavToggle = document.querySelector('.mobile-nav-toggle');
+    if (mobileNavToggle) {
+      mobileNavToggle.addEventListener('click', function() {
+        document.querySelector('body').classList.toggle('mobile-nav-active');
+        this.classList.toggle('bi-list');
+        this.classList.toggle('bi-x');
+      });
+    }
+
+    document.querySelectorAll('.navmenu .toggle-dropdown').forEach(toggle => {
+      toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const parentLink = this.closest('a');
+        const parentLi = this.closest('li');
+        const dropdown = parentLi?.querySelector('ul');
+
+        parentLink?.classList.toggle('active');
+        parentLi?.classList.toggle('active');
+        dropdown?.classList.toggle('dropdown-active');
+      });
+    });
+
+    document.querySelectorAll('.navmenu .dropdown > a').forEach(link => {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const parentLi = this.closest('li');
+        const dropdown = parentLi?.querySelector('ul');
+        this.classList.toggle('active');
+        parentLi?.classList.toggle('active');
+        dropdown?.classList.toggle('dropdown-active');
+      });
+    });
+  </script>
+
+</body>
+
+</html>

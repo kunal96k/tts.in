@@ -1,0 +1,155 @@
+# ===============================
+# Server Configuration #production
+# ===============================
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: native
+
+  ssl:
+    enabled: ${SERVER_SSL_ENABLED:false}
+
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,image/svg+xml
+    min-response-size: 1024
+
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+    whitelabel:
+      enabled: false
+
+  servlet:
+    context-path: /
+    session:
+      timeout: 30m
+      cookie:
+        http-only: true
+        secure: true
+        same-site: lax
+
+
+# ===============================
+# Spring Configuration
+# ===============================
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/enquiries_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Kolkata&allowPublicKeyRetrieval=true}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      auto-commit: true
+      pool-name: EnquiriesHikariPool
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: false
+        jdbc:
+          time_zone: Asia/Kolkata
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+
+  thymeleaf:
+    cache: true
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+      file-size-threshold: 2KB
+      location: ${java.io.tmpdir}
+
+  jackson:
+    time-zone: Asia/Kolkata
+
+
+# ===============================
+# Application Admin
+# ===============================
+app:
+  admin:
+    username: ${ADMIN_USERNAME:admin@technokraft}
+    password: ${ADMIN_PASSWORD:Admin@123}
+    name: ${ADMIN_NAME:TechnoKraft Admin}
+
+
+# ===============================
+# Logging Configuration
+# ===============================
+logging:
+  level:
+    root: WARN
+    com.tts.enquiries: INFO
+    org.springframework.web: WARN
+    org.springframework.security: WARN
+    org.hibernate: WARN
+    com.zaxxer.hikari: INFO
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+  file:
+    name: C:/logs/enquiries/app.log
+    max-size: 10MB
+    max-history: 30
+    total-size-cap: 100MB
+
+
+# ===============================
+# Actuator / Monitoring
+# ===============================
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+
+  endpoint:
+    health:
+      show-details: when-authorized
+      probes:
+        enabled: true
+
+  health:
+    db:
+      enabled: true
+    diskspace:
+      enabled: true
+
+
+# ===============================
+# Security (HTTP MODE)
+# ===============================
+security:
+  require-ssl: false
+  headers:
+    frame-options: DENY
+    content-type-options: nosniff
+    xss-protection: 1; mode=block
+    strict-transport-security: ""

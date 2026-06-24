@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Starter Page - TechnoKraft Services</title>
+  <meta name="description" content="Additional information page for TechnoKraft Services.">
+  <meta name="keywords" content="TechnoKraft IT Services, Information">
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1YG90K895"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-Q1YG90K895');
+  </script>
+
+  <!-- Favicons -->
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="icon">
+  <link th:href="@{/assets/img/logo/tts-logo-ev.png}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Open+Sans:wght@300;400;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+
+  <!-- Vendor CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+
+  <!-- Main CSS -->
+  <link th:href="@{/css/main.css}" rel="stylesheet">
+</head>
+
+<body class="starter-page-page">
+
+<!-- ================= HEADER ================= -->
+<header id="header" class="header sticky-top">
+
+  <div class="topbar d-flex align-items-center">
+    <div class="container d-flex justify-content-between">
+      <div class="contact-info d-flex align-items-center">
+        <i class="bi bi-envelope"><a href="mailto:info@tehnokaftservices.com"> info@tehnokaftservices.com</a></i>
+        <i class="bi bi-phone ms-4"><span> +91 84080 00048</span></i>
+      </div>
+      <div class="social-links d-none d-md-flex align-items-center">
+        <a href="https://www.facebook.com/tts.net.in/" target="_blank"><i class="bi bi-facebook"></i></a>
+        <a href="https://www.instagram.com/technokraft_tts" target="_blank"><i class="bi bi-instagram"></i></a>
+        <a href="https://www.linkedin.com/company/ttsnashik/" target="_blank"><i class="bi bi-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="branding">
+    <div class="container d-flex align-items-center justify-content-between">
+      <a th:href="@{/}" class="logo">
+        <img th:src="@{/assets/img/logo/ev-logo.png}" alt="TechnoKraft" width="180">
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a th:href="@{/}">Home</a></li>
+          <li><a th:href="@{/about-us}">About</a></li>
+          <li><a th:href="@{/#services}">Services</a></li>
+
+          <li class="dropdown">
+            <a href="#"><span>More</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+            <ul>
+              <li><a th:href="@{/projects}">Projects</a></li>
+              <li><a th:href="@{/hire-developers}">Hire Developers</a></li>
+              <li><a th:href="@{/internships}">Internships</a></li>
+              <li><a th:href="@{/careers}">Careers</a></li>
+              <li><a th:href="@{/team}">Team</a></li>
+              <li><a th:href="@{/pricing}">Pricing</a></li>
+              <li><a th:href="@{/faq}">FAQ</a></li>
+            </ul>
+          </li>
+
+          <li><a th:href="@{/#contact}">Contact</a></li>
+        </ul>
+
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<!-- ================= MAIN ================= -->
+<main class="main">
+
+  <!-- Page Title -->
+  <div class="page-title" data-aos="fade">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h1>Starter Page</h1>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a th:href="@{/}">Home</a></li>
+          <li class="current">Starter Page</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Starter Section -->
+  <section class="section">
+    <div class="container" data-aos="fade-up">
+      <h2>Starter Section</h2>
+      <p>
+        Use this page as a starting point for creating new pages in your
+        Spring Boot + Thymeleaf application.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer id="footer" class="footer">
+  <div class="container text-center mt-4">
+    <p>© 2025 <strong>TechnoKraft Services LLP</strong>. All Rights Reserved</p>
+  </div>
+</footer>
+
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center">
+  <i class="bi bi-arrow-up-short"></i>
+</a>
+
+<!-- Vendor JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+<script>
+  AOS.init({ duration: 1000, once: true });
+
+  document.querySelector('.mobile-nav-toggle')?.addEventListener('click', function () {
+    document.body.classList.toggle('mobile-nav-active');
+    this.classList.toggle('bi-list');
+    this.classList.toggle('bi-x');
+  });
+</script>
+
+</body>
+</html>

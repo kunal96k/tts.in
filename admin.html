@@ -1,0 +1,1998 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script>
+    (function () {
+      try {
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      } catch (e) {
+        console.warn('localStorage is blocked:', e);
+      }
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F1E3A" />
+  <title>Admin Dashboard | TechnoKraft Training & Solution</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <!-- Select2 -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Michroma&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --canvas: #F5F7FB;
+      --surface: #FFFFFF;
+      --surface-alt: #FAFBFD;
+      --ink: #161A23;
+      --ink-soft: #3D4456;
+      --muted: #6B7280;
+      --border: #E3E6EC;
+      --border-soft: #ECEEF2;
+      --accent: #2451E3;
+      --accent-hover: #1B3FBE;
+      --accent-soft: #EAF0FE;
+      --accent-deep: #16348C;
+      --amber: #E8920B;
+      --success: #168A4F;
+      --success-soft: #E7F6EE;
+      --danger: #D6483D;
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 22px;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+      --shadow-card: 0 24px 64px -28px rgba(22, 52, 138, 0.18), 0 2px 10px rgba(20, 24, 35, 0.04);
+    }
+
+    [data-theme="dark"] {
+      --canvas: #0B0F19;
+      --surface: #121826;
+      --surface-alt: #171E30;
+      --ink: #F3F4F6;
+      --ink-soft: #D1D5DB;
+      --muted: #9CA3AF;
+      --border: #242F41;
+      --border-soft: #1E293B;
+      --accent: #3B82F6;
+      --accent-hover: #2563EB;
+      --accent-soft: rgba(59, 130, 246, 0.15);
+      --accent-deep: #60A5FA;
+      --amber: #F59E0B;
+      --success: #10B981;
+      --success-soft: rgba(16, 185, 129, 0.15);
+      --danger: #EF4444;
+      --shadow-card: 0 24px 64px -28px rgba(0, 0, 0, 0.7), 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--canvas);
+      color: var(--ink);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--surface);
+      padding: 14px 24px;
+      box-shadow: 0 1px 0 var(--border-soft), 0 4px 12px rgba(0, 0, 0, .03);
+    }
+
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+
+    .logo-mark {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    .logo-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: none;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, .08));
+    }
+
+    .logo-fallback {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: .9rem;
+      letter-spacing: .02em;
+    }
+
+    .brand-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+    }
+
+    .brand-text {
+      font-family: 'Michroma', sans-serif;
+      font-weight: 600;
+      font-size: 1.15rem;
+      color: var(--ink);
+      letter-spacing: 1px;
+    }
+
+    .brand-sub {
+      font-family: 'Neuropol', sans-serif;
+      font-size: .5rem;
+      color: var(--muted);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-top: 2px;
+      margin-left: 5px;
+    }
+
+    @media (min-width: 768px) {
+      .border-end-md {
+        border-right: 1px solid var(--border-soft) !important;
+      }
+    }
+
+    /* ── MOBILE DEVICE OPTIMIZATIONS ── */
+    @media (max-width: 767px) {
+      .site-header {
+        padding: 10px 12px !important;
+      }
+      .brand-sub {
+        display: none !important;
+      }
+      .brand-text {
+        font-size: 0.95rem !important;
+      }
+      .site-header .d-flex.align-items-center.gap-3 {
+        gap: 8px !important;
+      }
+      #logoutBtn {
+        width: 38px !important;
+        height: 38px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      #logoutBtn span {
+        display: none !important;
+      }
+      #logoutBtn i {
+        margin: 0 !important;
+      }
+      .dashboard-shell {
+        padding: 16px 12px 48px !important;
+      }
+      .stat-card {
+        padding: 12px !important;
+        gap: 8px !important;
+        align-items: center !important;
+      }
+      .stat-label {
+        font-size: 0.7rem !important;
+      }
+      .stat-val {
+        font-size: 1.3rem !important;
+      }
+    }
+
+    /* ── THEME TOGGLE ── */
+    .theme-toggle {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background .15s, border-color .15s, transform .15s;
+    }
+
+    .theme-toggle:hover {
+      background: var(--border-soft);
+      transform: scale(1.05);
+    }
+
+    /* ── LOGIN CONTAINER ── */
+    .login-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: 40px;
+      width: 100%;
+      max-width: 440px;
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    .login-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--ink);
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    /* ── DASHBOARD SHELL ── */
+    .dashboard-shell {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+      display: none;
+      animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ── STATS CARDS ── */
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-card);
+    }
+
+    .stat-icon {
+      width: 48px !important;
+      height: 48px !important;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0 !important;
+      align-self: center !important;
+    }
+
+    .stat-data {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .stat-val {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.6rem;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    /* ── CONTROL PANEL & FILTERS ── */
+    .dashboard-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      padding: 10px 16px;
+      border-radius: var(--radius-sm);
+      transition: background 0.15s, border-color 0.15s, transform 0.15s;
+    }
+
+    .btn-new {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+    }
+    .btn-new:hover {
+      background: var(--accent-hover);
+      color: #fff;
+      transform: scale(1.02);
+    }
+
+    .btn-import {
+      background: var(--success);
+      color: #fff;
+      border: none;
+    }
+    .btn-import:hover {
+      background: #127241;
+      color: #fff;
+      transform: scale(1.02);
+    }
+
+    .btn-export {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border: 1px solid rgba(36, 81, 227, 0.15);
+    }
+    .btn-export:hover {
+      background: rgba(36, 81, 227, 0.1);
+      transform: scale(1.02);
+    }
+
+    /* Inputs Styling */
+    .form-control, .form-select {
+      background-color: var(--surface-alt);
+      border: 1px solid var(--border);
+      color: var(--ink);
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      background-color: var(--surface);
+    }
+
+    /* Filter Headers */
+    .filter-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    /* ── ENQUIRY TABLE ── */
+    .table-container {
+      margin-top: 24px;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .enquiry-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      text-align: left;
+    }
+
+    .enquiry-table th {
+      background: var(--surface-alt);
+      color: var(--ink-soft);
+      font-weight: 600;
+      padding: 14px 16px;
+      border-bottom: 2px solid var(--border);
+      user-select: none;
+    }
+
+    .enquiry-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-soft);
+      vertical-align: middle;
+      color: var(--ink);
+    }
+
+    .enquiry-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .enquiry-table tr:hover td {
+      background-color: var(--surface-alt);
+    }
+
+    /* Badges & Status */
+    .status-select {
+      font-weight: 600;
+      font-size: 0.76rem;
+      padding: 5px 10px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      width: auto;
+      display: inline-block;
+    }
+
+    .status-new {
+      background-color: #FEF3C7;
+      color: #92400E;
+    }
+    [data-theme="dark"] .status-new {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #FBBF24;
+    }
+
+    .status-contacted {
+      background-color: #DBEAFE;
+      color: #1E40AF;
+    }
+    [data-theme="dark"] .status-contacted {
+      background-color: rgba(59, 130, 246, 0.15);
+      color: #93C5FD;
+    }
+
+    .status-enrolled {
+      background-color: #D1FAE5;
+      color: #065F46;
+    }
+    [data-theme="dark"] .status-enrolled {
+      background-color: rgba(16, 185, 129, 0.15);
+      color: #6EE7B7;
+    }
+
+    .status-closed {
+      background-color: #F3F4F6;
+      color: #374151;
+    }
+    [data-theme="dark"] .status-closed {
+      background-color: rgba(156, 163, 175, 0.15);
+      color: #D1D5DB;
+    }
+
+    /* Action buttons */
+    .btn-icon {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 1.1rem;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.15s, background-color 0.15s;
+    }
+    .btn-icon:hover {
+      color: var(--accent);
+      background-color: var(--border-soft);
+    }
+    .btn-icon-danger:hover {
+      color: var(--danger);
+      background-color: rgba(214, 72, 61, 0.1);
+    }
+
+    /* ── PAGINATION ── */
+    .pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    .pagination-controls {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-page {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--ink-soft);
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .btn-page:hover {
+      background: var(--surface-alt);
+      border-color: var(--ink-soft);
+    }
+
+    .btn-page.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .btn-page:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Glassmorphic Modal */
+    .modal-content {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      color: var(--ink);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .modal-footer {
+      border-top: 1px solid var(--border-soft);
+    }
+
+    /* Select2 overrides for Admin */
+    .select2-container--default .select2-selection--single {
+      background-color: var(--surface-alt) !important;
+      border: 1px solid var(--border) !important;
+      height: 40px !important;
+      border-radius: var(--radius-sm) !important;
+      transition: border-color .25s, box-shadow .25s !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+      line-height: 38px !important;
+      color: var(--ink) !important;
+      padding-left: 14px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 38px !important;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow b {
+      border-color: var(--muted) transparent transparent !important;
+    }
+    .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
+      border-color: transparent transparent var(--muted) !important;
+    }
+    .select2-container--default.select2-container--focus .select2-selection--single,
+    .select2-container--default.select2-container--open .select2-selection--single {
+      border-color: var(--accent) !important;
+      box-shadow: 0 0 0 3px var(--accent-soft) !important;
+    }
+    .select2-dropdown {
+      background-color: var(--surface) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--ink) !important;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15) !important;
+    }
+    .select2-search--dropdown .select2-search__field {
+      background-color: var(--surface-alt) !important;
+      border: 1px solid var(--border) !important;
+      color: var(--ink) !important;
+      border-radius: var(--radius-sm) !important;
+      padding: 6px 10px !important;
+    }
+    .select2-results__option {
+      color: var(--ink) !important;
+      padding: 8px 14px !important;
+    }
+    .select2-results__option--highlighted {
+      background-color: var(--accent) !important;
+      color: #fff !important;
+    }
+    .select2-container--default .select2-results__option--selected {
+      background-color: var(--accent-soft) !important;
+      color: var(--ink) !important;
+    }
+    .select2-results__option[aria-disabled=true] {
+      color: var(--muted) !important;
+    }
+
+    /* Dark Mode Select2 Tweaks */
+    [data-theme="dark"] .select2-container--default .select2-selection--single {
+      background-color: var(--surface) !important;
+    }
+    [data-theme="dark"] .select2-dropdown {
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Highlight matching search text */
+    .highlight {
+      background-color: #FEF08A;
+      color: #000;
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="https://tts.net.in/" class="logo-container" target="_blank" rel="noopener">
+        <div class="logo-mark">
+          <img src="" alt="TechnoKraft Logo" style="display: none;" />
+          <div class="logo-fallback">TK</div>
+        </div>
+        <div class="brand-info">
+          <div class="d-flex align-items-center gap-2">
+            <span class="brand-text">TechnoKraft</span>
+            <span class="badge bg-secondary-subtle text-secondary-emphasis border px-2 py-0.5" style="font-size: 0.65rem; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;">Admin</span>
+          </div>
+          <span class="brand-sub">Training &amp; Solution Pvt. Ltd.</span>
+        </div>
+      </a>
+
+      <div class="d-flex align-items-center gap-3">
+        <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme">
+          <i class="bi bi-moon-stars-fill"></i>
+        </button>
+        <button id="logoutBtn" class="btn btn-outline-danger btn-sm rounded-pill px-3" style="display:none;">
+          <i class="bi bi-box-arrow-right me-1"></i> <span>Logout</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── LOGIN FORM CONTAINER ── -->
+  <div id="loginView" class="login-container">
+    <div class="login-card">
+      <h2 class="login-title">Administrator Sign In</h2>
+      <p class="login-subtitle">Access student enquiries database</p>
+
+      <form id="loginForm">
+        <div class="mb-3">
+          <label class="form-label filter-label">Username</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="bi bi-person"></i></span>
+            <input type="text" id="username" class="form-control border-start-0 ps-0" placeholder="admin" required value="admin" />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label filter-label">Password</label>
+          <div class="input-group">
+            <span class="input-group-text bg-transparent border-end-0 text-muted"><i class="bi bi-lock"></i></span>
+            <input type="password" id="password" class="form-control border-start-0 border-end-0 ps-0" placeholder="••••••••" required value="admin" />
+            <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div id="loginError" class="alert alert-danger p-2 fs-7 mb-3" style="display:none; font-size: 0.8rem;">
+          <i class="bi bi-exclamation-triangle me-1"></i> Invalid username or password
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 py-2 btn-action btn-new justify-content-center mt-2">
+          Sign In <i class="bi bi-arrow-right-short"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── DASHBOARD CONTAINER ── -->
+  <main id="dashboardView" class="dashboard-shell">
+    
+    <!-- Metrics Grid -->
+    <div class="row g-4 mb-4">
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(36, 81, 227, 0.1); color: var(--accent);">
+            <i class="bi bi-people-fill"></i>
+          </div>
+          <div class="stat-data">
+            <span class="stat-label">Total Enquiries</span>
+            <span class="stat-val" id="statTotal">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(232, 146, 11, 0.1); color: var(--amber);">
+            <i class="bi bi-calendar-event-fill"></i>
+          </div>
+          <div class="stat-data">
+            <span class="stat-label">Today's New</span>
+            <span class="stat-val" id="statToday">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(22, 138, 79, 0.1); color: var(--success);">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <div class="stat-data">
+            <span class="stat-label">Enrolled</span>
+            <span class="stat-val" id="statEnrolled">0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-6 col-lg-3">
+        <div class="stat-card">
+          <div class="stat-icon" style="background: rgba(214, 72, 61, 0.1); color: var(--danger);">
+            <i class="bi bi-telephone-outbound-fill"></i>
+          </div>
+          <div class="stat-data">
+            <span class="stat-label">New / Pending</span>
+            <span class="stat-val" id="statPending">0</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Filters & Controls Panel -->
+    <div class="dashboard-panel">
+      
+      <!-- Top actions bar -->
+      <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+        <div class="d-flex gap-2">
+          <a href="https://team.ttsnashik.com/" target="_blank" class="btn btn-action btn-new text-decoration-none" id="btnNew">
+            <i class="bi bi-plus-circle-fill"></i> New
+          </a>
+          <button class="btn btn-action btn-import" id="btnImport">
+            <i class="bi bi-upload"></i> Import
+          </button>
+          <button class="btn btn-action btn-export" id="btnExport">
+            <i class="bi bi-download"></i> Export
+          </button>
+          <input type="file" id="importFile" style="display:none;" accept=".json" />
+        </div>
+
+        <div class="d-flex gap-2 align-items-center mt-2 mt-md-0">
+          <div class="input-group" style="max-width: 320px; width:100%;">
+            <span class="input-group-text bg-transparent text-muted border-end-0"><i class="bi bi-search"></i></span>
+            <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Search name, mobile, course..." />
+          </div>
+          <select id="pageSizeSelect" class="form-select w-auto">
+            <option value="10">10</option>
+            <option value="25" selected>25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Filters segment -->
+      <div class="row g-3">
+        <div class="col-12 col-md-3">
+          <label class="filter-label">Course Filter</label>
+          <select id="courseFilter" class="form-select select2-init">
+            <!-- Populated via Javascript -->
+          </select>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="filter-label">Status Filter</label>
+          <select id="statusFilter" class="form-select">
+            <option value="all">-- All Statuses --</option>
+            <option value="New">New</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Enrolled">Enrolled</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
+
+        <div class="col-6 col-md-2">
+          <label class="filter-label">From Date</label>
+          <input type="date" id="dateFromFilter" class="form-control" />
+        </div>
+
+        <div class="col-6 col-md-2">
+          <label class="filter-label">To Date</label>
+          <input type="date" id="dateToFilter" class="form-control" />
+        </div>
+
+        <div class="col-12 col-md-2 d-flex align-items-end">
+          <button class="btn btn-outline-secondary w-100 py-2" id="btnClearFilters">
+            <i class="bi bi-x-circle me-1"></i> Clear Filters
+          </button>
+        </div>
+      </div>
+
+      <!-- Enquiries Table (Desktop view) -->
+      <div class="table-container d-none d-md-block">
+        <table class="enquiry-table" id="enquiriesTable">
+          <thead>
+            <tr>
+              <th style="width: 80px;">ID</th>
+              <th style="width: 140px; cursor: pointer;" id="colSortDate">Date <i class="bi bi-arrow-down-up ms-1"></i></th>
+              <th style="cursor: pointer;" id="colSortName">Student Name <i class="bi bi-arrow-down-up ms-1"></i></th>
+              <th>Contact Info</th>
+              <th>Course Selected</th>
+              <th style="width: 160px;">Status</th>
+              <th style="width: 140px; text-align: center;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="enquiriesTableBody">
+            <!-- Dynamically populated rows -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Enquiries Mobile List (Mobile app-like card view) -->
+      <div class="mobile-cards-container d-md-none mt-3" id="mobileCardsContainer">
+        <!-- Dynamically populated cards -->
+      </div>
+
+      <!-- Pagination Footer -->
+      <div class="pagination-bar">
+        <span id="paginationInfo">Showing 0 to 0 of 0 entries</span>
+        <div class="pagination-controls" id="paginationPages">
+          <!-- Page buttons -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── MODAL: NEW ENQUIRY ── -->
+  <div class="modal fade" id="newEnquiryModal" tabindex="-1" aria-labelledby="newEnquiryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <form id="newEnquiryForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newEnquiryModalLabel"><i class="bi bi-person-plus-fill me-2"></i>Create New Enquiry</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="row g-3">
+              <!-- Name -->
+              <div class="col-md-6">
+                <label class="form-label filter-label">Student Name *</label>
+                <input type="text" id="newStudentName" class="form-control" required placeholder="e.g. Kunal Patil" />
+              </div>
+              
+              <!-- Email -->
+              <div class="col-md-6">
+                <label class="form-label filter-label">Email Address *</label>
+                <input type="email" id="newStudentEmail" class="form-control" required placeholder="name@example.com" />
+              </div>
+
+              <!-- WhatsApp -->
+              <div class="col-md-6">
+                <label class="form-label filter-label">WhatsApp Number *</label>
+                <input type="tel" id="newWhatsappNo" class="form-control" required placeholder="10-digit number" maxlength="10" />
+              </div>
+
+              <!-- Course -->
+              <div class="col-md-6">
+                <label class="form-label filter-label">Course *</label>
+                <select id="newCourseSelect" class="form-select select2-init" style="width:100%;" required>
+                  <!-- Populated via script -->
+                </select>
+              </div>
+
+              <!-- Qualification -->
+              <div class="col-md-6">
+                <label class="form-label filter-label">Qualification</label>
+                <select id="newQualification" class="form-select">
+                  <option value="">-- Choose Qualification --</option>
+                  <option value="10th Pass">10th Pass</option>
+                  <option value="12th Pass">12th Pass</option>
+                  <option value="Diploma">Diploma</option>
+                  <option value="B.E. / B.Tech">B.E. / B.Tech</option>
+                  <option value="BCA / B.Sc (IT)">BCA / B.Sc (IT)</option>
+                  <option value="MCA / M.Tech">MCA / M.Tech</option>
+                  <option value="Graduate (Other)">Graduate (Other)</option>
+                  <option value="Post Graduate">Post Graduate</option>
+                  <option value="Working Professional">Working Professional</option>
+                </select>
+              </div>
+
+              <!-- Batch -->
+              <div class="col-md-6">
+                <label class="form-label filter-label">Preferred Batch</label>
+                <select id="newPreferredTime" class="form-select">
+                  <option value="">-- Choose Batch Time --</option>
+                  <option value="Morning (7 AM – 10 AM)">Morning (7 AM – 10 AM)</option>
+                  <option value="Forenoon (10 AM – 1 PM)">Forenoon (10 AM – 1 PM)</option>
+                  <option value="Afternoon (1 PM – 4 PM)">Afternoon (1 PM – 4 PM)</option>
+                  <option value="Evening (4 PM – 7 PM)">Evening (4 PM – 7 PM)</option>
+                  <option value="Weekend Only">Weekend Only</option>
+                  <option value="Online / Flexible">Online / Flexible</option>
+                </select>
+              </div>
+
+              <!-- Source -->
+              <div class="col-md-6">
+                <label class="form-label filter-label">Referral Source</label>
+                <select id="newReferralSource" class="form-select">
+                  <option value="">-- Choose Source --</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="Facebook / Instagram">Facebook / Instagram</option>
+                  <option value="Google Search">Google Search</option>
+                  <option value="Friend / Referral">Friend / Referral</option>
+                  <option value="Walk-in / Hoarding">Walk-in / Hoarding</option>
+                  <option value="YouTube">YouTube</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <!-- Status -->
+              <div class="col-md-6">
+                <label class="form-label filter-label">Initial Status</label>
+                <select id="newStatus" class="form-select">
+                  <option value="New">New</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Enrolled">Enrolled</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
+
+              <!-- Message -->
+              <div class="col-12">
+                <label class="form-label filter-label">Additional Message / Query</label>
+                <textarea id="newMessage" class="form-control" rows="3" placeholder="Enter student query or remarks here..."></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary px-4 btn-new"><i class="bi bi-check-circle-fill me-1"></i>Save Enquiry</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODAL: VIEW DETAILS ── -->
+  <div class="modal fade" id="viewDetailsModal" tabindex="-1" aria-labelledby="viewDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewDetailsModalLabel"><i class="bi bi-info-circle-fill text-primary me-2"></i>Enquiry Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="detailsModalBody">
+          <!-- Dynamically populated via javascript -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery + Select2 + Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    (function () {
+      // ── COURSE DATA ARRAY ──────────────────────────────────────
+      const allCourses = [
+        { name: "PYTHON", fees: 10000, cat: "programming" },
+        { name: "C PROGRAMMING", fees: 3000, cat: "programming" },
+        { name: "C++ PROGRAMMING", fees: 3000, cat: "programming" },
+        { name: "C & C++ PROGRAMMING", fees: 6000, cat: "programming" },
+        { name: "JAVASCRIPT", fees: 5000, cat: "programming" },
+        { name: "PHP", fees: 7000, cat: "programming" },
+        { name: "JAVA CORE", fees: 6000, cat: "programming" },
+        { name: "JAVA ADVANCE", fees: 6000, cat: "programming" },
+        { name: "JAVA CORE AND ADVANCE", fees: 12000, cat: "programming" },
+        { name: "JAVA CORE & ADV + JAVA MVC", fees: 20000, cat: "programming" },
+        { name: "SPRING BOOT", fees: 6000, cat: "programming" },
+        { name: "EXPRESS JS", fees: 7000, cat: "programming" },
+        { name: "NODE JS", fees: 10000, cat: "programming" },
+        { name: "Angular JS", fees: 10000, cat: "programming" },
+        { name: "REACT JS", fees: 18000, cat: "programming" },
+        { name: "DJANGO", fees: 5000, cat: "programming" },
+        { name: "LARAVEL", fees: 12000, cat: "programming" },
+        { name: "ASP.NET", fees: 9000, cat: "programming" },
+        { name: ".NET", fees: 14000, cat: "programming" },
+        { name: ".NET MVC", fees: 20000, cat: "programming" },
+        { name: "JAVA FRAMEWORK", fees: 9000, cat: "programming" },
+        { name: "JAVA MVC", fees: 20000, cat: "programming" },
+        { name: "FULL STACK", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK JavaScript DEVELOPMENT", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK PYTHON DEVELOPMENT", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK JAVA DEVELOPMENT", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK PHP DEVELOPMENT", fees: 40000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND JavaScript", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND PYTHON", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND PHP", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK BACKEND JAVA CORE & ADVANCE", fees: 20000, cat: "fullstack" },
+        { name: "FULL STACK FRONTEND", fees: 20000, cat: "fullstack" },
+        { name: "MEAN STACK", fees: 20000, cat: "fullstack" },
+        { name: "MERN STACK", fees: 25000, cat: "fullstack" },
+        { name: "WEB DEVELOPMENT", fees: 7000, cat: "fullstack" },
+        { name: "WEB DESIGNING AND DEVELOPMENT", fees: 18000, cat: "fullstack" },
+        { name: "WEBSITE DESIGNING", fees: 7000, cat: "fullstack" },
+        { name: "WEB DESIGN", fees: 8000, cat: "fullstack" },
+        { name: "HTML", fees: 3000, cat: "fullstack" },
+        { name: "CSS", fees: 2000, cat: "fullstack" },
+        { name: "DATA ANALYTICS", fees: 15000, cat: "data" },
+        { name: "DATA SCIENCE", fees: 18000, cat: "data" },
+        { name: "PYTHON - DATA ANALYTICS", fees: 7000, cat: "data" },
+        { name: "SQL - Data Analytics", fees: 3000, cat: "data" },
+        { name: "BUSINESS ANALYTICS", fees: 20000, cat: "data" },
+        { name: "MACHINE LEARNING", fees: 15000, cat: "data" },
+        { name: "PYTHON + MACHINE LEARNING", fees: 20000, cat: "data" },
+        { name: "ARTIFICIAL INTELLIGENCE", fees: 45000, cat: "data" },
+        { name: "AI CRASH COURSE", fees: 1500, cat: "data" },
+        { name: "AI/ML Internship", fees: 5000, cat: "data" },
+        { name: "DATA ENGINEERING", fees: 40000, cat: "data" },
+        { name: "BIG DATA HADOOP", fees: 15000, cat: "data" },
+        { name: "TABLEAU", fees: 7000, cat: "data" },
+        { name: "POWER BI", fees: 5000, cat: "data" },
+        { name: "ADVANCE EXCEL", fees: 4000, cat: "data" },
+        { name: "RDBMS", fees: 4000, cat: "data" },
+        { name: "DBMS", fees: 4000, cat: "data" },
+        { name: "MongoDB", fees: 4000, cat: "data" },
+        { name: "MYSQL", fees: 12000, cat: "data" },
+        { name: "ORACLE DBA", fees: 12000, cat: "data" },
+        { name: "Data Structures Using C++", fees: 5000, cat: "data" },
+        { name: "DATA STRUCTURE USING C", fees: 4000, cat: "data" },
+        { name: "CCNA Switching", fees: 5000, cat: "networking" },
+        { name: "CISCO CERTIFIED NETWORK ASSOCIATE", fees: 10000, cat: "networking" },
+        { name: "CISCO CERTIFIED NETWORK PROFESSIONAL", fees: 18000, cat: "networking" },
+        { name: "NETWORKING (N+)", fees: 4000, cat: "networking" },
+        { name: "HARDWARE", fees: 5000, cat: "networking" },
+        { name: "PALOALTO", fees: 10000, cat: "networking" },
+        { name: "CYBER SECURITY", fees: 20000, cat: "networking" },
+        { name: "HACKING", fees: 10000, cat: "networking" },
+        { name: "PENETRATION TESTING", fees: 15000, cat: "networking" },
+        { name: "MCSA", fees: 7500, cat: "networking" },
+        { name: "MCSE", fees: 7500, cat: "networking" },
+        { name: "MCSA & MCSE", fees: 15000, cat: "networking" },
+        { name: "SAP - ABAP", fees: 25000, cat: "sap" },
+        { name: "SAP-MM", fees: 50000, cat: "sap" },
+        { name: "SAP PP", fees: 50000, cat: "sap" },
+        { name: "SAP SD", fees: 50000, cat: "sap" },
+        { name: "SAP FICO", fees: 40000, cat: "sap" },
+        { name: "MEDICAL CODING", fees: 20000, cat: "sap" },
+        { name: "GRAPHICS DESIGN", fees: 12000, cat: "design" },
+        { name: "ANIMATION", fees: 100000, cat: "design" },
+        { name: "AUTO CAD", fees: 8000, cat: "design" },
+        { name: "UGNX", fees: 20000, cat: "design" },
+        { name: "CATIA", fees: 15000, cat: "design" },
+        { name: "SOLID-WORKS", fees: 10000, cat: "design" },
+        { name: "CREO", fees: 5000, cat: "design" },
+        { name: "AMAZON WEB SERVICES", fees: 15000, cat: "cloud" },
+        { name: "Azure", fees: 15000, cat: "cloud" },
+        { name: "DEVOPS", fees: 18000, cat: "cloud" },
+        { name: "KUBERNETES", fees: 6000, cat: "cloud" },
+        { name: "ANSIBLE", fees: 5000, cat: "cloud" },
+        { name: "DOCKER / SHELL SCRIPTING", fees: 7000, cat: "cloud" },
+        { name: "SHELL SCRIPTING", fees: 7000, cat: "cloud" },
+        { name: "VMWARE", fees: 15000, cat: "cloud" },
+        { name: "REDHAT (RHCSA)", fees: 7000, cat: "cloud" },
+        { name: "REDHAT (RHCE)", fees: 7000, cat: "cloud" },
+        { name: "REDHAT (RHCSA & RHCE)", fees: 12000, cat: "cloud" },
+        { name: "REDHAT (RHCVA)", fees: 15000, cat: "cloud" },
+        { name: "REDHAT (OpenStack)", fees: 15000, cat: "cloud" },
+        { name: "C PANEL AND WHM", fees: 10000, cat: "cloud" },
+        { name: "MANUAL TESTING", fees: 10000, cat: "testing" },
+        { name: "AUTOMATION TESTING", fees: 10000, cat: "testing" },
+        { name: "SOFTWARE TESTING", fees: 18000, cat: "testing" },
+        { name: "ENGLISH AND MARATHI TYPING", fees: 4000, cat: "other" },
+        { name: "Professional English Communication", fees: 3000, cat: "other" },
+        { name: "DIGITAL MARKETING", fees: 16000, cat: "other" },
+        { name: "ANDROID", fees: 15000, cat: "other" }
+      ];
+
+      const categoryLabels = {
+        programming: "Programming & Web",
+        fullstack: "Full Stack Development",
+        data: "Data, AI & Analytics",
+        networking: "Networking & Security",
+        sap: "SAP / ERP",
+        design: "Design & CAD",
+        cloud: "Cloud & DevOps",
+        testing: "Software Testing",
+        other: "Other Courses"
+      };
+
+      // ── MOCK DATA SEEDER ───────────────────────────────────────
+      const mockEnquiries = [
+        {
+          id: "ENQ-1781694000001",
+          name: "Rohit Deshmukh",
+          email: "rohit.deshmukh@gmail.com",
+          whatsapp: "9876543210",
+          course: "MERN STACK",
+          qualification: "B.E. / B.Tech",
+          batch: "Morning (7 AM – 10 AM)",
+          source: "Google Search",
+          message: "I am in my final year BE, looking for a full stack course with internship opportunities.",
+          date: new Date(Date.now() - 3600000 * 2).toISOString(), // 2 hours ago
+          status: "New"
+        },
+        {
+          id: "ENQ-1781694000002",
+          name: "Pooja Kulkarni",
+          email: "pooja.k@yahoo.com",
+          whatsapp: "8765432109",
+          course: "DATA SCIENCE",
+          qualification: "MCA / M.Tech",
+          batch: "Evening (4 PM – 7 PM)",
+          source: "Facebook / Instagram",
+          message: "Please share syllabus and course timings for data science. Do you offer weekend batches?",
+          date: new Date(Date.now() - 3600000 * 18).toISOString(), // 18 hours ago
+          status: "Contacted"
+        },
+        {
+          id: "ENQ-1781694000003",
+          name: "Aman Shaikh",
+          email: "aman.shaikh@gmail.com",
+          whatsapp: "7654321098",
+          course: "PYTHON",
+          qualification: "Diploma",
+          batch: "Afternoon (1 PM – 4 PM)",
+          source: "Friend / Referral",
+          message: "My friend recommended this center. I want to learn Python programming from scratch.",
+          date: new Date(Date.now() - 3600000 * 30).toISOString(), // 30 hours ago
+          status: "Enrolled"
+        },
+        {
+          id: "ENQ-1781694000004",
+          name: "Neha Patel",
+          email: "neha.patel@outlook.com",
+          whatsapp: "9543210987",
+          course: "CYBER SECURITY",
+          qualification: "Working Professional",
+          batch: "Weekend Only",
+          source: "Google Search",
+          message: "Looking for advanced cyber security training. Do you provide hands-on lab access?",
+          date: new Date(Date.now() - 3600000 * 72).toISOString(), // 3 days ago
+          status: "Closed"
+        },
+        {
+          id: "ENQ-1781694000005",
+          name: "Saurabh Joshi",
+          email: "saurabh.j99@gmail.com",
+          whatsapp: "9123456789",
+          course: "AUTO CAD",
+          qualification: "B.E. / B.Tech",
+          batch: "Morning (7 AM – 10 AM)",
+          source: "Other",
+          message: "Mechanical engineering student interested in CAD layout designing.",
+          date: new Date().toISOString(), // Just now
+          status: "New"
+        }
+      ];
+
+      // Load or seed enquiries
+      try {
+        if (!localStorage.getItem('enquiries')) {
+          localStorage.setItem('enquiries', JSON.stringify(mockEnquiries));
+        }
+      } catch (e) {
+        console.warn('localStorage seeding is blocked:', e);
+      }
+
+      let enquiriesList = [];
+      let filteredEnquiries = [];
+      let currentPage = 1;
+      let pageSize = 25;
+      let currentSort = { col: 'date', dir: 'desc' };
+
+      // ── INITIALIZATION ─────────────────────────────────────────
+      $(document).ready(function () {
+        // Dynamically fetch and display the logo from index.html
+        fetch('index.html')
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const logoSrc = doc.querySelector('.logo-mark img')?.getAttribute('src');
+            if (logoSrc) {
+              $('.logo-mark img').attr('src', logoSrc).show();
+              $('.logo-fallback').hide();
+            }
+          })
+          .catch(err => console.warn('Could not load dynamic logo, using fallback.', err));
+
+        // Theme toggle functionality
+        const $themeBtn = $('#themeToggle');
+        const $themeIcon = $themeBtn.find('i');
+
+        function updateToggleIcon(theme) {
+          if (theme === 'dark') {
+            $themeIcon.removeClass('bi-moon-stars-fill').addClass('bi-sun-fill');
+          } else {
+            $themeIcon.removeClass('bi-sun-fill').addClass('bi-moon-stars-fill');
+          }
+        }
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        updateToggleIcon(currentTheme);
+
+        $themeBtn.on('click', function () {
+          const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+          const newTheme = activeTheme === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', newTheme);
+          try {
+            localStorage.setItem('theme', newTheme);
+          } catch (e) {
+            console.warn('Failed to save theme in localStorage:', e);
+          }
+          updateToggleIcon(newTheme);
+        });
+
+        // Set up login password display toggle
+        $('#togglePassword').on('click', function () {
+          const $passInput = $('#password');
+          const type = $passInput.attr('type') === 'password' ? 'text' : 'password';
+          $passInput.attr('type', type);
+          $(this).find('i').toggleClass('bi-eye bi-eye-slash');
+        });
+
+        // Check login state
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+          showDashboard();
+        }
+
+        // Login Submit
+        $('#loginForm').on('submit', function (e) {
+          e.preventDefault();
+          const user = $('#username').val().trim();
+          const pass = $('#password').val().trim();
+
+          if (user === 'admin' && pass === 'admin') {
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            $('#loginError').hide();
+            showDashboard();
+          } else {
+            $('#loginError').fadeIn(150);
+          }
+        });
+
+        // Logout click
+        $('#logoutBtn').on('click', function () {
+          sessionStorage.removeItem('adminLoggedIn');
+          hideDashboard();
+        });
+
+        // ── DASHBOARD OPERATIONS ─────────────────────────────────
+        function showDashboard() {
+          $('#loginView').hide();
+          $('#dashboardView').show();
+          $('#logoutBtn').show();
+          initDashboard();
+        }
+
+        function hideDashboard() {
+          $('#dashboardView').hide();
+          $('#logoutBtn').hide();
+          $('#loginView').show();
+        }
+
+        function initDashboard() {
+          loadCoursesDropdowns();
+          loadEnquiries();
+          bindEvents();
+        }
+
+        function loadCoursesDropdowns() {
+          const $filters = $('#courseFilter');
+          const $modalSelect = $('#newCourseSelect');
+
+          $filters.empty().append(new Option('-- All Courses --', 'all', true, false));
+          $modalSelect.empty().append(new Option('-- Select Course --', '', true, false));
+
+          const groups = {};
+          allCourses.forEach(c => {
+            if (!groups[c.cat]) groups[c.cat] = [];
+            groups[c.cat].push(c);
+          });
+
+          Object.keys(groups).forEach(cat => {
+            const label = categoryLabels[cat] || cat;
+            const $filterGroup = $('<optgroup>').attr('label', label);
+            const $modalGroup = $('<optgroup>').attr('label', label);
+
+            groups[cat].forEach(c => {
+              $filterGroup.append(new Option(c.name, c.name, false, false));
+              $modalGroup.append(new Option(c.name, c.name, false, false));
+            });
+
+            $filters.append($filterGroup);
+            $modalSelect.append($modalGroup);
+          });
+
+          // Initialize Select2 Typeahead Autocomplete
+          $filters.select2({
+            placeholder: '-- All Courses --',
+            allowClear: false
+          });
+
+          $modalSelect.select2({
+            placeholder: '-- Select Course --',
+            allowClear: false,
+            dropdownParent: $('#newEnquiryModal')
+          });
+        }
+
+        function loadEnquiries() {
+          try {
+            enquiriesList = JSON.parse(localStorage.getItem('enquiries') || '[]');
+          } catch (e) {
+            enquiriesList = [];
+          }
+          applyFiltersAndSort();
+        }
+
+        function applyFiltersAndSort() {
+          const search = $('#searchInput').val().toLowerCase().trim();
+          const course = $('#courseFilter').val();
+          const status = $('#statusFilter').val();
+          const fromDateStr = $('#dateFromFilter').val();
+          const toDateStr = $('#dateToFilter').val();
+
+          filteredEnquiries = enquiriesList.filter(item => {
+            // Search filter
+            if (search) {
+              const matchesSearch = 
+                item.name.toLowerCase().includes(search) ||
+                item.email.toLowerCase().includes(search) ||
+                item.whatsapp.includes(search) ||
+                item.course.toLowerCase().includes(search);
+              if (!matchesSearch) return false;
+            }
+
+            // Course filter
+            if (course && course !== 'all') {
+              if (item.course !== course) return false;
+            }
+
+            // Status filter
+            if (status && status !== 'all') {
+              if (item.status !== status) return false;
+            }
+
+            // Date range filter
+            if (fromDateStr) {
+              const fromDate = new Date(fromDateStr);
+              fromDate.setHours(0,0,0,0);
+              if (new Date(item.date) < fromDate) return false;
+            }
+
+            if (toDateStr) {
+              const toDate = new Date(toDateStr);
+              toDate.setHours(23,59,59,999);
+              if (new Date(item.date) > toDate) return false;
+            }
+
+            return true;
+          });
+
+          // Sort
+          const col = currentSort.col;
+          const dir = currentSort.dir;
+          filteredEnquiries.sort((a, b) => {
+            let valA = a[col] || '';
+            let valB = b[col] || '';
+
+            if (col === 'date') {
+              valA = new Date(valA).getTime();
+              valB = new Date(valB).getTime();
+            } else {
+              valA = valA.toString().toLowerCase();
+              valB = valB.toString().toLowerCase();
+            }
+
+            if (valA < valB) return dir === 'asc' ? -1 : 1;
+            if (valA > valB) return dir === 'asc' ? 1 : -1;
+            return 0;
+          });
+
+          updateStats();
+          renderTable();
+        }
+
+        function updateStats() {
+          const total = enquiriesList.length;
+          
+          // Today's new enquiries
+          const startOfToday = new Date();
+          startOfToday.setHours(0,0,0,0);
+          const todayNew = enquiriesList.filter(e => new Date(e.date) >= startOfToday).length;
+
+          // Enrolled count
+          const enrolled = enquiriesList.filter(e => e.status === 'Enrolled').length;
+
+          // Pending (New / Contacted)
+          const pending = enquiriesList.filter(e => e.status === 'New' || e.status === 'Contacted').length;
+
+          $('#statTotal').text(total);
+          $('#statToday').text(todayNew);
+          $('#statEnrolled').text(enrolled);
+          $('#statPending').text(pending);
+        }
+
+        function highlightText(text, searchWord) {
+          if (!searchWord) return text;
+          const escaped = searchWord.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+          const regex = new RegExp(`(${escaped})`, 'gi');
+          return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        function renderTable() {
+          const $tbody = $('#enquiriesTableBody');
+          $tbody.empty();
+
+          const $cardsContainer = $('#mobileCardsContainer');
+          $cardsContainer.empty();
+
+          const total = filteredEnquiries.length;
+          const limit = parseInt($('#pageSizeSelect').val());
+          const totalPages = Math.ceil(total / limit) || 1;
+
+          if (currentPage > totalPages) currentPage = totalPages;
+
+          const startIdx = (currentPage - 1) * limit;
+          const endIdx = Math.min(startIdx + limit, total);
+          const pageData = filteredEnquiries.slice(startIdx, endIdx);
+
+          const searchWord = $('#searchInput').val().trim();
+
+          if (pageData.length === 0) {
+            $tbody.append('<tr><td colspan="7" class="text-center py-4 text-muted"><i class="bi bi-info-circle me-1"></i> No matching enquiries found.</td></tr>');
+            $cardsContainer.append('<div class="text-center py-4 text-muted border rounded p-3" style="background: var(--surface); border-color: var(--border) !important;"><i class="bi bi-info-circle me-1"></i> No matching enquiries found.</div>');
+            $('#paginationInfo').text('Showing 0 to 0 of 0 entries');
+            renderPagination(0, 1);
+            return;
+          }
+
+          pageData.forEach(item => {
+            const statusClassMap = {
+              'New': 'status-new',
+              'Contacted': 'status-contacted',
+              'Enrolled': 'status-enrolled',
+              'Closed': 'status-closed'
+            };
+
+            const statusClass = statusClassMap[item.status] || 'status-new';
+            const formattedDate = new Date(item.date).toLocaleDateString('en-IN', {
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric',
+              hour: '2-digit',
+              minute: '2-digit'
+            });
+
+            const shortId = item.id.substring(4, 11);
+
+            const row = `
+              <tr>
+                <td><code style="font-size:0.75rem; color:var(--muted);">${shortId}</code></td>
+                <td>${formattedDate}</td>
+                <td>
+                  <strong class="text-accent">${highlightText(item.name, searchWord)}</strong>
+                  <div class="text-muted fs-7" style="font-size:0.76rem;">Ref: ${item.source || 'Direct'}</div>
+                </td>
+                <td>
+                  <div><i class="bi bi-envelope me-1 text-muted"></i>${highlightText(item.email, searchWord)}</div>
+                  <div class="mt-1"><i class="bi bi-whatsapp me-1 text-success"></i><a href="https://wa.me/91${item.whatsapp}" target="_blank" class="text-decoration-none">${highlightText(item.whatsapp, searchWord)}</a></div>
+                </td>
+                <td>
+                  <span class="badge bg-light text-dark border">${highlightText(item.course, searchWord)}</span>
+                </td>
+                <td>
+                  <select class="status-select ${statusClass}" data-id="${item.id}">
+                    <option value="New" ${item.status === 'New' ? 'selected' : ''}>New</option>
+                    <option value="Contacted" ${item.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
+                    <option value="Enrolled" ${item.status === 'Enrolled' ? 'selected' : ''}>Enrolled</option>
+                    <option value="Closed" ${item.status === 'Closed' ? 'selected' : ''}>Closed</option>
+                  </select>
+                </td>
+                <td style="text-align: center;">
+                  <div class="d-flex justify-content-center gap-2">
+                    <button class="btn-icon btnView" data-id="${item.id}" title="View Details" data-bs-toggle="modal" data-bs-target="#viewDetailsModal">
+                      <i class="bi bi-eye"></i>
+                    </button>
+                    <button class="btn-icon btnWhatsApp" data-id="${item.id}" title="Message on WhatsApp">
+                      <i class="bi bi-chat-text text-success"></i>
+                    </button>
+                    <button class="btn-icon btn-icon-danger btnDelete" data-id="${item.id}" title="Delete Record">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            `;
+            $tbody.append(row);
+
+            // Render mobile-app-like card
+            const card = `
+              <div class="mobile-card p-3 mb-3 border rounded shadow-sm" style="background: var(--surface); border-color: var(--border) !important;">
+                <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom" style="border-color: var(--border-soft) !important;">
+                  <div>
+                    <code class="text-muted" style="font-size:0.75rem;">ID: ${shortId}</code>
+                    <div style="font-size: 0.72rem; color: var(--muted);">${formattedDate}</div>
+                  </div>
+                  <div>
+                    <select class="status-select ${statusClass}" data-id="${item.id}" style="font-size: 0.7rem; padding: 4px 8px;">
+                      <option value="New" ${item.status === 'New' ? 'selected' : ''}>New</option>
+                      <option value="Contacted" ${item.status === 'Contacted' ? 'selected' : ''}>Contacted</option>
+                      <option value="Enrolled" ${item.status === 'Enrolled' ? 'selected' : ''}>Enrolled</option>
+                      <option value="Closed" ${item.status === 'Closed' ? 'selected' : ''}>Closed</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <strong class="text-accent fs-6 d-block mb-1">${highlightText(item.name, searchWord)}</strong>
+                      <span class="badge bg-light text-dark border" style="font-size: 0.72rem;">${highlightText(item.course, searchWord)}</span>
+                    </div>
+                    <span style="font-size: 0.72rem; color: var(--muted);" class="text-end">Ref: ${item.source || 'Direct'}</span>
+                  </div>
+                  
+                  <div class="mt-2" style="font-size: 0.82rem; color: var(--ink-soft);">
+                    <div class="mb-1"><i class="bi bi-envelope text-muted me-2"></i>${highlightText(item.email, searchWord)}</div>
+                    <div><i class="bi bi-whatsapp text-muted me-2"></i><a href="https://wa.me/91${item.whatsapp}" target="_blank" class="text-decoration-none text-success fw-medium">${highlightText(item.whatsapp, searchWord)}</a></div>
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end pt-2 border-top" style="border-color: var(--border-soft) !important;">
+                  <button class="btn btn-sm btn-outline-secondary btnView" data-id="${item.id}" data-bs-toggle="modal" data-bs-target="#viewDetailsModal">
+                    <i class="bi bi-eye me-1"></i> View
+                  </button>
+                  <button class="btn btn-sm btn-outline-success btnWhatsApp" data-id="${item.id}">
+                    <i class="bi bi-chat-text me-1"></i> Chat
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger btnDelete" data-id="${item.id}">
+                    <i class="bi bi-trash me-1"></i> Delete
+                  </button>
+                </div>
+              </div>
+            `;
+            $cardsContainer.append(card);
+          });
+
+          $('#paginationInfo').text(`Showing ${startIdx + 1} to ${endIdx} of ${total} entries`);
+          renderPagination(total, totalPages);
+        }
+
+        function renderPagination(total, totalPages) {
+          const $container = $('#paginationPages');
+          $container.empty();
+
+          $container.append(`<button class="btn-page" id="btnPrev" ${currentPage === 1 ? 'disabled' : ''}>Previous</button>`);
+
+          const pages = [];
+          if (totalPages <= 7) {
+            for (let i = 1; i <= totalPages; i++) {
+              pages.push(i);
+            }
+          } else {
+            if (currentPage <= 4) {
+              pages.push(1, 2, 3, 4, 5, '...', totalPages);
+            } else if (currentPage >= totalPages - 3) {
+              pages.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+            } else {
+              pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
+            }
+          }
+
+          pages.forEach(p => {
+            if (p === '...') {
+              $container.append(`<span class="px-2 text-muted align-self-center" style="font-weight: 500; font-family: var(--font-mono);">...</span>`);
+            } else {
+              $container.append(`<button class="btn-page ${p === currentPage ? 'active' : ''}" data-page="${p}">${p}</button>`);
+            }
+          });
+
+          $container.append(`<button class="btn-page" id="btnNext" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>`);
+        }
+
+        function bindEvents() {
+          // Unbind first to prevent multiple handlers
+          $('#searchInput, #courseFilter, #statusFilter, #dateFromFilter, #dateToFilter, #pageSizeSelect').off('change input');
+          $('#btnClearFilters').off('click');
+          $('#enquiriesTable').off('click');
+          $('#paginationPages').off('click');
+          $('#newEnquiryForm').off('submit');
+          $('#btnExport').off('click');
+          $('#btnImport').off('click');
+          $('#importFile').off('change');
+
+          // Filter controls change
+          $('#searchInput').on('input', function() {
+            currentPage = 1;
+            applyFiltersAndSort();
+          });
+
+          $('#courseFilter, #statusFilter, #dateFromFilter, #dateToFilter, #pageSizeSelect').on('change', function() {
+            currentPage = 1;
+            applyFiltersAndSort();
+          });
+
+          // Sort Columns
+          $('#colSortDate').on('click', function() {
+            toggleSort('date');
+          });
+          $('#colSortName').on('click', function() {
+            toggleSort('name');
+          });
+
+          // Clear Filters
+          $('#btnClearFilters').on('click', function () {
+            $('#searchInput').val('');
+            $('#courseFilter').val('all').trigger('change');
+            $('#statusFilter').val('all');
+            $('#dateFromFilter').val('');
+            $('#dateToFilter').val('');
+            currentPage = 1;
+            applyFiltersAndSort();
+          });
+
+          // Status dropdown in table cell/mobile card change
+          $('#dashboardView').on('change', '.status-select', function() {
+            const id = $(this).data('id');
+            const newStatus = $(this).val();
+            
+            enquiriesList = enquiriesList.map(e => {
+              if (e.id === id) {
+                return { ...e, status: newStatus };
+              }
+              return e;
+            });
+            try {
+              localStorage.setItem('enquiries', JSON.stringify(enquiriesList));
+            } catch (e) {
+              console.warn('Failed to save enquiries in localStorage:', e);
+            }
+            loadEnquiries();
+          });
+
+          // Table action / mobile card clicks
+          $('#dashboardView').on('click', '.btnView', function() {
+            const id = $(this).data('id');
+            const item = enquiriesList.find(e => e.id === id);
+            if (item) {
+              const formattedDate = new Date(item.date).toLocaleString('en-IN', {
+                day: '2-digit', month: 'long', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+              });
+              
+              const statusClassMap = {
+                'New': 'status-new',
+                'Contacted': 'status-contacted',
+                'Enrolled': 'status-enrolled',
+                'Closed': 'status-closed'
+              };
+              const statusClass = statusClassMap[item.status] || 'status-new';
+
+              const detailHtml = `
+                <div class="row g-3">
+                  <!-- Left Column -->
+                  <div class="col-md-6 border-end-md">
+                    <div class="mb-3">
+                      <span class="filter-label d-block text-muted"><i class="bi bi-hash text-muted me-1"></i>Enquiry ID</span>
+                      <code class="fs-6">${item.id}</code>
+                    </div>
+                    <div class="mb-3">
+                      <span class="filter-label d-block text-muted"><i class="bi bi-person-fill text-muted me-1"></i>Student Name</span>
+                      <strong class="fs-5 text-accent">${item.name}</strong>
+                    </div>
+                    <div class="mb-3">
+                      <span class="filter-label d-block text-muted"><i class="bi bi-envelope-fill text-muted me-1"></i>Email Address</span>
+                      <a href="mailto:${item.email}" class="text-decoration-none fs-6">${item.email}</a>
+                    </div>
+                    <div class="mb-3">
+                      <span class="filter-label d-block text-muted"><i class="bi bi-whatsapp text-muted me-1"></i>WhatsApp Number</span>
+                      <div><a href="https://wa.me/91${item.whatsapp}" target="_blank" class="text-decoration-none fs-6 text-success"><i class="bi bi-whatsapp me-1"></i>${item.whatsapp}</a></div>
+                    </div>
+                  </div>
+                  
+                  <!-- Right Column -->
+                  <div class="col-md-6">
+                    <div class="mb-3">
+                      <span class="filter-label d-block text-muted"><i class="bi bi-calendar-event-fill text-muted me-1"></i>Received Date</span>
+                      <span class="fs-6">${formattedDate}</span>
+                    </div>
+                    <div class="mb-3">
+                      <span class="filter-label d-block text-muted"><i class="bi bi-book-fill text-muted me-1"></i>Course Selected</span>
+                      <div><span class="badge bg-primary-subtle text-primary-emphasis border px-2 py-1 fs-7">${item.course}</span></div>
+                    </div>
+                    <div class="mb-3">
+                      <span class="filter-label d-block text-muted"><i class="bi bi-mortarboard-fill text-muted me-1"></i>Qualification &amp; Batch</span>
+                      <span class="fs-6 d-block"><strong>Edu:</strong> ${item.qualification || 'Not specified'}</span>
+                      <span class="fs-6 d-block"><strong>Time:</strong> ${item.batch || 'Not specified'}</span>
+                    </div>
+                    <div class="mb-3">
+                      <span class="filter-label d-block text-muted"><i class="bi bi-share-fill text-muted me-1"></i>Referral Source &amp; Status</span>
+                      <span class="fs-6 d-block"><strong>Source:</strong> ${item.source || 'Direct'}</span>
+                      <span class="fs-6 d-block"><strong>Status:</strong> <span class="status-select ${statusClass}" style="pointer-events: none; border: 1px solid currentColor; font-size: 0.72rem; vertical-align: middle; padding: 4px 10px;">${item.status}</span></span>
+                    </div>
+                  </div>
+
+                  <!-- Full Width Message -->
+                  <div class="col-12 mt-3">
+                    <span class="filter-label d-block text-muted mb-2"><i class="bi bi-chat-left-text-fill text-muted me-1"></i>Message / Inquiry Details</span>
+                    <div class="p-3 rounded border" style="background: var(--surface-alt) !important; color: var(--ink-soft); border-color: var(--border); font-family: var(--font-body); white-space: pre-wrap; font-size: 0.9rem; line-height: 1.5; min-height: 80px;">${item.message || 'No additional remarks.'}</div>
+                  </div>
+                </div>
+              `;
+              $('#detailsModalBody').html(detailHtml);
+            }
+          });
+
+          $('#dashboardView').on('click', '.btnWhatsApp', function() {
+            const id = $(this).data('id');
+            const item = enquiriesList.find(e => e.id === id);
+            if (item) {
+              const waMsg = encodeURIComponent(
+                `Hello ${item.name},\n\n` +
+                `Thank you for your enquiry at TechnoKraft for the *${item.course}* course. ` +
+                `Our counselor will be in touch with you shortly. Feel free to reply to this chat if you have any instant questions.`
+              );
+              window.open(`https://wa.me/91${item.whatsapp}?text=${waMsg}`, '_blank');
+            }
+          });
+
+          $('#dashboardView').on('click', '.btnDelete', function() {
+            const id = $(this).data('id');
+            const item = enquiriesList.find(e => e.id === id);
+            if (item && confirm(`Are you sure you want to delete the enquiry record of "${item.name}"? This action is permanent.`)) {
+              enquiriesList = enquiriesList.filter(e => e.id !== id);
+              try {
+                localStorage.setItem('enquiries', JSON.stringify(enquiriesList));
+              } catch (e) {
+                console.warn('Failed to save enquiries in localStorage:', e);
+              }
+              loadEnquiries();
+            }
+          });
+
+          // Pagination Page click
+          $('#paginationPages').on('click', '.btn-page', function() {
+            const $btn = $(this);
+            if ($btn.attr('id') === 'btnPrev') {
+              if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+              }
+            } else if ($btn.attr('id') === 'btnNext') {
+              const total = filteredEnquiries.length;
+              const limit = parseInt($('#pageSizeSelect').val());
+              const totalPages = Math.ceil(total / limit);
+              if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+              }
+            } else {
+              currentPage = parseInt($btn.data('page'));
+              renderTable();
+            }
+          });
+
+          // Create New Enquiry submit
+          $('#newEnquiryForm').on('submit', function(e) {
+            e.preventDefault();
+            const name = $('#newStudentName').val().trim();
+            const email = $('#newStudentEmail').val().trim();
+            const whatsapp = $('#newWhatsappNo').val().trim();
+            const course = $('#newCourseSelect').val();
+            const qual = $('#newQualification').val();
+            const batch = $('#newPreferredTime').val();
+            const source = $('#newReferralSource').val();
+            const status = $('#newStatus').val();
+            const msg = $('#newMessage').val().trim();
+
+            const newObj = {
+              id: 'ENQ-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+              name: name,
+              email: email,
+              whatsapp: whatsapp,
+              course: course,
+              qualification: qual,
+              batch: batch,
+              source: source,
+              message: msg,
+              date: new Date().toISOString(),
+              status: status
+            };
+
+            enquiriesList.unshift(newObj);
+            try {
+              localStorage.setItem('enquiries', JSON.stringify(enquiriesList));
+            } catch (e) {
+              console.warn('Failed to save enquiries in localStorage:', e);
+            }
+            
+            // Clear and hide modal
+            $('#newEnquiryForm')[0].reset();
+            $('#newCourseSelect').val('').trigger('change');
+            $('#newEnquiryModal').modal('hide');
+            
+            loadEnquiries();
+          });
+
+          // CSV Export
+          $('#btnExport').on('click', function () {
+            if (filteredEnquiries.length === 0) {
+              alert("No records to export.");
+              return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            // Header Row
+            csvContent += "ID,Date,Name,Email,WhatsApp,Course,Qualification,Batch,Source,Status,Message\n";
+            
+            filteredEnquiries.forEach(item => {
+              const row = [
+                item.id,
+                item.date,
+                `"${item.name.replace(/"/g, '""')}"`,
+                item.email,
+                item.whatsapp,
+                `"${item.course.replace(/"/g, '""')}"`,
+                `"${(item.qualification || '').replace(/"/g, '""')}"`,
+                `"${(item.batch || '').replace(/"/g, '""')}"`,
+                `"${(item.source || '').replace(/"/g, '""')}"`,
+                item.status,
+                `"${(item.message || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`
+              ].join(",");
+              csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `TechnoKraft_Enquiries_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          });
+
+          // JSON Import File Selection Trigger
+          $('#btnImport').on('click', function () {
+            $('#importFile').trigger('click');
+          });
+
+          // Handle Import File Change
+          $('#importFile').on('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+              try {
+                const importedData = JSON.parse(event.target.result);
+                if (!Array.isArray(importedData)) {
+                  alert("Invalid format: Root element must be an array of enquiries.");
+                  return;
+                }
+
+                let importedCount = 0;
+                importedData.forEach(item => {
+                  if (item.name && item.email && item.whatsapp && item.course) {
+                    // Check duplicate ID
+                    const exists = enquiriesList.some(e => e.id === item.id);
+                    if (!exists) {
+                      enquiriesList.unshift({
+                        id: item.id || 'ENQ-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                        name: item.name,
+                        email: item.email,
+                        whatsapp: item.whatsapp,
+                        course: item.course,
+                        qualification: item.qualification || '',
+                        batch: item.batch || '',
+                        source: item.source || '',
+                        message: item.message || '',
+                        date: item.date || new Date().toISOString(),
+                        status: item.status || 'New'
+                      });
+                      importedCount++;
+                    }
+                  }
+                });
+
+                if (importedCount > 0) {
+                  try {
+                    localStorage.setItem('enquiries', JSON.stringify(enquiriesList));
+                  } catch (e) {
+                    console.warn('Failed to save enquiries in localStorage:', e);
+                  }
+                  alert(`Successfully imported ${importedCount} new enquiries!`);
+                  loadEnquiries();
+                } else {
+                  alert("No new unique records were imported.");
+                }
+              } catch (err) {
+                alert("Failed to parse JSON file. Please ensure it is a valid enquiries export.");
+              }
+              // Reset input
+              $('#importFile').val('');
+            };
+            reader.readAsText(file);
+          });
+        }
+
+        function toggleSort(col) {
+          if (currentSort.col === col) {
+            currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+          } else {
+            currentSort.col = col;
+            currentSort.dir = 'desc';
+          }
+          currentPage = 1;
+          applyFiltersAndSort();
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
