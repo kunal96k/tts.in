@@ -596,4 +596,171 @@ public class LuckySpinController {
                 .filter(p -> p.getStatus().equalsIgnoreCase("WON") || p.getStatus().equalsIgnoreCase("REDEEMED"))
                 .toList());
     }
+
+    /**
+     * Admin endpoint: get paged, filtered and sorted winners.
+     */
+    @GetMapping(value = "/winners-paged", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Page<Participant>> getWinnersPaged(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "25") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo
+    ) {
+        log.info("REST request to get a page of winners with search: {}, status: {}", search, status);
+        
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+                
+        Pageable pageable = PageRequest.of(page, size, sort);
+        
+        Page<Participant> winnerPage = luckySpinService.searchWinners(search, status, dateFrom, dateTo, pageable);
+        return ResponseEntity.ok(winnerPage);
+    }
+
+    /**
+     * Admin endpoint: export filtered winners to CSV.
+     */
+    @GetMapping(value = "/winners/export", produces = "text/csv")
+    public void exportWinnersToCsv(
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+            HttpServletResponse response
+    ) throws IOException {
+        log.info("REST request to export filtered winners to CSV");
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        List<Participant> winners = luckySpinService.searchWinnersList(search, status, dateFrom, dateTo, sort);
+
+        String filename = "TechnoKraft_Winners_" + LocalDate.now() + ".csv";
+        response.setContentType("text/csv");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
+
+        try (PrintWriter writer = response.getWriter()) {
+            writer.write('\ufeff'); // Write BOM for UTF-8 compatibility in Excel
+
+            // Header row
+            writer.println("Winner ID,Date & Time,Winner Name,Mobile No.,Email,Prize Title,Coupon Code,Status");
+
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm a");
+
+            for (Participant p : winners) {
+                String formattedDate = "";
+                if (p.getCreatedAt() != null) {
+                    formattedDate = p.getCreatedAt().format(dateFormatter);
+                }
+
+                writer.println(String.join(",",
+                        "WIN-" + p.getId(),
+                        escapeCsvField(formattedDate),
+                        escapeCsvField(p.getName()),
+                        escapeCsvField(p.getMobile()),
+                        escapeCsvField(p.getEmail()),
+                        escapeCsvField(p.getPrizeWon() != null ? p.getPrizeWon() : "-"),
+                        escapeCsvField(p.getCouponCode() != null ? p.getCouponCode() : "-"),
+                        escapeCsvField(p.getStatus())
+                ));
+            }
+            writer.flush();
+        }
+    }
+
+    /**
+     * Admin endpoint: export filtered winners to Excel.
+     */
+    @GetMapping(value = "/winners/export/excel", produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    public void exportWinnersToExcel(
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
+            HttpServletResponse response
+    ) throws IOException {
+        log.info("REST request to export filtered winners to Excel");
+
+        Sort sort = sortDir.equalsIgnoreCase("asc")
+                ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        List<Participant> winners = luckySpinService.searchWinnersList(search, status, dateFrom, dateTo, sort);
+
+        String filename = "TechnoKraft_Winners_" + LocalDate.now() + ".xlsx";
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
+
+        try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Winners");
+
+            // Header row style
+            org.apache.poi.ss.usermodel.CellStyle headerStyle = workbook.createCellStyle();
+            org.apache.poi.ss.usermodel.Font headerFont = workbook.createFont();
+            headerFont.setBold(true);
+            headerFont.setColor(org.apache.poi.ss.usermodel.IndexedColors.WHITE.getIndex());
+            headerStyle.setFont(headerFont);
+            headerStyle.setFillForegroundColor(org.apache.poi.ss.usermodel.IndexedColors.CORNFLOWER_BLUE.getIndex());
+            headerStyle.setFillPattern(org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND);
+            headerStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.CENTER);
+
+            // Header Row
+            String[] headers = {"Winner ID", "Date & Time", "Winner Name", "Mobile No.", "Email", "Prize Title", "Coupon Code", "Status"};
+            org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < headers.length; i++) {
+                org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // Normal cell style
+            org.apache.poi.ss.usermodel.CellStyle dataStyle = workbook.createCellStyle();
+            dataStyle.setAlignment(org.apache.poi.ss.usermodel.HorizontalAlignment.LEFT);
+
+            // Populate data rows
+            int rowNum = 1;
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy hh:mm a");
+
+            for (Participant p : winners) {
+                org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
+
+                row.createCell(0).setCellValue("WIN-" + p.getId());
+                
+                String dateStr = "";
+                if (p.getCreatedAt() != null) {
+                    dateStr = p.getCreatedAt().format(dateFormatter);
+                }
+                row.createCell(1).setCellValue(dateStr);
+                row.createCell(2).setCellValue(p.getName());
+                row.createCell(3).setCellValue(p.getMobile());
+                row.createCell(4).setCellValue(p.getEmail());
+                row.createCell(5).setCellValue(p.getPrizeWon() != null ? p.getPrizeWon() : "-");
+                row.createCell(6).setCellValue(p.getCouponCode() != null ? p.getCouponCode() : "-");
+                row.createCell(7).setCellValue(p.getStatus());
+
+                for (int i = 0; i < headers.length; i++) {
+                    row.getCell(i).setCellStyle(dataStyle);
+                }
+            }
+
+            // Auto-size columns
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            workbook.write(response.getOutputStream());
+        }
+    }
 }

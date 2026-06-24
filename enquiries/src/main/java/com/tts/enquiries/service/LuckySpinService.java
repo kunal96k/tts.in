@@ -406,4 +406,28 @@ public class LuckySpinService {
         Specification<Participant> spec = ParticipantSpecification.filterParticipants(search, course, prize, status, dateFrom, dateTo);
         return participantRepository.findAll(spec, sort);
     }
+
+    @Transactional(readOnly = true)
+    public Page<Participant> searchWinners(
+            String search,
+            String status,
+            LocalDate dateFrom,
+            LocalDate dateTo,
+            Pageable pageable
+    ) {
+        Specification<Participant> spec = ParticipantSpecification.filterWinners(search, status, dateFrom, dateTo);
+        return participantRepository.findAll(spec, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Participant> searchWinnersList(
+            String search,
+            String status,
+            LocalDate dateFrom,
+            LocalDate dateTo,
+            Sort sort
+    ) {
+        Specification<Participant> spec = ParticipantSpecification.filterWinners(search, status, dateFrom, dateTo);
+        return participantRepository.findAll(spec, sort);
+    }
 }

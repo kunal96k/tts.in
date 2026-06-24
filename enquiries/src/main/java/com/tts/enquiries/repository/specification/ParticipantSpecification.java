@@ -72,4 +72,54 @@ public class ParticipantSpecification {
             return cb.and(predicates.toArray(new Predicate[0]));
         };
     }
+
+    public static Specification<Participant> filterWinners(
+            String search,
+            String status,
+            LocalDate dateFrom,
+            LocalDate dateTo
+    ) {
+        return (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            // Must be a winner (status cannot be ENQUIRED or BETTER LUCK)
+            predicates.add(cb.not(root.get("status").in("ENQUIRED", "BETTER LUCK")));
+
+            // Search filter (name, email, mobile, course, prize, coupon)
+            if (search != null && !search.trim().isEmpty()) {
+                String searchPattern = "%" + search.trim().toLowerCase() + "%";
+                predicates.add(cb.or(
+                        cb.like(cb.lower(root.get("name")), searchPattern),
+                        cb.like(cb.lower(root.get("email")), searchPattern),
+                        cb.like(cb.lower(root.get("mobile")), searchPattern),
+                        cb.like(cb.lower(root.get("courseSelected")), searchPattern),
+                        cb.like(cb.lower(root.get("prizeWon")), searchPattern),
+                        cb.like(cb.lower(root.get("couponCode")), searchPattern)
+                ));
+            }
+
+            // Status filter: maps frontend 'PENDING' -> 'WON', others as is
+            if (status != null && !status.trim().isEmpty() && !status.equalsIgnoreCase("all")) {
+                if (status.equalsIgnoreCase("PENDING")) {
+                    predicates.add(cb.equal(root.get("status"), "WON"));
+                } else {
+                    predicates.add(cb.equal(root.get("status"), status));
+                }
+            }
+
+            // Date Range: From Date
+            if (dateFrom != null) {
+                LocalDateTime startOfDay = dateFrom.atStartOfDay();
+                predicates.add(cb.greaterThanOrEqualTo(root.get("createdAt"), startOfDay));
+            }
+
+            // Date Range: To Date
+            if (dateTo != null) {
+                LocalDateTime endOfDay = dateTo.atTime(LocalTime.MAX);
+                predicates.add(cb.lessThanOrEqualTo(root.get("createdAt"), endOfDay));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+    }
 }

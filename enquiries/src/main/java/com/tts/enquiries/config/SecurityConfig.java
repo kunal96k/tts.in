@@ -82,7 +82,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/lucky-spin/draws", "/api/lucky-spin/stats").hasRole("ADMIN")
                         .requestMatchers("/api/lucky-spin/verify", "/api/lucky-spin/redeem").hasRole("ADMIN")
                         .requestMatchers("/api/lucky-spin/settings", "/api/lucky-spin/settings/**").hasRole("ADMIN")
-                        .requestMatchers("/api/lucky-spin/participants", "/api/lucky-spin/winners").hasRole("ADMIN")
+                        .requestMatchers("/api/lucky-spin/participants", "/api/lucky-spin/participants-paged", "/api/lucky-spin/participants/**").hasRole("ADMIN")
+                        .requestMatchers("/api/lucky-spin/winners", "/api/lucky-spin/winners-paged", "/api/lucky-spin/winners/**").hasRole("ADMIN")
 
                         // All other requests require authentication
                         .anyRequest().authenticated()

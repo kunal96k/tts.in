@@ -1400,35 +1400,75 @@
         </div>
 
         <div class="dashboard-panel">
-          <div class="row g-3 justify-content-between align-items-center">
-            <div class="col-md-4">
-              <input type="text" class="form-control" placeholder="Search by name, mobile, coupon code..."
-                id="winnerSearchInput" />
+          <!-- Top actions bar -->
+          <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-4">
+            <div class="d-flex gap-2">
+              <button class="btn btn-action btn-export-excel" id="winnerBtnExportExcel">
+                <i class="bi bi-file-earmark-excel"></i> Export Excel
+              </button>
+              <button class="btn btn-action btn-export-csv" id="winnerBtnExportCsv">
+                <i class="bi bi-file-earmark-spreadsheet"></i> Export CSV
+              </button>
             </div>
-            <div class="col-md-8 d-flex justify-content-end gap-2">
-              <select class="form-select w-auto" id="winnerStatusFilter">
-                <option value="ALL">All Status</option>
-                <option value="REDEEMED">Redeemed</option>
-                <option value="PENDING">Pending</option>
-                <option value="EXPIRED">Expired</option>
+
+            <div class="d-flex gap-2 align-items-center mt-2 mt-md-0">
+              <div class="input-group" style="max-width: 320px; width:100%;">
+                <span class="input-group-text bg-transparent text-muted border-end-0"><i class="bi bi-search"></i></span>
+                <input type="text" id="winnerSearchInput" class="form-control border-start-0 ps-0"
+                  placeholder="Search name, mobile, coupon..." />
+              </div>
+              <select id="winnerPageSizeSelect" class="form-select w-auto">
+                <option value="10">10</option>
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
               </select>
-              <button class="btn btn-action btn-export-excel"><i class="bi bi-file-earmark-excel-fill"></i> Export
-                excel</button>
             </div>
           </div>
 
-          <div class="table-container">
-            <table class="crm-table">
+          <!-- Filters segment -->
+          <div class="row g-3 mb-4">
+            <div class="col-12 col-md-4">
+              <label class="filter-label">Status Filter</label>
+              <select id="winnerStatusFilter" class="form-select">
+                <option value="ALL">-- All Statuses --</option>
+                <option value="PENDING">Pending</option>
+                <option value="REDEEMED">Redeemed</option>
+                <option value="EXPIRED">Expired</option>
+              </select>
+            </div>
+
+            <div class="col-6 col-md-3">
+              <label class="filter-label">From Date</label>
+              <input type="date" id="winnerDateFromFilter" class="form-control" />
+            </div>
+
+            <div class="col-6 col-md-3">
+              <label class="filter-label">To Date</label>
+              <input type="date" id="winnerDateToFilter" class="form-control" />
+            </div>
+
+            <div class="col-12 col-md-2 d-flex align-items-end">
+              <button class="btn btn-outline-secondary w-100 py-2" id="winnerBtnClearFilters">
+                <i class="bi bi-x-circle"></i> Clear
+              </button>
+            </div>
+          </div>
+
+          <!-- Desktop Table view -->
+          <div class="table-container d-none d-md-block">
+            <table class="crm-table" id="winnersTable">
               <thead>
                 <tr>
-                  <th>Winner Name</th>
+                  <th style="cursor: pointer;" id="winnerColSortId">ID <i class="bi bi-arrow-down-up ms-1"></i></th>
+                  <th style="cursor: pointer;" id="winnerColSortName">Winner Name <i class="bi bi-arrow-down-up ms-1"></i></th>
                   <th>Mobile Number</th>
-                  <th>Prize Title</th>
+                  <th style="cursor: pointer;" id="winnerColSortPrize">Prize Title <i class="bi bi-arrow-down-up ms-1"></i></th>
                   <th>Coupon Code</th>
-                  <th>Spin Date</th>
+                  <th style="cursor: pointer;" id="winnerColSortDate">Spin Date <i class="bi bi-arrow-down-up ms-1"></i></th>
                   <th>Expiry Date</th>
                   <th>Redeemed</th>
-                  <th>Status</th>
+                  <th style="cursor: pointer;" id="winnerColSortStatus">Status <i class="bi bi-arrow-down-up ms-1"></i></th>
                   <th class="text-end">Actions</th>
                 </tr>
               </thead>
@@ -1436,6 +1476,19 @@
                 <!-- Javascript populated -->
               </tbody>
             </table>
+          </div>
+
+          <!-- Mobile Cards list view -->
+          <div class="mobile-cards-container d-md-none mt-3" id="winnerMobileCardsContainer">
+            <!-- Dynamically populated cards -->
+          </div>
+
+          <!-- Pagination Footer -->
+          <div class="pagination-bar">
+            <span id="winnerPaginationInfo">Showing 0 to 0 of 0 entries</span>
+            <div class="pagination-controls" id="winnerPaginationPages">
+              <!-- Page buttons -->
+            </div>
           </div>
         </div>
       </div>
@@ -1775,12 +1828,13 @@
         other: "Other Courses"
       };
 
-      let winners = [
-        { name: "Abhishek Patil", mobile: "9876543210", prize: "CCNA Free Course", coupon: "TK-MON-384", date: "2026-06-24", expiry: "2026-07-09", redeemed: false, status: "PENDING" },
-        { name: "Simran Kaur", mobile: "7654321098", prize: "20% Admission Discount", coupon: "TK-DIS-092", date: "2026-06-24", expiry: "2026-07-09", redeemed: false, status: "PENDING" },
-        { name: "Rahul Deshmukh", mobile: "9123456789", prize: "40% Admission Discount", coupon: "TK-DIS-185", date: "2026-06-23", expiry: "2026-07-08", redeemed: true, status: "REDEEMED" },
-        { name: "Sneha Gite", mobile: "9456781230", prize: "RedHat Free Course", coupon: "TK-RH-741", date: "2026-06-08", expiry: "2026-06-23", redeemed: false, status: "EXPIRED" }
-      ];
+      let winners = [];
+      let winnersList = [];
+      let winnerCurrentPage = 1;
+      let winnerPageSize = 25;
+      let winnerCurrentSort = { col: 'id', dir: 'desc' };
+      let winnerTotalElements = 0;
+      let winnerTotalPages = 0;
 
 
       let logs = [
@@ -1855,7 +1909,8 @@
             partCurrentPage = 1;
             fetchParticipants();
           } else if (tabId === 'tab-winners') {
-            loadWinners().then(renderWinnersTable);
+            winnerCurrentPage = 1;
+            fetchWinners();
           } else if (tabId === 'tab-logs') {
             renderLogsTimeline();
           }
@@ -1867,6 +1922,7 @@
         renderPrizesReportTable();
         loadSettings();
         loadPartCoursesDropdown();
+        bindWinnerEvents();
 
         // ── TAB INTERACTION: COUPON VERIFICATION ─────────────────
         $('#couponVerifyForm').on('submit', function (e) {
@@ -1934,7 +1990,8 @@
               });
 
               // Reload reports and data
-              loadWinners().then(renderWinnersTable);
+              winnerCurrentPage = 1;
+              fetchWinners();
               fetchParticipants();
               updateDashboardMetrics();
               renderPrizesReportTable();
@@ -2690,45 +2747,342 @@
         fetchParticipants();
       }
 
-      function renderWinnersTable() {
-        const $tbody = $('#winnersTableBody');
-        const search = $('#winnerSearchInput').val().toLowerCase();
-        const statusFilter = $('#winnerStatusFilter').val();
-        $tbody.empty();
+      function fetchWinners() {
+        const page = winnerCurrentPage - 1;
+        const size = $('#winnerPageSizeSelect').val();
+        const sortBy = winnerCurrentSort.col;
+        const sortDir = winnerCurrentSort.dir;
 
-        const filtered = winners.filter(w => {
-          const matchSearch = w.name.toLowerCase().includes(search) || w.mobile.includes(search) || w.coupon.toLowerCase().includes(search);
-          const matchStatus = statusFilter === 'ALL' || w.status === statusFilter;
-          return matchSearch && matchStatus;
+        const search = $('#winnerSearchInput').val().trim();
+        const status = $('#winnerStatusFilter').val();
+        const dateFrom = $('#winnerDateFromFilter').val();
+        const dateTo = $('#winnerDateToFilter').val();
+
+        let url = `/api/lucky-spin/winners-paged?page=${page}&size=${size}&sortBy=${sortBy}&sortDir=${sortDir}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        if (status && status !== 'ALL') url += `&status=${encodeURIComponent(status)}`;
+        if (dateFrom) url += `&dateFrom=${dateFrom}`;
+        if (dateTo) url += `&dateTo=${dateTo}`;
+
+        $.getJSON(url, function (data) {
+          winnersList = data.content;
+          winnerTotalElements = data.totalElements;
+          winnerTotalPages = data.totalPages;
+          renderWinnersTable(data);
+        }).fail(function () {
+          console.error("Failed to load winners.");
         });
+      }
 
-        if (filtered.length === 0) {
-          $tbody.append('<tr><td colspan="9" class="text-center text-muted py-4">No winning records found.</td></tr>');
+      function renderWinnersTable(data) {
+        const $tbody = $('#winnersTableBody');
+        $tbody.empty();
+        
+        const $cardsContainer = $('#winnerMobileCardsContainer');
+        $cardsContainer.empty();
+
+        const limit = parseInt($('#winnerPageSizeSelect').val());
+        const startIdx = data.number * limit;
+        const endIdx = Math.min(startIdx + data.numberOfElements, winnerTotalElements);
+        const searchWord = $('#winnerSearchInput').val().trim();
+
+        if (winnersList.length === 0) {
+          $tbody.append('<tr><td colspan="10" class="text-center py-4 text-muted"><i class="bi bi-info-circle me-1"></i> No matching winning records found.</td></tr>');
+          $cardsContainer.append('<div class="text-center py-4 text-muted border rounded p-3" style="background: var(--surface); border-color: var(--border) !important;"><i class="bi bi-info-circle me-1"></i> No matching winning records found.</div>');
+          $('#winnerPaginationInfo').text('Showing 0 to 0 of 0 entries');
+          renderWinnerPagination(0);
           return;
         }
 
-        filtered.forEach(w => {
+        winnersList.forEach(w => {
           let badgeClass = 'bg-warning-subtle text-warning';
           if (w.status === 'REDEEMED') badgeClass = 'bg-success-subtle text-success';
           else if (w.status === 'EXPIRED') badgeClass = 'bg-danger-subtle text-danger';
 
+          const formattedDate = formatDateTime(w.createdAt);
+          const gracePeriod = 15; // default 15 days
+          const expiryDate = w.createdAt ? formatDateTime(new Date(new Date(w.createdAt).getTime() + gracePeriod * 24 * 60 * 60 * 1000)) : '-';
+
           const tr = `
             <tr>
-              <td><strong>${w.name}</strong></td>
-              <td class="font-monospace">${w.mobile}</td>
-              <td>${w.prize}</td>
-              <td class="font-monospace fw-bold text-primary">${w.coupon}</td>
-              <td class="font-monospace">${w.date}</td>
-              <td class="font-monospace">${w.expiry}</td>
-              <td class="font-monospace">${w.redeemed ? 'Yes' : 'No'}</td>
+              <td><strong>WIN-${w.id}</strong></td>
+              <td><strong>${highlightText(w.name, searchWord)}</strong></td>
+              <td class="font-monospace"><a href="https://wa.me/${w.mobile.replace(/\D/g, '').length === 10 ? '91' + w.mobile.replace(/\D/g, '') : w.mobile.replace(/\D/g, '')}" target="_blank" class="text-decoration-none text-success">${highlightText(w.mobile, searchWord)}</a></td>
+              <td>${highlightText(w.prizeWon || '-', searchWord)}</td>
+              <td class="font-monospace fw-bold text-primary">${highlightText(w.couponCode || '-', searchWord)}</td>
+              <td class="font-monospace">${formattedDate}</td>
+              <td class="font-monospace">${expiryDate}</td>
+              <td class="font-monospace">${w.status === 'REDEEMED' ? 'Yes' : 'No'}</td>
               <td><span class="badge ${badgeClass} border px-2 py-1">${w.status}</span></td>
               <td class="text-end">
-                <button class="btn-icon-btn btnPrintWinner"><i class="bi bi-printer"></i></button>
-                <button class="btn-icon-btn text-success"><i class="bi bi-whatsapp"></i></button>
+                <button class="btn-icon-btn btnPrintWinner" data-id="${w.id}" title="Print Coupon"><i class="bi bi-printer"></i></button>
+                <button class="btn-icon-btn text-success btnWhatsAppWinner" data-id="${w.id}" title="WhatsApp"><i class="bi bi-whatsapp"></i></button>
               </td>
             </tr>
           `;
           $tbody.append(tr);
+
+          // Card layout for mobile screens
+          const card = `
+            <div class="mobile-card p-3 mb-3 border rounded shadow-sm" style="background: var(--surface); border-color: var(--border) !important;">
+              <div class="d-flex justify-content-between align-items-center mb-2 pb-2 border-bottom" style="border-color: var(--border-soft) !important;">
+                <div>
+                  <code class="text-muted" style="font-size:0.75rem;">WIN-${w.id}</code>
+                  <div style="font-size: 0.72rem; color: var(--muted);">${formattedDate}</div>
+                </div>
+                <div>
+                  <span class="badge ${badgeClass} border px-2 py-1" style="font-size: 0.72rem;">${w.status}</span>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <strong class="text-accent fs-6 d-block mb-1">${highlightText(w.name, searchWord)}</strong>
+                
+                <div class="mt-2" style="font-size: 0.82rem; color: var(--ink-soft);">
+                  <div class="mb-1"><i class="bi bi-whatsapp text-success me-2"></i><a href="https://wa.me/${w.mobile.replace(/\D/g, '').length === 10 ? '91' + w.mobile.replace(/\D/g, '') : w.mobile.replace(/\D/g, '')}" target="_blank" class="text-decoration-none text-success fw-medium">${highlightText(w.mobile, searchWord)}</a></div>
+                  <div class="mb-1"><i class="bi bi-trophy text-muted me-2"></i>Prize: ${highlightText(w.prizeWon || '-', searchWord)}</div>
+                  <div class="mb-1"><i class="bi bi-ticket-perforated text-muted me-2"></i>Coupon: <span class="font-monospace fw-bold text-primary">${highlightText(w.couponCode || '-', searchWord)}</span></div>
+                  <div><i class="bi bi-calendar-x text-muted me-2"></i>Expires: ${expiryDate}</div>
+                </div>
+              </div>
+
+              <div class="d-flex gap-2 justify-content-end pt-2 border-top" style="border-color: var(--border-soft) !important;">
+                <button class="btn btn-sm btn-outline-secondary btnPrintWinner" data-id="${w.id}">
+                  <i class="bi bi-printer me-1"></i> Print
+                </button>
+                <button class="btn btn-sm btn-outline-success btnWhatsAppWinner" data-id="${w.id}">
+                  <i class="bi bi-whatsapp me-1"></i> Chat
+                </button>
+              </div>
+            </div>
+          `;
+          $cardsContainer.append(card);
+        });
+
+        $('#winnerPaginationInfo').text(`Showing ${startIdx + 1} to ${endIdx} of ${winnerTotalElements} entries`);
+        renderWinnerPagination(winnerTotalPages);
+      }
+
+      function renderWinnerPagination(totalPages) {
+        const $container = $('#winnerPaginationPages');
+        $container.empty();
+
+        $container.append(`<button class="btn-page" id="winnerBtnPrev" ${winnerCurrentPage === 1 ? 'disabled' : ''}>Previous</button>`);
+
+        const pages = [];
+        if (totalPages <= 7) {
+          for (let i = 1; i <= totalPages; i++) {
+            pages.push(i);
+          }
+        } else {
+          if (winnerCurrentPage <= 4) {
+            pages.push(1, 2, 3, 4, 5, '...', totalPages);
+          } else if (winnerCurrentPage >= totalPages - 3) {
+            pages.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+          } else {
+            pages.push(1, '...', winnerCurrentPage - 1, winnerCurrentPage, winnerCurrentPage + 1, '...', totalPages);
+          }
+        }
+
+        pages.forEach(p => {
+          if (p === '...') {
+            $container.append(`<span class="px-2 text-muted align-self-center" style="font-weight: 500; font-family: var(--font-mono);">...</span>`);
+          } else {
+            $container.append(`<button class="btn-page ${p === winnerCurrentPage ? 'active' : ''}" data-page="${p}">${p}</button>`);
+          }
+        });
+
+        $container.append(`<button class="btn-page" id="winnerBtnNext" ${winnerCurrentPage === totalPages ? 'disabled' : ''}>Next</button>`);
+      }
+
+      function toggleWinnerSort(col) {
+        if (winnerCurrentSort.col === col) {
+          winnerCurrentSort.dir = winnerCurrentSort.dir === 'asc' ? 'desc' : 'asc';
+        } else {
+          winnerCurrentSort.col = col;
+          winnerCurrentSort.dir = 'desc';
+        }
+        winnerCurrentPage = 1;
+        fetchWinners();
+      }
+
+      function printCoupon(name, mobile, prize, coupon, date, expiry, status) {
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>TechnoKraft Prize Coupon - \${coupon}</title>
+              <style>
+                body { font-family: 'Inter', sans-serif; padding: 40px; color: #161A23; background: #FFF; }
+                .coupon-card { border: 2px dashed #2451E3; padding: 30px; border-radius: 12px; max-width: 500px; margin: 0 auto; }
+                .header { text-align: center; margin-bottom: 20px; }
+                .logo { font-size: 24px; font-weight: bold; letter-spacing: 1px; color: #2451E3; }
+                .title { font-size: 20px; font-weight: bold; margin-top: 10px; }
+                .coupon-code { font-size: 28px; font-weight: bold; color: #2451E3; text-align: center; margin: 20px 0; letter-spacing: 2px; padding: 10px; background: #F5F7FB; border-radius: 8px; border: 1px solid #E3E6EC; }
+                .details { line-height: 1.6; margin-bottom: 20px; }
+                .details-row { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #ECEEF2; padding-bottom: 8px; }
+                .details-label { color: #6B7280; font-weight: 500; }
+                .details-value { font-weight: 600; }
+                .footer { text-align: center; color: #9CA3AF; font-size: 12px; margin-top: 20px; }
+              </style>
+            </head>
+            <body>
+              <div class="coupon-card">
+                <div class="header">
+                  <div class="logo">TechnoKraft</div>
+                  <div class="title">LUCKY SPIN DRAW PRIZE COUPON</div>
+                </div>
+                <div class="coupon-code">\${coupon}</div>
+                <div class="details">
+                  <div class="details-row"><span class="details-label">Winner Name:</span><span class="details-value">\${name}</span></div>
+                  <div class="details-row"><span class="details-label">Mobile Number:</span><span class="details-value">\${mobile}</span></div>
+                  <div class="details-row"><span class="details-label">Prize Won:</span><span class="details-value">\${prize}</span></div>
+                  <div class="details-row"><span class="details-label">Spin Date:</span><span class="details-value">\${date}</span></div>
+                  <div class="details-row"><span class="details-label">Expiry Date:</span><span class="details-value">\${expiry}</span></div>
+                  <div class="details-row"><span class="details-label">Status:</span><span class="details-value">\${status}</span></div>
+                </div>
+                <div class="footer">
+                  * Terms & conditions apply. Please bring this coupon copy along with identity proof to the center.
+                </div>
+              </div>
+              <script>
+                window.onload = function() { window.print(); window.close(); }
+              <\/script>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      }
+
+      function bindWinnerEvents() {
+        // Search debounce
+        let searchTimeout;
+        $('#winnerSearchInput').off('input').on('input', function () {
+          clearTimeout(searchTimeout);
+          searchTimeout = setTimeout(() => {
+            winnerCurrentPage = 1;
+            fetchWinners();
+          }, 350);
+        });
+
+        // Filters change
+        $('#winnerStatusFilter, #winnerDateFromFilter, #winnerDateToFilter, #winnerPageSizeSelect').off('change').on('change', function () {
+          winnerCurrentPage = 1;
+          fetchWinners();
+        });
+
+        // Clear filters
+        $('#winnerBtnClearFilters').off('click').on('click', function () {
+          $('#winnerSearchInput').val('');
+          $('#winnerStatusFilter').val('ALL');
+          $('#winnerDateFromFilter').val('');
+          $('#winnerDateToFilter').val('');
+          winnerCurrentPage = 1;
+          fetchWinners();
+        });
+
+        // Sorting columns
+        $('#winnerColSortId').off('click').on('click', function () { toggleWinnerSort('id'); });
+        $('#winnerColSortName').off('click').on('click', function () { toggleWinnerSort('name'); });
+        $('#winnerColSortPrize').off('click').on('click', function () { toggleWinnerSort('prizeWon'); });
+        $('#winnerColSortDate').off('click').on('click', function () { toggleWinnerSort('createdAt'); });
+        $('#winnerColSortStatus').off('click').on('click', function () { toggleWinnerSort('status'); });
+
+        // Export Excel
+        $('#winnerBtnExportExcel').off('click').on('click', function () {
+          const sortBy = winnerCurrentSort.col;
+          const sortDir = winnerCurrentSort.dir;
+          const search = $('#winnerSearchInput').val().trim();
+          const status = $('#winnerStatusFilter').val();
+          const dateFrom = $('#winnerDateFromFilter').val();
+          const dateTo = $('#winnerDateToFilter').val();
+
+          let url = `/api/lucky-spin/winners/export/excel?sortBy=\${sortBy}&sortDir=\${sortDir}`;
+          if (search) url += `&search=\${encodeURIComponent(search)}`;
+          if (status && status !== 'ALL') url += `&status=\${encodeURIComponent(status)}`;
+          if (dateFrom) url += `&dateFrom=\${dateFrom}`;
+          if (dateTo) url += `&dateTo=\${dateTo}`;
+
+          window.location.href = url;
+        });
+
+        // Export CSV
+        $('#winnerBtnExportCsv').off('click').on('click', function () {
+          const sortBy = winnerCurrentSort.col;
+          const sortDir = winnerCurrentSort.dir;
+          const search = $('#winnerSearchInput').val().trim();
+          const status = $('#winnerStatusFilter').val();
+          const dateFrom = $('#winnerDateFromFilter').val();
+          const dateTo = $('#winnerDateToFilter').val();
+
+          let url = `/api/lucky-spin/winners/export?sortBy=\${sortBy}&sortDir=\${sortDir}`;
+          if (search) url += `&search=\${encodeURIComponent(search)}`;
+          if (status && status !== 'ALL') url += `&status=\${encodeURIComponent(status)}`;
+          if (dateFrom) url += `&dateFrom=\${dateFrom}`;
+          if (dateTo) url += `&dateTo=\${dateTo}`;
+
+          window.location.href = url;
+        });
+
+        // Pagination buttons
+        $('#winnerPaginationPages').off('click').on('click', '.btn-page', function () {
+          const $btn = $(this);
+          if ($btn.attr('id') === 'winnerBtnPrev') {
+            if (winnerCurrentPage > 1) {
+              winnerCurrentPage--;
+              fetchWinners();
+            }
+          } else if ($btn.attr('id') === 'winnerBtnNext') {
+            if (winnerCurrentPage < winnerTotalPages) {
+              winnerCurrentPage++;
+              fetchWinners();
+            }
+          } else {
+            winnerCurrentPage = parseInt($btn.data('page'));
+            fetchWinners();
+          }
+        });
+
+        // Actions: WhatsApp direct chat for winners
+        $(document).off('click', '.btnWhatsAppWinner').on('click', '.btnWhatsAppWinner', function () {
+          const id = $(this).data('id');
+          const w = winnersList.find(item => item.id == id);
+          if (w) {
+            const cleanMobile = w.mobile.replace(/\\D/g, '');
+            const mobileWithCountry = cleanMobile.length === 10 ? '91' + cleanMobile : cleanMobile;
+            
+            let messageStr = `Hello \${w.name},\\n\\n`;
+            messageStr += `Congratulations! You won the *\${w.prizeWon}* prize in our TechnoKraft Lucky Spin Wheel! \\n\\n`;
+            messageStr += `Your Coupon Code: *\${w.couponCode}*\\n\\n`;
+            messageStr += `You can redeem this coupon code at our center. Our counselor will contact you shortly.`;
+
+            const waMsg = encodeURIComponent(messageStr);
+            window.open(`https://wa.me/\${mobileWithCountry}?text=\${waMsg}`, '_blank');
+          }
+        });
+
+        // Actions: Print Winner Coupon
+        $(document).off('click', '.btnPrintWinner').on('click', '.btnPrintWinner', function () {
+          const id = $(this).data('id');
+          const w = winnersList.find(item => item.id == id);
+          if (w) {
+            const formattedDate = formatDateTime(w.createdAt);
+            const gracePeriod = 15;
+            const expiryDate = w.createdAt ? formatDateTime(new Date(new Date(w.createdAt).getTime() + gracePeriod * 24 * 60 * 60 * 1000)) : '-';
+            printCoupon(w.name, w.mobile, w.prizeWon, w.couponCode, formattedDate, expiryDate, w.status);
+          }
+        });
+
+        // Actions: Print from Verify Coupon Result Card
+        $('#btnPrintAction').off('click').on('click', function () {
+          const name = $('#resultName').text();
+          const mobile = $('#resultMobile').text();
+          const prize = $('#resultPrize').text();
+          const coupon = $('#verifyCouponCode').val().trim().toUpperCase();
+          const issued = $('#resultIssued').text();
+          const expiry = $('#resultExpiry').text();
+          const status = $('#resultRedeemed').text();
+          printCoupon(name, mobile, prize, coupon, issued, expiry, status);
         });
       }
 
@@ -2977,23 +3331,7 @@
       }
       
 
-      function loadWinners() {
-        return fetch('/api/lucky-spin/winners')
-          .then(r => r.json())
-          .then(data => {
-            winners = data.map(w => ({
-              name: w.name,
-              mobile: w.mobile,
-              prize: w.prizeWon || '-',
-              coupon: w.couponCode || '-',
-              date: formatDate(w.createdAt),
-              expiry: w.createdAt ? formatDate(new Date(new Date(w.createdAt).getTime() + 15 * 24 * 60 * 60 * 1000)) : '-',
-              redeemed: w.status === 'REDEEMED',
-              status: w.status
-            }));
-          })
-          .catch(err => console.error("Error loading winners:", err));
-      }
+
 
       function formatDateTime(isoString) {
         if (!isoString) return '-';
